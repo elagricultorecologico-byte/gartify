@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  email     String    @unique
+  password  String?
+  phone     String?
+  role      Role      @default(CUSTOMER)
+  bookings  Booking[]
+  reviews   Review[]
+  garage    Garage?
+  createdAt DateTime  @default(now())
+}
+
+enum Role {
+  CUSTOMER
+  GARAGE_OWNER
+  ADMIN
+}
+
+model Garage {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  address     String
+  city        String
+  postalCode  String
+  phone       String
+  email       String?
+  lat         Float?
+  lng         Float?
+  logo        String?
+  rating      Float           @default(0)
+  reviewCount Int             @default(0)
+  isVerified  Boolean         @default(false)
+  isActive    Boolean         @default(true)
+  ownerId     String          @unique
+  owner       User            @relation(fields: [ownerId], references: [id])
+  services    GarageService[]
+  bookings    Booking[]
+  reviews     Review[]
+  createdAt   DateTime        @default(now())
+}
+
+model GarageService {
+  id          String      @id @default(cuid())
+  garageId    String
+  garage      Garage      @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  type        ServiceType
+  name        String
+  description String?
+  price       Float
+  duration    Int
+  isActive    Boolean     @default(true)
+  bookings    Booking[]
+}
+
+enum ServiceType {
+  ITV
+  PRE_ITV
+  REVISION
+  CAMBIO_ACEITE
+  FRENOS
+  NEUMATICOS
+  CLIMATIZACION
+  DIAGNOSTICO
+  ELECTRICIDAD
+  OTRO
+}
+
+model Booking {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  garageId     String
+  garage       Garage        @relation(fields: [garageId], references: [id])
+  serviceId    String
+  service      GarageService @relation(fields: [serviceId], references: [id])
+  date         DateTime
+  status       BookingStatus @default(PENDING)
+  vehiclePlate String?
+  vehicleModel String?
+  notes        String?
+  totalPrice   Float
+  review       Review?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  garageId  String
+  garage    Garage   @relation(fields: [garageId], references: [id])
+  bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+}

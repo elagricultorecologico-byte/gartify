@@ -1,0 +1,37 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { z } from "zod";
+import { ServiceType } from "@prisma/client";
+
+const schema = z.object({
+  garageId:    z.string(),
+  type:        z.nativeEnum(ServiceType),
+  name:        z.string().min(1),
+  description: z.string().optional(),
+  price:       z.number().positive(),
+  duration:    z.number().int().positive(),
+});
+
+export async function POST(req: Request) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+
+  const body = await req.json();
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
+
+  const { garageId, type, name, description, price, duration } = parsed.data;
+
+  // Verify the garage belongs to this user
+  const garage = await db.garage.findUnique({ where: { id: garageId } });
+  if (!garage || garage.ownerId !== session.user.id) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
+
+  const service = await db.garageService.create({
+    data: { garageId, type, name, description, price, duration },
+  });
+
+  return NextResponse.json(service, { status: 201 });
+}
