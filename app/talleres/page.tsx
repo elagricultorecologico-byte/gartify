@@ -1,20 +1,60 @@
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { GarageCard } from "@/components/talleres/GarageCard";
 import { GarageFilters } from "@/components/talleres/GarageFilters";
 import { Search } from "lucide-react";
+import { SERVICE_LABELS } from "@/lib/constants";
 
-const GarageMap = dynamic(
-  () => import("@/components/talleres/GarageMap").then((m) => m.GarageMap),
-  { ssr: false, loading: () => <div className="h-full bg-muted/20 rounded-lg animate-pulse" /> }
-);
+type SearchParams = {
+  servicio?: string; ciudad?: string; precio?: string; rating?: string;
+  distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
+};
+
+function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
+  const [minStr, maxStr] = precio.split("-");
+  const min = Number(minStr);
+  const max = maxStr ? Number(maxStr) : undefined;
+  return { ...(min > 0 && { gte: min }), ...(max !== undefined && max > 0 && { lte: max }) };
+}
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2
+    + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+  const servicioLabel = searchParams.servicio ? SERVICE_LABELS[searchParams.servicio] : null;
+  const ciudad = searchParams.ciudad;
+  const title = [servicioLabel ?? "Talleres mecánicos", ciudad ? `en ${ciudad}` : "en España"].join(" ");
+  const params = new URLSearchParams();
+  if (searchParams.servicio) params.set("servicio", searchParams.servicio);
+  if (searchParams.ciudad) params.set("ciudad", searchParams.ciudad);
+  const qs = params.toString();
+  return {
+    title,
+    description: `Compara precios y reserva cita en talleres mecánicos${ciudad ? ` en ${ciudad}` : " de toda España"}. Reseñas reales, precios transparentes. Sin llamadas.`,
+    alternates: { canonical: `/talleres${qs ? `?${qs}` : ""}` },
+  };
+}
 
 export default async function TalleresPage({
   searchParams,
 }: {
-  searchParams: { servicio?: string; ciudad?: string };
+  searchParams: SearchParams;
 }) {
-  const garages = await db.garage.findMany({
+  const precioFilter = searchParams.precio ? parsePrecioRange(searchParams.precio) : null;
+  const ratingMin = searchParams.rating ? parseFloat(searchParams.rating) : null;
+  const userLat = searchParams.userLat ? parseFloat(searchParams.userLat) : null;
+  const userLng = searchParams.userLng ? parseFloat(searchParams.userLng) : null;
+  const distanciaKm = searchParams.distancia ? parseInt(searchParams.distancia) : null;
+  const cocheCortesia = searchParams.cocheCortesia === "true";
+  const recogida = searchParams.recogida === "true";
+
+  let garages = await db.garage.findMany({
     where: {
       isActive: true,
       ...(searchParams.ciudad && {
@@ -23,8 +63,17 @@ export default async function TalleresPage({
           { postalCode: { contains: searchParams.ciudad } },
         ],
       }),
-      ...(searchParams.servicio && {
-        services: { some: { type: searchParams.servicio as never, isActive: true } },
+      ...(ratingMin !== null && { rating: { gte: ratingMin } }),
+      ...(cocheCortesia && { courtesyCar: true }),
+      ...(recogida && { pickupService: true }),
+      ...((searchParams.servicio || precioFilter) && {
+        services: {
+          some: {
+            isActive: true,
+            ...(searchParams.servicio && { type: searchParams.servicio as never }),
+            ...(precioFilter && { price: precioFilter }),
+          },
+        },
       }),
     },
     include: {
@@ -33,28 +82,37 @@ export default async function TalleresPage({
     orderBy: { rating: "desc" },
   });
 
-  const mapPins = garages
-    .filter((g) => g.lat && g.lng)
-    .map((g) => ({ id: g.id, name: g.name, city: g.city, lat: g.lat!, lng: g.lng!, rating: g.rating }));
+  // Filtro de distancia (post-query, requiere coordenadas del usuario y del taller)
+  if (userLat !== null && userLng !== null && distanciaKm !== null) {
+    garages = garages.filter((g) =>
+      g.lat != null && g.lng != null &&
+      haversineKm(userLat, userLng, g.lat, g.lng) <= distanciaKm
+    );
+  }
 
   return (
-    <div className="container py-8">
+    <div className="container max-w-6xl py-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground mb-1">
+        <h1 className="text-2xl font-bold text-gartify-blue mb-1">
           {garages.length} taller{garages.length !== 1 ? "es" : ""} encontrado{garages.length !== 1 ? "s" : ""}
           {searchParams.ciudad ? ` en ${searchParams.ciudad}` : ""}
         </h1>
-        <p className="text-muted-foreground text-sm mb-4">
-          {searchParams.servicio ? `Filtrando por: ${searchParams.servicio.replace(/_/g, " ")}` : "Mostrando todos los servicios"}
+        <p className="text-muted-foreground text-sm">
+          {searchParams.servicio ? `Filtrando por: ${SERVICE_LABELS[searchParams.servicio] ?? searchParams.servicio.replace(/_/g, " ")}` : "Mostrando todos los servicios"}
         </p>
-        <GarageFilters />
       </div>
 
-      {/* Split layout */}
-      <div className="grid lg:grid-cols-[1fr_420px] gap-6 items-start">
-        {/* List */}
-        <div className="space-y-4">
+      {/* Layout: sidebar filtros izquierda + lista derecha */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+
+        {/* Sidebar filtros — fijo en desktop */}
+        <aside className="lg:w-72 lg:shrink-0 lg:sticky lg:top-24">
+          <GarageFilters />
+        </aside>
+
+        {/* Lista de talleres */}
+        <div className="flex-1 space-y-4">
           {garages.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <Search className="h-10 w-10 mx-auto mb-3 opacity-40" />
@@ -74,15 +132,14 @@ export default async function TalleresPage({
                 reviewCount={g.reviewCount}
                 isVerified={g.isVerified}
                 services={g.services}
+                logo={g.logo}
+                lat={g.lat}
+                lng={g.lng}
               />
             ))
           )}
         </div>
 
-        {/* Map — sticky on desktop */}
-        <div className="hidden lg:block sticky top-24 h-[calc(100vh-8rem)]">
-          <GarageMap garages={mapPins} />
-        </div>
       </div>
     </div>
   );

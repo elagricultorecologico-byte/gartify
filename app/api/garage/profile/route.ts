@@ -11,6 +11,8 @@ const schema = z.object({
   postalCode:  z.string().min(5).max(5),
   phone:       z.string().min(1),
   email:       z.string().email().optional().or(z.literal("")),
+  courtesyCar:   z.boolean().optional(),
+  pickupService: z.boolean().optional(),
 });
 
 export async function PATCH(req: Request) {

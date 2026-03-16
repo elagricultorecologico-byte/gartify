@@ -1,0 +1,479 @@
+"use client";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import {
+  Wrench, User, Building2, AlertCircle, Loader2,
+  MapPin, Phone, Lock, Mail, ChevronRight,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+function GoogleButton({
+  loading,
+  onClick,
+}: {
+  loading: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={loading}
+      aria-label="Registrarse con Google"
+      className="w-full flex items-center justify-center gap-3 h-11 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-sm font-semibold text-gray-700 transition-colors disabled:opacity-50"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      {loading ? "Redirigiendo..." : "Registrarse con Google"}
+    </button>
+  );
+}
+
+export function RegistroForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<"cliente" | "taller">(
+    searchParams.get("tipo") === "taller" ? "taller" : "cliente"
+  );
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  async function handleGoogle() {
+    setGoogleLoading(true);
+    await signIn("google", { callbackUrl: "/cuenta" });
+  }
+
+  function switchTab(t: "cliente" | "taller") {
+    setTab(t);
+    setError("");
+  }
+
+  async function handleCliente(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    const fd = new FormData(e.currentTarget);
+    const body = {
+      name: fd.get("name"),
+      email: fd.get("email"),
+      password: fd.get("password"),
+      phone: fd.get("phone"),
+    };
+
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json() as { error?: string };
+
+    if (!res.ok) {
+      setError(data.error ?? "Error al crear la cuenta");
+      setLoading(false);
+      return;
+    }
+    await signIn("credentials", {
+      email: body.email,
+      password: body.password,
+      redirect: false,
+    });
+    router.push("/cuenta");
+    router.refresh();
+  }
+
+  async function handleTaller(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    const fd = new FormData(e.currentTarget);
+    const body = {
+      ownerName: fd.get("ownerName"),
+      email: fd.get("email"),
+      password: fd.get("password"),
+      phone: fd.get("phone"),
+      garageName: fd.get("garageName"),
+      address: fd.get("address"),
+      city: fd.get("city"),
+      postalCode: fd.get("postalCode"),
+      description: fd.get("description"),
+    };
+
+    const res = await fetch("/api/garage/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json() as { error?: string };
+
+    if (!res.ok) {
+      setError(data.error ?? "Error al registrar el taller");
+      setLoading(false);
+      return;
+    }
+    await signIn("credentials", {
+      email: body.email,
+      password: body.password,
+      redirect: false,
+    });
+    router.push("/cuenta/taller");
+    router.refresh();
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 bg-blue-50">
+      <div className="w-full max-w-lg">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Franja de cabecera */}
+          <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 border border-white/30">
+              <Wrench className="h-6 w-6 text-white" aria-hidden="true" />
+            </div>
+            <h1 className="text-xl font-bold text-white">Crear cuenta</h1>
+            <p className="text-sm text-blue-100 mt-1">Únete a Gartify de forma gratuita</p>
+          </div>
+
+          <div className="p-6">
+            {/* Selector de rol */}
+            <div
+              role="tablist"
+              aria-label="Tipo de cuenta"
+              className="flex gap-2 p-1 bg-blue-50 rounded-lg border border-blue-100 mb-6"
+            >
+              <button
+                role="tab"
+                type="button"
+                aria-selected={tab === "cliente"}
+                onClick={() => switchTab("cliente")}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-semibold transition-all ${
+                  tab === "cliente"
+                    ? "bg-gartify-blue text-white shadow-sm"
+                    : "text-gartify-gray hover:text-gartify-blue"
+                }`}
+              >
+                <User className="h-4 w-4" aria-hidden="true" />
+                Soy conductor
+              </button>
+              <button
+                role="tab"
+                type="button"
+                aria-selected={tab === "taller"}
+                onClick={() => switchTab("taller")}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-semibold transition-all ${
+                  tab === "taller"
+                    ? "bg-gartify-blue text-white shadow-sm"
+                    : "text-gartify-gray hover:text-gartify-blue"
+                }`}
+              >
+                <Building2 className="h-4 w-4" aria-hidden="true" />
+                Tengo un taller
+              </button>
+            </div>
+
+            {/* — CLIENTE — */}
+            {tab === "cliente" && (
+              <div className="space-y-4">
+                <GoogleButton loading={googleLoading} onClick={handleGoogle} />
+                <div className="flex items-center gap-3" role="separator">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs text-muted-foreground font-medium">
+                    o con email y contraseña
+                  </span>
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+                <form onSubmit={handleCliente} className="space-y-4" noValidate>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="name" className="text-xs font-semibold text-gartify-blue">
+                        Nombre completo
+                      </Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        placeholder="Juan García"
+                        autoComplete="name"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="phone" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
+                        <Phone className="h-3 w-3" aria-hidden="true" />
+                        Teléfono{" "}
+                        <span className="font-normal text-gartify-gray">(opcional)</span>
+                      </Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        placeholder="600 000 000"
+                        autoComplete="tel"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
+                      <Mail className="h-3 w-3" aria-hidden="true" />
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="tu@email.es"
+                      autoComplete="email"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="password" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
+                      <Lock className="h-3 w-3" aria-hidden="true" />
+                      Contraseña
+                    </Label>
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      autoComplete="new-password"
+                      required
+                      minLength={6}
+                    />
+                  </div>
+
+                  {error && (
+                    <div
+                      role="alert"
+                      className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
+                    >
+                      <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                      {error}
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    className="w-full h-11 bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold gap-2"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        Creando cuenta...
+                      </>
+                    ) : (
+                      <>
+                        <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                        Crear cuenta gratis
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </div>
+            )}
+
+            {/* — TALLER — */}
+            {tab === "taller" && (
+              <form onSubmit={handleTaller} className="space-y-4" noValidate>
+                {/* Responsable */}
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+                    <User className="h-3.5 w-3.5" aria-hidden="true" />
+                    Responsable
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="ownerName" className="text-xs font-semibold text-gartify-blue">
+                        Tu nombre
+                      </Label>
+                      <Input
+                        id="ownerName"
+                        name="ownerName"
+                        placeholder="Carlos Martínez"
+                        autoComplete="name"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="tphone" className="text-xs font-semibold text-gartify-blue">
+                        Teléfono
+                      </Label>
+                      <Input
+                        id="tphone"
+                        name="phone"
+                        placeholder="91 000 00 00"
+                        autoComplete="tel"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Datos del taller */}
+                <div className="pt-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    Datos del taller
+                  </p>
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="garageName" className="text-xs font-semibold text-gartify-blue">
+                        Nombre del taller
+                      </Label>
+                      <Input
+                        id="garageName"
+                        name="garageName"
+                        placeholder="Taller Martínez Auto"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="col-span-2 space-y-1.5">
+                        <Label htmlFor="address" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
+                          <MapPin className="h-3 w-3" aria-hidden="true" />
+                          Dirección
+                        </Label>
+                        <Input
+                          id="address"
+                          name="address"
+                          placeholder="Calle Alcalá, 142"
+                          autoComplete="street-address"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="postalCode" className="text-xs font-semibold text-gartify-blue">
+                          C.P.
+                        </Label>
+                        <Input
+                          id="postalCode"
+                          name="postalCode"
+                          placeholder="28009"
+                          autoComplete="postal-code"
+                          required
+                          maxLength={5}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="city" className="text-xs font-semibold text-gartify-blue">
+                        Ciudad
+                      </Label>
+                      <Input
+                        id="city"
+                        name="city"
+                        placeholder="Madrid"
+                        autoComplete="address-level2"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="description" className="text-xs font-semibold text-gartify-blue">
+                        Descripción{" "}
+                        <span className="font-normal text-gartify-gray">(opcional)</span>
+                      </Label>
+                      <Textarea
+                        id="description"
+                        name="description"
+                        placeholder="Especialistas en ITV, revisiones, frenos..."
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Acceso */}
+                <div className="pt-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+                    <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+                    Acceso
+                  </p>
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="temail" className="text-xs font-semibold text-gartify-blue">
+                        Email
+                      </Label>
+                      <Input
+                        id="temail"
+                        name="email"
+                        type="email"
+                        placeholder="taller@email.es"
+                        autoComplete="email"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="tpassword" className="text-xs font-semibold text-gartify-blue">
+                        Contraseña
+                      </Label>
+                      <Input
+                        id="tpassword"
+                        name="password"
+                        type="password"
+                        placeholder="Mínimo 6 caracteres"
+                        autoComplete="new-password"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {error && (
+                  <div
+                    role="alert"
+                    className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
+                  >
+                    <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    {error}
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full h-11 bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold gap-2"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      Registrando taller...
+                    </>
+                  ) : (
+                    <>
+                      <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                      Registrar mi taller gratis
+                    </>
+                  )}
+                </Button>
+              </form>
+            )}
+
+            <p className="mt-5 text-center text-sm text-muted-foreground">
+              ¿Ya tienes cuenta?{" "}
+              <Link
+                href="/login"
+                className="text-gartify-orange font-semibold hover:underline"
+              >
+                Inicia sesión
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -5,18 +5,7 @@ import { Search, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const SERVICES = [
-  { value: "ITV",          label: "ITV" },
-  { value: "PRE_ITV",      label: "Pre-ITV" },
-  { value: "REVISION",     label: "Revisión / Mantenimiento" },
-  { value: "CAMBIO_ACEITE",label: "Cambio de aceite" },
-  { value: "FRENOS",       label: "Frenos" },
-  { value: "NEUMATICOS",   label: "Neumáticos" },
-  { value: "CLIMATIZACION",label: "Aire acondicionado" },
-  { value: "DIAGNOSTICO",  label: "Diagnóstico" },
-  { value: "ELECTRICIDAD", label: "Electricidad" },
-];
+import { SEARCHABLE_SERVICES } from "@/lib/constants";
 
 export function SearchBar({ className }: { className?: string }) {
   const router = useRouter();
@@ -34,12 +23,12 @@ export function SearchBar({ className }: { className?: string }) {
   return (
     <form onSubmit={handleSearch} className={`flex flex-col sm:flex-row gap-3 ${className}`}>
       <Select onValueChange={setServicio}>
-        <SelectTrigger className="sm:w-64 bg-background/80 border-border/60 h-12">
+        <SelectTrigger className="sm:w-64 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg px-3">
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
         <SelectContent>
-          {SERVICES.map((s) => (
-            <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+          {SEARCHABLE_SERVICES.map((s) => (
+            <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>
           ))}
         </SelectContent>
       </Select>
@@ -50,11 +39,11 @@ export function SearchBar({ className }: { className?: string }) {
           placeholder="Ciudad o código postal"
           value={ciudad}
           onChange={(e) => setCiudad(e.target.value)}
-          className="pl-9 bg-background/80 border-border/60 h-12"
+          className="pl-9 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg"
         />
       </div>
 
-      <Button type="submit" size="lg" className="h-12 gap-2 px-8">
+      <Button type="submit" size="lg" className="h-12 gap-2 px-8 bg-gartify-green hover:bg-gartify-green/90 text-white">
         <Search className="h-4 w-4" />
         Buscar
       </Button>

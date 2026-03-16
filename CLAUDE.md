@@ -12,7 +12,7 @@ npm run lint         # ESLint
 
 # Database
 npx prisma db push   # Apply schema changes to SQLite DB
-npm run db:seed      # Seed 3 demo garages + demo accounts
+npm run db:seed      # Seed 7 demo garages + demo accounts + reservas y reseñas de prueba
 npm run db:studio    # Open Prisma Studio GUI
 npm run db:generate  # Regenerate Prisma client after schema changes
 ```
@@ -21,11 +21,17 @@ npm run db:generate  # Regenerate Prisma client after schema changes
 
 ## Demo Accounts (after seed)
 
-| Rol | Email | Contraseña |
-|-----|-------|-----------|
-| Cliente | cliente@gartify.es | password123 |
-| Taller 1 | taller1@gartify.es | password123 |
-| Taller 2 | taller2@gartify.es | password123 |
+| Rol | Email | Contraseña | Ubicación |
+|-----|-------|-----------|-----------|
+| Admin | admin@gartify.es | admin123 | — |
+| Cliente | cliente@gartify.es | password123 | — |
+| Taller 1 | taller1@gartify.es | password123 | Madrid - Alcalá |
+| Taller 2 | taller2@gartify.es | password123 | Madrid - Castellana |
+| Taller 3 | taller3@gartify.es | password123 | Madrid - Vallecas |
+| Taller 4 | taller4@gartify.es | password123 | Barcelona - Eixample |
+| Taller 5 | taller5@gartify.es | password123 | Barcelona - Gràcia |
+| Taller 6 | taller6@gartify.es | password123 | Sant Feliu de Llobregat |
+| Taller 7 | taller7@gartify.es | password123 | Sant Feliu de Llobregat |
 
 ## Tech Stack
 
@@ -138,6 +144,21 @@ Never import `lib/auth.ts` from middleware.
 3. Confirmation with vehicle info form
 
 On submit → POST `/api/bookings` → redirect to `/reserva/[id]`.
+
+## Agentes Especializados
+
+Los agentes del proyecto están en `.claude/agents/` y trabajan en español:
+
+| Agente | Archivo | Especialidad |
+|--------|---------|-------------|
+| `gartify-dev-es` | `gartify-dev-es.md` | Full-stack: Next.js, TypeScript, Prisma, Auth.js, Zod |
+| `gartify-ux-automotive-designer-es` | `gartify-ux-automotive-designer-es.md` | UI/UX diseño web para plataformas del sector automotriz |
+| `gartify-marketing-seo-es` | `gartify-marketing-seo-es.md` | SEO técnico, SEM, analítica y marketing digital para España |
+| `gartify-qa-es` | `gartify-qa-es.md` | QA: TypeScript, seguridad, accesibilidad WCAG, SEO, responsive y flujo de reserva |
+
+> **Convención de nombres:** prefijo `gartify-` + sufijo `-es` para todos los agentes del proyecto.
+
+---
 
 ## Key Conventions
 

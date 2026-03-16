@@ -13,95 +13,179 @@ model User {
   email     String    @unique
   password  String?
   phone     String?
-  role      Role      @default(CUSTOMER)
+  role      String    @default("CUSTOMER")
   bookings  Booking[]
   reviews   Review[]
   garage    Garage?
   createdAt DateTime  @default(now())
 }
 
-enum Role {
-  CUSTOMER
-  GARAGE_OWNER
-  ADMIN
+model Garage {
+  id            String          @id @default(cuid())
+  name          String
+  description   String?
+  address       String
+  city          String
+  postalCode    String
+  phone         String
+  email         String?
+  lat           Float?
+  lng           Float?
+  logo          String?
+  rating        Float           @default(0)
+  reviewCount   Int             @default(0)
+  isVerified    Boolean         @default(false)
+  isActive      Boolean         @default(true)
+  courtesyCar   Boolean         @default(false)
+  pickupService Boolean         @default(false)
+  ownerId       String          @unique
+  owner         User            @relation(fields: [ownerId], references: [id])
+  services      GarageService[]
+  bookings      Booking[]
+  reviews       Review[]
+  schedules     GarageSchedule[]
+  invoices      AdminInvoice[]
+  partOrders    PartOrder[]
+  createdAt     DateTime        @default(now())
 }
 
-model Garage {
-  id          String          @id @default(cuid())
-  name        String
-  description String?
-  address     String
-  city        String
-  postalCode  String
-  phone       String
-  email       String?
-  lat         Float?
-  lng         Float?
-  logo        String?
-  rating      Float           @default(0)
-  reviewCount Int             @default(0)
-  isVerified  Boolean         @default(false)
-  isActive    Boolean         @default(true)
-  ownerId     String          @unique
-  owner       User            @relation(fields: [ownerId], references: [id])
-  services    GarageService[]
-  bookings    Booking[]
-  reviews     Review[]
-  createdAt   DateTime        @default(now())
+model GarageSchedule {
+  id        String  @id @default(cuid())
+  garageId  String
+  garage    Garage  @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  dayOfWeek Int     // 0=Dom, 1=Lun, 2=Mar, 3=Mié, 4=Jue, 5=Vie, 6=Sáb
+  isOpen    Boolean @default(true)
+  openTime  String  @default("08:00")
+  closeTime String  @default("18:00")
+
+  @@unique([garageId, dayOfWeek])
 }
 
 model GarageService {
-  id          String      @id @default(cuid())
+  id          String    @id @default(cuid())
   garageId    String
-  garage      Garage      @relation(fields: [garageId], references: [id], onDelete: Cascade)
-  type        ServiceType
+  garage      Garage    @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  type        String
   name        String
   description String?
   price       Float
   duration    Int
-  isActive    Boolean     @default(true)
+  isActive    Boolean   @default(true)
   bookings    Booking[]
 }
 
-enum ServiceType {
-  ITV
-  PRE_ITV
-  REVISION
-  CAMBIO_ACEITE
-  FRENOS
-  NEUMATICOS
-  CLIMATIZACION
-  DIAGNOSTICO
-  ELECTRICIDAD
-  OTRO
-}
-
 model Booking {
-  id           String        @id @default(cuid())
+  id           String    @id @default(cuid())
   userId       String
-  user         User          @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
   garageId     String
-  garage       Garage        @relation(fields: [garageId], references: [id])
+  garage       Garage    @relation(fields: [garageId], references: [id])
   serviceId    String
   service      GarageService @relation(fields: [serviceId], references: [id])
   date         DateTime
-  status       BookingStatus @default(PENDING)
+  status       String    @default("PENDING")
   vehiclePlate String?
   vehicleModel String?
   notes        String?
   totalPrice   Float
   review       Review?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
+model AdminInvoice {
+  id        String    @id @default(cuid())
+  garageId  String
+  garage    Garage    @relation(fields: [garageId], references: [id])
+  month     String    // "2026-03" (YYYY-MM)
+  revenue   Float     // suma de COMPLETED bookings del mes
+  feeRate   Float     @default(0.10) // 10 %
+  feeAmount Float     // revenue * feeRate
+  status    String    @default("PENDING") // PENDING | PAID
+  paidAt    DateTime?
+  notes     String?
+  createdAt DateTime  @default(now())
+
+  @@unique([garageId, month])
 }
+
+// ─── Módulo Recambios ─────────────────────────────────────────────────────────
+
+model Distributor {
+  id        String            @id @default(cuid())
+  name      String
+  email     String            @unique
+  phone     String?
+  website   String?
+  logoUrl   String?
+  isActive  Boolean           @default(true)
+  parts     DistributorPart[]
+  orders    PartOrder[]
+  createdAt DateTime          @default(now())
+}
+
+model Part {
+  id               String            @id @default(cuid())
+  referenciaOem    String            @unique
+  ean              String?
+  nombre           String
+  marcaFabricante  String
+  categoria        String
+  subcategoria     String?
+  marcaVehiculo    String?
+  modeloVehiculo   String?
+  anioDesde        Int?
+  anioHasta        Int?
+  pesoKg           Float?
+  imagenUrl        String?
+  distributorParts DistributorPart[]
+}
+
+model DistributorPart {
+  id                  String          @id @default(cuid())
+  distributorId       String
+  distributor         Distributor     @relation(fields: [distributorId], references: [id], onDelete: Cascade)
+  partId              String
+  part                Part            @relation(fields: [partId], references: [id], onDelete: Cascade)
+  referenciaProveedor String
+  precioCoste         Float
+  precioPvp           Float?
+  ivaPct              Int             @default(21)
+  stock               Int             @default(0)
+  unidad              String          @default("ud")
+  plazoEntregaHoras   Int             @default(24)
+  notas               String?
+  orderLines          PartOrderLine[]
+  updatedAt           DateTime        @updatedAt
+
+  @@unique([distributorId, referenciaProveedor])
+}
+
+model PartOrder {
+  id            String          @id @default(cuid())
+  garageId      String
+  garage        Garage          @relation(fields: [garageId], references: [id])
+  distributorId String
+  distributor   Distributor     @relation(fields: [distributorId], references: [id])
+  lines         PartOrderLine[]
+  status        String          @default("PENDING") // PENDING|CONFIRMED|SHIPPED|DELIVERED|CANCELLED
+  totalAmount   Float
+  notes         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model PartOrderLine {
+  id                String          @id @default(cuid())
+  orderId           String
+  order             PartOrder       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  distributorPartId String
+  distributorPart   DistributorPart @relation(fields: [distributorPartId], references: [id])
+  cantidad          Int
+  precioUnitario    Float
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 model Review {
   id        String   @id @default(cuid())

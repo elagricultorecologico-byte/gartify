@@ -8,7 +8,8 @@ export const authConfig: NextAuthConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnCuenta = nextUrl.pathname.startsWith("/cuenta");
-      if (isOnCuenta) return isLoggedIn;
+      const isOnAdmin  = nextUrl.pathname.startsWith("/admin");
+      if (isOnCuenta || isOnAdmin) return isLoggedIn;
       return true;
     },
     jwt({ token, user }) {

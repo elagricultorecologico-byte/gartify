@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { MapPin, Star, Clock, ShieldCheck } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { MapPin, Star, Clock, ShieldCheck, Wrench, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, SERVICE_LABELS } from "@/lib/utils";
@@ -17,63 +16,142 @@ type GarageCardProps = {
   reviewCount: number;
   isVerified: boolean;
   services: Service[];
+  logo?: string | null;
+  lat?: number | null;
+  lng?: number | null;
 };
 
-export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services }: GarageCardProps) {
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star
+          key={i}
+          className={`h-3.5 w-3.5 ${i <= Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
+  const initials = name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  const hasMap = lat != null && lng != null;
+  const mapsUrl = lat != null && lng != null
+    ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${address}, ${city}`)}`;
 
   return (
-    <Card className="hover:border-gartify-orange/30 transition-colors">
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-semibold text-foreground truncate">{name}</h3>
-              {isVerified && (
-                <ShieldCheck className="h-4 w-4 text-gartify-orange shrink-0" title="Taller verificado" />
-              )}
-            </div>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
-              <MapPin className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">{address}, {city}</span>
-            </div>
-            {description && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{description}</p>
-            )}
-            {/* Services chips */}
-            <div className="flex flex-wrap gap-1.5">
-              {services.slice(0, 4).map((s) => (
-                <Badge key={s.id} variant="outline" className="text-xs">
-                  {SERVICE_LABELS[s.type] ?? s.name}
-                </Badge>
-              ))}
-              {services.length > 4 && (
-                <Badge variant="outline" className="text-xs text-muted-foreground">
-                  +{services.length - 4} más
-                </Badge>
-              )}
-            </div>
-          </div>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-orange/40 transition-all overflow-hidden flex flex-col sm:flex-row">
+      {/* Left: logo / avatar */}
+      <div className="sm:w-36 sm:shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[100px] sm:min-h-0 overflow-hidden border-r border-gray-200">
+        <img
+          src={logo ?? "/logo-gartify-default.svg"}
+          alt={logo ? `Logo de ${name}` : "Gartify"}
+          className="h-20 w-20 object-contain p-2 rounded-xl"
+        />
+      </div>
 
-          {/* Right: rating + price + CTA */}
-          <div className="flex flex-col items-end gap-3 shrink-0">
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-semibold text-foreground text-sm">{rating.toFixed(1)}</span>
-              <span className="text-xs text-muted-foreground">({reviewCount})</span>
-            </div>
-            {cheapest !== null && (
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground">desde</p>
-                <p className="text-lg font-bold text-gartify-orange">{formatPrice(cheapest)}</p>
-              </div>
+      {/* Center: content */}
+      <div className="flex-1 p-4 flex flex-col gap-3 min-w-0">
+        {/* Badges + rating */}
+        <div className="flex items-start justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
+            {isVerified && (
+              <Badge className="bg-gartify-blue/10 text-gartify-blue border-gartify-blue/20 text-xs font-semibold gap-1 hover:bg-gartify-blue/10">
+                <ShieldCheck className="h-3 w-3" />
+                Verificado
+              </Badge>
             )}
-            <Link href={`/talleres/${id}`}>
-              <Button size="sm">Ver taller</Button>
-            </Link>
+            <Badge variant="outline" className="text-xs text-gartify-gray border-gray-200 gap-1">
+              <MapPin className="h-3 w-3" />
+              {city}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <StarRating rating={rating} />
+            <span className="text-sm font-bold text-foreground">{rating.toFixed(1)}</span>
+            <span className="text-xs text-muted-foreground">({reviewCount})</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Name + address */}
+        <div>
+          <h3 className="font-bold text-gartify-blue text-base leading-tight mb-0.5">{name}</h3>
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-muted-foreground flex items-center gap-1 hover:text-gartify-mid transition-colors"
+            aria-label={`Cómo llegar a ${name}`}
+          >
+            <MapPin className="h-3 w-3 shrink-0" />
+            {address}, {city}
+          </a>
+        </div>
+
+        {description && (
+          <p className="text-xs text-muted-foreground line-clamp-2">{description}</p>
+        )}
+
+        {/* Service chips */}
+        <div className="flex flex-wrap gap-1.5">
+          {services.slice(0, 3).map((s) => (
+            <span key={s.id} className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
+              {SERVICE_LABELS[s.type] ?? s.name}
+            </span>
+          ))}
+          {services.length > 3 && (
+            <span className="inline-flex items-center rounded-full bg-gray-100 text-gartify-gray text-xs px-2.5 py-0.5 font-medium">
+              +{services.length - 3} más
+            </span>
+          )}
+        </div>
+
+        {/* Price + CTA */}
+        <div className="flex items-center justify-between gap-4 mt-auto pt-1 border-t border-gray-100">
+          {cheapest !== null ? (
+            <div className="flex items-baseline gap-1">
+              <span className="text-xs text-muted-foreground">desde</span>
+              <span className="text-xl font-bold text-gartify-orange">{formatPrice(cheapest)}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" />
+              Consultar precio
+            </div>
+          )}
+          <Link href={`/talleres/${id}`}>
+            <Button size="sm" className="bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold px-5">
+              Ver taller
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Right: mini map */}
+      {hasMap && (
+        <div className="hidden sm:block sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100 relative group">
+          <iframe
+            title={`Mapa ${name}`}
+            src={`https://www.openstreetmap.org/export/embed.html?bbox=${lng! - 0.008},${lat! - 0.006},${lng! + 0.008},${lat! + 0.006}&layer=mapnik&marker=${lat},${lng}`}
+            className="w-full h-full border-0 pointer-events-none"
+            loading="lazy"
+          />
+          <a
+            href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Ver ${name} en el mapa`}
+            className="absolute inset-0 flex items-end justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <span className="inline-flex items-center gap-1 rounded bg-white/90 border border-gray-200 text-xs text-gartify-blue font-medium px-2 py-1 shadow-sm">
+              <ExternalLink className="h-3 w-3" /> Ver mapa
+            </span>
+          </a>
+        </div>
+      )}
+    </div>
   );
 }

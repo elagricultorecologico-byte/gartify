@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { z } from "zod";
-import { ServiceType } from "@prisma/client";
+
+const SERVICE_TYPES = ["ITV","PRE_ITV","REVISION","CAMBIO_ACEITE","FRENOS","NEUMATICOS","CLIMATIZACION","DIAGNOSTICO","ELECTRICIDAD","OTRO"] as const;
 
 const schema = z.object({
   garageId:    z.string(),
-  type:        z.nativeEnum(ServiceType),
+  type:        z.enum(SERVICE_TYPES),
   name:        z.string().min(1),
   description: z.string().optional(),
   price:       z.number().positive(),

@@ -1,22 +1,23 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS } from "@/lib/utils";
 
 const TRANSITIONS: Record<string, string[]> = {
-  PENDING:     ["CONFIRMED", "CANCELLED"],
-  CONFIRMED:   ["IN_PROGRESS", "CANCELLED"],
-  IN_PROGRESS: ["COMPLETED"],
-  COMPLETED:   [],
-  CANCELLED:   [],
+  PENDING:   ["CONFIRMED", "CANCELLED"],
+  CONFIRMED: ["COMPLETED", "CANCELLED"],
+  COMPLETED: [],
+  CANCELLED: [],
 };
 
 export function BookingStatusUpdater({ bookingId, currentStatus }: { bookingId: string; currentStatus: string }) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => { setStatus(currentStatus); }, [currentStatus]);
 
   const next = TRANSITIONS[status] ?? [];
 

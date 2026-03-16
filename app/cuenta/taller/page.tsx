@@ -1,13 +1,22 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Settings, Plus, Calendar, Euro, Star, TrendingUp } from "lucide-react";
-import { formatPrice, formatDateTime, BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS, SERVICE_LABELS } from "@/lib/utils";
-import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
+import {
+  Settings, Plus, Calendar, Euro, Star,
+  TrendingUp, CalendarClock, Package,
+} from "lucide-react";
+import { formatPrice } from "@/lib/utils";
+import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Panel del taller",
+  robots: { index: false, follow: false },
+};
 
 export default async function TallerPortalPage() {
   const session = await auth();
@@ -18,12 +27,27 @@ export default async function TallerPortalPage() {
 
   const garage = await db.garage.findUnique({
     where: { ownerId: user.id },
-    include: {
-      services: { where: { isActive: true } },
+    select: {
+      id: true,
+      name: true,
+      rating: true,
+      services: {
+        where: { isActive: true },
+        select: { id: true },
+      },
       bookings: {
-        include: { user: { select: { name: true, phone: true } }, service: true },
-        orderBy: { date: "desc" },
-        take: 20,
+        select: {
+          id: true,
+          status: true,
+          date: true,
+          totalPrice: true,
+          vehicleModel: true,
+          vehiclePlate: true,
+          notes: true,
+          user: { select: { name: true, phone: true } },
+          service: { select: { type: true, name: true, duration: true } },
+        },
+        orderBy: { date: "asc" },
       },
     },
   });
@@ -32,77 +56,67 @@ export default async function TallerPortalPage() {
 
   const pending   = garage.bookings.filter((b) => b.status === "PENDING").length;
   const confirmed = garage.bookings.filter((b) => b.status === "CONFIRMED").length;
-  const revenue   = garage.bookings.filter((b) => b.status === "COMPLETED").reduce((s, b) => s + b.totalPrice, 0);
+  const revenue   = garage.bookings
+    .filter((b) => b.status === "COMPLETED")
+    .reduce((s, b) => s + b.totalPrice, 0);
+
+  const stats = [
+    { icon: Calendar,   label: "Pendientes",  value: pending,                  color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
+    { icon: TrendingUp, label: "Confirmadas", value: confirmed,                color: "text-gartify-mid",    bg: "bg-blue-50",    border: "border-blue-100" },
+    { icon: Euro,       label: "Facturado",   value: formatPrice(revenue),     color: "text-gartify-orange", bg: "bg-orange-50",  border: "border-orange-100" },
+    { icon: Star,       label: "Valoración",  value: garage.rating.toFixed(1), color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
+  ];
 
   return (
     <div className="container max-w-5xl py-10">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{garage.name}</h1>
+          <h1 className="text-2xl font-bold text-gartify-blue">{garage.name}</h1>
           <p className="text-muted-foreground text-sm mt-1">Panel de gestión del taller</p>
         </div>
         <div className="flex gap-2">
           <Link href="/cuenta/taller/servicios">
-            <Button variant="outline" size="sm" className="gap-2"><Plus className="h-4 w-4" />Servicios</Button>
+            <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              Servicios
+            </Button>
+          </Link>
+          <Link href="/cuenta/taller/horario">
+            <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
+              <CalendarClock className="h-4 w-4" aria-hidden="true" />
+              Horario
+            </Button>
+          </Link>
+          <Link href="/cuenta/taller/recambios">
+            <Button variant="outline" size="sm" className="gap-2 border-gartify-orange/40 text-gartify-orange hover:bg-orange-50">
+              <Package className="h-4 w-4" aria-hidden="true" />
+              Recambios
+            </Button>
           </Link>
           <Link href="/cuenta/taller/perfil">
-            <Button variant="outline" size="sm" className="gap-2"><Settings className="h-4 w-4" />Perfil</Button>
+            <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
+              <Settings className="h-4 w-4" aria-hidden="true" />
+              Perfil
+            </Button>
           </Link>
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { icon: Calendar,  label: "Pendientes",  value: pending,                  color: "text-yellow-400" },
-          { icon: TrendingUp,label: "Confirmadas", value: confirmed,                color: "text-blue-400" },
-          { icon: Euro,      label: "Facturado",   value: formatPrice(revenue),     color: "text-gartify-orange" },
-          { icon: Star,      label: "Valoración",  value: garage.rating.toFixed(1), color: "text-yellow-400" },
-        ].map(({ icon: Icon, label, value, color }) => (
-          <Card key={label}>
-            <CardContent className="p-4 flex items-center gap-3">
-              <Icon className={`h-5 w-5 ${color} shrink-0`} />
-              <div>
-                <p className="text-xs text-muted-foreground">{label}</p>
-                <p className="font-bold text-foreground">{value}</p>
-              </div>
-            </CardContent>
-          </Card>
+        {stats.map(({ icon: Icon, label, value, color, bg, border }) => (
+          <div key={label} className={`rounded-xl border ${border} ${bg} p-4 flex items-center gap-3`}>
+            <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
+              <Icon className={`h-5 w-5 ${color}`} aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">{label}</p>
+              <p className="font-bold text-foreground text-lg leading-tight">{value}</p>
+            </div>
+          </div>
         ))}
       </div>
 
-      {/* Bookings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Reservas recientes</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {garage.bookings.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8 text-sm">Aún no hay reservas</p>
-          ) : (
-            <div className="divide-y divide-border">
-              {garage.bookings.map((b) => (
-                <div key={b.id} className="p-4 flex items-start justify-between gap-4">
-                  <div className="space-y-1 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-foreground text-sm">{b.user.name ?? "Cliente"}</p>
-                      {b.user.phone && <span className="text-xs text-muted-foreground">{b.user.phone}</span>}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {SERVICE_LABELS[b.service.type]} — {b.service.name} · {formatDateTime(b.date)}
-                    </p>
-                    {b.vehicleModel && <p className="text-xs text-muted-foreground">{b.vehicleModel}{b.vehiclePlate ? ` (${b.vehiclePlate})` : ""}</p>}
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <p className="text-sm font-bold text-gartify-orange">{formatPrice(b.totalPrice)}</p>
-                    <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <GarageBookingList bookings={garage.bookings} />
     </div>
   );
 }
