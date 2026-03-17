@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Star, Clock, ShieldCheck, Wrench, ExternalLink } from "lucide-react";
+import { MapPin, Star, Clock, ShieldCheck, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, SERVICE_LABELS } from "@/lib/utils";
@@ -36,7 +36,6 @@ function StarRating({ rating }: { rating: number }) {
 
 export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
-  const initials = name.split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   const hasMap = lat != null && lng != null;
   const mapsUrl = lat != null && lng != null
     ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`

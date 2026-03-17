@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import {
   Plus, Building2, Upload, CheckCircle, AlertCircle,
-  Package, ClipboardList, ChevronDown, ChevronUp, Loader2, X,
+  Package, ClipboardList, ChevronDown, ChevronUp, Loader2,
 } from "lucide-react";
 
 type Distributor = {
@@ -17,9 +17,6 @@ type Distributor = {
 
 type ImportResult = { created: number; updated: number; errors: string[]; total: number };
 
-function formatEur(n: number) {
-  return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(n);
-}
 
 export function DistributorManager({ initialDistributors }: { initialDistributors: Distributor[] }) {
   const [distributors, setDistributors] = useState<Distributor[]>(initialDistributors);

@@ -100,7 +100,7 @@ export function InvoiceManager({ invoices }: { invoices: Invoice[] }) {
       {filtered.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200">
           <p className="text-sm text-muted-foreground">
-            No hay facturas para {month}. Pulsa "Generar" para crearlas.
+            No hay facturas para {month}. Pulsa &quot;Generar&quot; para crearlas.
           </p>
         </div>
       ) : (

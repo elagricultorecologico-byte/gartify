@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, ExternalLink, AlertTriangle, Info } from "lucide-react";
+import { ExternalLink, AlertTriangle, Info } from "lucide-react";
 
 const DGT_BASE_URL =
   "https://sede.dgt.gob.es/es/mi_dgt/mis-vehiculos/detalle-vehiculo/";
