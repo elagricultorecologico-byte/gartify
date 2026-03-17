@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const garages = await db.garage.findMany({
     where: { isActive: true },
-    select: { id: true, updatedAt: true },
+    select: { id: true },
   });
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -18,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const garageRoutes: MetadataRoute.Sitemap = garages.map((g) => ({
     url: `https://gartify.es/talleres/${g.id}`,
-    lastModified: g.updatedAt,
+    lastModified: new Date(),
     changeFrequency: "weekly",
     priority: 0.8,
   }));

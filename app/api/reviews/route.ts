@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   const [review] = await db.$transaction(async (tx) => {
     const newReview = await tx.review.create({
       data: {
-        userId:    session.user.id,
+        userId:    session.user!.id as string,
         garageId:  booking.garageId,
         bookingId,
         rating,

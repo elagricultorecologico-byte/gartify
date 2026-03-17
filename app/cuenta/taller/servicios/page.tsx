@@ -91,7 +91,7 @@ export default async function ServiciosPage() {
   );
 }
 
-type ServiceItem = NonNullable<typeof garage>["services"][number];
+type ServiceItem = { id: string; type: string; name: string | null; description: string | null; price: number; duration: number; isActive: boolean };
 
 function ServiceRow({ s, inactive }: { s: ServiceItem; inactive?: boolean }) {
   return (
