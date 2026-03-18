@@ -49,15 +49,19 @@ export function LoginForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
-    setLoading(true);
     const fd = new FormData(e.currentTarget);
+    const email = (fd.get("email") as string ?? "").trim();
+    const password = (fd.get("password") as string) ?? "";
 
-    const res = await signIn("credentials", {
-      email: fd.get("email"),
-      password: fd.get("password"),
-      redirect: false,
-    });
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return setError("Introduce un email válido");
+    }
+    if (password.length < 6) {
+      return setError("La contraseña debe tener al menos 6 caracteres");
+    }
 
+    setLoading(true);
+    const res = await signIn("credentials", { email, password, redirect: false });
     setLoading(false);
     if (res?.error) {
       setError("Email o contraseña incorrectos");

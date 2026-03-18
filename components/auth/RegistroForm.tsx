@@ -67,14 +67,17 @@ export function RegistroForm() {
   async function handleCliente(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
-    setLoading(true);
     const fd = new FormData(e.currentTarget);
-    const body = {
-      name: fd.get("name"),
-      email: fd.get("email"),
-      password: fd.get("password"),
-      phone: fd.get("phone"),
-    };
+    const name = (fd.get("name") as string ?? "").trim();
+    const email = (fd.get("email") as string ?? "").trim();
+    const password = (fd.get("password") as string) ?? "";
+
+    if (!name) return setError("El nombre es obligatorio");
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
+    if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
+
+    setLoading(true);
+    const body = { name, email, password, phone: fd.get("phone") };
 
     const res = await fetch("/api/register", {
       method: "POST",
@@ -88,11 +91,7 @@ export function RegistroForm() {
       setLoading(false);
       return;
     }
-    await signIn("credentials", {
-      email: body.email,
-      password: body.password,
-      redirect: false,
-    });
+    await signIn("credentials", { email, password, redirect: false });
     router.push("/cuenta");
     router.refresh();
   }
@@ -100,17 +99,28 @@ export function RegistroForm() {
   async function handleTaller(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
-    setLoading(true);
     const fd = new FormData(e.currentTarget);
+    const ownerName = (fd.get("ownerName") as string ?? "").trim();
+    const email = (fd.get("email") as string ?? "").trim();
+    const password = (fd.get("password") as string) ?? "";
+    const garageName = (fd.get("garageName") as string ?? "").trim();
+    const address = (fd.get("address") as string ?? "").trim();
+    const city = (fd.get("city") as string ?? "").trim();
+    const postalCode = (fd.get("postalCode") as string ?? "").trim();
+
+    if (!ownerName) return setError("El nombre del responsable es obligatorio");
+    if (!garageName) return setError("El nombre del taller es obligatorio");
+    if (!address) return setError("La dirección es obligatoria");
+    if (!city) return setError("La ciudad es obligatoria");
+    if (!postalCode || !/^\d{5}$/.test(postalCode)) return setError("Introduce un código postal válido (5 dígitos)");
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
+    if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
+
+    setLoading(true);
     const body = {
-      ownerName: fd.get("ownerName"),
-      email: fd.get("email"),
-      password: fd.get("password"),
+      ownerName, email, password,
       phone: fd.get("phone"),
-      garageName: fd.get("garageName"),
-      address: fd.get("address"),
-      city: fd.get("city"),
-      postalCode: fd.get("postalCode"),
+      garageName, address, city, postalCode,
       description: fd.get("description"),
     };
 
@@ -126,11 +136,7 @@ export function RegistroForm() {
       setLoading(false);
       return;
     }
-    await signIn("credentials", {
-      email: body.email,
-      password: body.password,
-      redirect: false,
-    });
+    await signIn("credentials", { email, password, redirect: false });
     router.push("/cuenta/taller");
     router.refresh();
   }

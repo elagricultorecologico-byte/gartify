@@ -30,6 +30,9 @@ export function Navbar() {
           <Link href="/para-talleres" className="text-white/80 hover:text-white transition-colors">
             Para talleres
           </Link>
+          <Link href="/precios" className="text-white/80 hover:text-white transition-colors">
+            Precios
+          </Link>
         </nav>
 
         {/* Auth */}
@@ -103,6 +106,7 @@ export function Navbar() {
           <Link href="/talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Buscar taller</Link>
           <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
           <Link href="/para-talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Para talleres</Link>
+          <Link href="/precios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Precios</Link>
           {session ? (
             <>
               {isGarageOwner ? (

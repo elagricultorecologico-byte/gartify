@@ -120,7 +120,7 @@ export default function HomePage() {
             </p>
 
             <div className="mx-auto max-w-2xl">
-              <SearchBar className="shadow-lg" />
+              <SearchBar />
             </div>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-white/80">
@@ -139,6 +139,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
       </section>
 
       {/* ══════════════════════════════════════════════════
