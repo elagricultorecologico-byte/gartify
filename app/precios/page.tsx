@@ -613,8 +613,7 @@ export default function PreciosPage() {
             </Link>
             <Link href="/registro?tipo=taller">
               <Button
-                variant="outline"
-                className="border-white/40 text-white hover:bg-white/10 px-8"
+                className="bg-gartify-green hover:bg-gartify-green/90 text-white px-8"
                 size="lg"
               >
                 Empezar gratis ahora
