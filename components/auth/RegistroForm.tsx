@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, User, Building2, AlertCircle, Loader2,
-  MapPin, Phone, Lock, Mail, ChevronRight,
+  MapPin, Lock, Mail, ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,7 +77,7 @@ export function RegistroForm() {
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
 
     setLoading(true);
-    const body = { name, email, password, phone: fd.get("phone") };
+    const body = { name, email, password };
 
     const res = await fetch("/api/register", {
       method: "POST",
@@ -194,41 +194,34 @@ export function RegistroForm() {
             {/* — CLIENTE — */}
             {tab === "cliente" && (
               <div className="space-y-4">
+                {/* Micro-beneficios */}
+                <div className="flex items-center justify-center gap-4 text-xs text-gartify-gray">
+                  <span className="flex items-center gap-1"><span className="text-gartify-green font-bold">✓</span> Gratis</span>
+                  <span className="flex items-center gap-1"><span className="text-gartify-green font-bold">✓</span> Sin permanencia</span>
+                  <span className="flex items-center gap-1"><span className="text-gartify-green font-bold">✓</span> Reserva en segundos</span>
+                </div>
+
+                {/* Google — opción principal */}
                 <GoogleButton loading={googleLoading} onClick={handleGoogle} />
+
                 <div className="flex items-center gap-3" role="separator">
                   <div className="flex-1 h-px bg-gray-200" />
-                  <span className="text-xs text-muted-foreground font-medium">
-                    o con email y contraseña
-                  </span>
+                  <span className="text-xs text-muted-foreground font-medium">o con email</span>
                   <div className="flex-1 h-px bg-gray-200" />
                 </div>
-                <form onSubmit={handleCliente} className="space-y-4" noValidate>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="name" className="text-xs font-semibold text-gartify-blue">
-                        Nombre completo
-                      </Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        placeholder="Juan García"
-                        autoComplete="name"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="phone" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
-                        <Phone className="h-3 w-3" aria-hidden="true" />
-                        Teléfono{" "}
-                        <span className="font-normal text-gartify-gray">(opcional)</span>
-                      </Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        placeholder="600 000 000"
-                        autoComplete="tel"
-                      />
-                    </div>
+
+                <form onSubmit={handleCliente} className="space-y-3" noValidate>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="name" className="text-xs font-semibold text-gartify-blue">
+                      Nombre completo
+                    </Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder="Juan García"
+                      autoComplete="name"
+                      required
+                    />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="email" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">

@@ -23,11 +23,11 @@ function layout(content: string): string {
 
         <!-- HEADER -->
         <tr>
-          <td style="background:linear-gradient(135deg,#1a5496,#1e7fc2);padding:28px 32px;text-align:center;">
-            <div style="font-size:24px;font-weight:900;letter-spacing:1px;color:#ffffff;">
+          <td style="background:#1a5496;padding:28px 32px;text-align:center;">
+            <div style="font-size:28px;font-weight:900;letter-spacing:2px;color:#ffffff;font-family:Arial,sans-serif;">
               GAR<span style="color:#F5A623;">TIFY</span>
             </div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.65);margin-top:4px;letter-spacing:2px;text-transform:uppercase;">
+            <div style="font-size:11px;color:#93c5fd;margin-top:6px;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;">
               Encuentra tu taller de confianza
             </div>
           </td>
@@ -129,7 +129,7 @@ export function bookingConfirmationEmail(d: BookingEmailData): { subject: string
 
     <!-- Booking detail card -->
     <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
-      <div style="background:linear-gradient(90deg,#1a5496,#1e7fc2);padding:10px 16px;">
+      <div style="background:#1a5496;padding:10px 16px;">
         <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Detalle de la reserva</span>
       </div>
       <table width="100%" cellpadding="0" cellspacing="0">
@@ -211,7 +211,7 @@ export function garageNewBookingEmail(d: BookingEmailData): { subject: string; h
 
     <!-- Booking detail -->
     <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
-      <div style="background:linear-gradient(90deg,#1a5496,#1e7fc2);padding:10px 16px;">
+      <div style="background:#1a5496;padding:10px 16px;">
         <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Detalle de la cita</span>
       </div>
       <table width="100%" cellpadding="0" cellspacing="0">
@@ -240,7 +240,85 @@ export function garageNewBookingEmail(d: BookingEmailData): { subject: string; h
   };
 }
 
-// ─── Template 3: Status update → Customer ────────────────────────────────────
+// ─── Template 3: Welcome → new Customer ──────────────────────────────────────
+
+export function welcomeCustomerEmail(name: string): { subject: string; html: string } {
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#dcfce7;border-radius:50%;border:2px solid #bbf7d0;margin-bottom:12px;">
+        <span style="font-size:28px;">👋</span>
+      </div>
+      <h1 style="margin:0;font-size:22px;font-weight:800;color:#1a3664;">¡Bienvenido a Gartify, ${name}!</h1>
+      <p style="margin:8px 0 0;font-size:14px;color:#64748b;">Tu cuenta de conductor está lista. Ya puedes reservar cita en talleres verificados de toda España.</p>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#1a5496;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">¿Qué puedes hacer ahora?</span>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${detailRow("🔍", "Busca taller", "Por servicio, ciudad o código postal")}
+        ${detailRow("📅", "Reserva online", "Sin llamadas, en segundos")}
+        ${detailRow("⭐", "Valora", "Deja tu reseña tras cada servicio")}
+        ${detailRow("0€", "Sin comisiones", "El pago se realiza directamente en el taller")}
+      </table>
+    </div>
+
+    <div style="text-align:center;margin-bottom:8px;">
+      <a href="${BASE_URL}/talleres"
+         style="display:inline-block;background:#22a855;color:#ffffff;font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;">
+        Buscar taller ahora
+      </a>
+    </div>
+  `);
+  return {
+    subject: `¡Bienvenido a Gartify, ${name}! Tu cuenta está lista`,
+    html,
+  };
+}
+
+// ─── Template 4: Welcome → new Garage owner ───────────────────────────────────
+
+export function welcomeGarageEmail(ownerName: string, garageName: string): { subject: string; html: string } {
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#dbeafe;border-radius:50%;border:2px solid #bfdbfe;margin-bottom:12px;">
+        <span style="font-size:28px;">🔧</span>
+      </div>
+      <h1 style="margin:0;font-size:22px;font-weight:800;color:#1a3664;">¡${garageName} ya está en Gartify!</h1>
+      <p style="margin:8px 0 0;font-size:14px;color:#64748b;">Hola <strong>${ownerName}</strong>, tu taller ha sido registrado correctamente. Completa tu perfil para empezar a recibir reservas.</p>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#1a5496;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Próximos pasos</span>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${detailRow("1️⃣", "Añade tus servicios", "Con precio y duración estimada")}
+        ${detailRow("2️⃣", "Completa tu perfil", "Foto, descripción y horario")}
+        ${detailRow("3️⃣", "Recibe reservas", "Los clientes ya pueden encontrarte")}
+        ${detailRow("4️⃣", "Gestiona tu agenda", "Confirma, completa o cancela citas")}
+      </table>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#1d4ed8;">
+      💡 Cuantos más servicios y mejor descripción tengas, más visibilidad tendrás en los resultados de búsqueda.
+    </div>
+
+    <div style="text-align:center;margin-bottom:8px;">
+      <a href="${BASE_URL}/cuenta/taller"
+         style="display:inline-block;background:#1a3664;color:#ffffff;font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;">
+        Ir a mi portal
+      </a>
+    </div>
+  `);
+  return {
+    subject: `¡Bienvenido a Gartify! ${garageName} ya aparece en el directorio`,
+    html,
+  };
+}
+
+// ─── Template 5: Status update → Customer ────────────────────────────────────
 
 export interface StatusUpdateEmailData {
   customerName: string;
@@ -298,7 +376,7 @@ export function bookingStatusUpdateEmail(d: StatusUpdateEmailData): { subject: s
 
     <!-- Summary -->
     <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:24px;">
-      <div style="background:linear-gradient(90deg,#1a5496,#1e7fc2);padding:10px 16px;">
+      <div style="background:#1a5496;padding:10px 16px;">
         <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Resumen</span>
       </div>
       <table width="100%" cellpadding="0" cellspacing="0">

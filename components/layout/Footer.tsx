@@ -20,7 +20,7 @@ function NewsletterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 max-w-sm">
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 w-full max-w-sm">
       <input
         type="email"
         value={email}
@@ -31,7 +31,7 @@ function NewsletterForm() {
       />
       <button
         type="submit"
-        className="shrink-0 rounded-lg bg-gartify-orange hover:bg-gartify-orange/90 px-4 py-2 text-sm font-bold text-white transition-colors"
+        className="shrink-0 w-full sm:w-auto rounded-lg bg-gartify-orange hover:bg-gartify-orange/90 px-4 py-2 text-sm font-bold text-white transition-colors"
       >
         Suscribirse
       </button>

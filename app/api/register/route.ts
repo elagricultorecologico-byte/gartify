@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { sendMail } from "@/lib/mailer";
+import { welcomeCustomerEmail } from "@/lib/emails/templates";
 
 const schema = z.object({
   name:     z.string().min(2),
@@ -20,6 +22,9 @@ export async function POST(req: Request) {
 
     const hashed = await bcrypt.hash(password, 10);
     await db.user.create({ data: { name, email, password: hashed, phone, role: "CUSTOMER" } });
+
+    const { subject, html } = welcomeCustomerEmail(name);
+    void sendMail({ to: email, subject, html });
 
     return NextResponse.json({ ok: true });
   } catch {

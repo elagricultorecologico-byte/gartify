@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-import { LayoutDashboard, Building2, FileText, Package, ClipboardList } from "lucide-react";
+import { LayoutDashboard, Building2, FileText, Package, ClipboardList, Users } from "lucide-react";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -44,6 +44,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           >
             <ClipboardList className="h-3.5 w-3.5" />
             Pedidos
+          </Link>
+          <Link
+            href="/admin/usuarios"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <Users className="h-3.5 w-3.5" />
+            Usuarios
           </Link>
           <Link
             href="/admin/distribuidores"

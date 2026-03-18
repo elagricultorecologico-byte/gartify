@@ -18,7 +18,6 @@ import {
   Crown,
   ChevronDown,
   Star,
-  TrendingUp,
   Headphones,
   BarChart3,
   Package,
@@ -36,7 +35,7 @@ type EstadoToggle = "mensual" | "anual";
 interface FilaCaracteristica {
   texto: string;
   starter: boolean | string;
-  comision: boolean | string;
+  pro: boolean | string;
   premium: boolean | string;
 }
 
@@ -51,100 +50,94 @@ const CARACTERISTICAS: FilaCaracteristica[] = [
   {
     texto: "Alta gratuita sin permanencia",
     starter: true,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Perfil verificado en el directorio",
     starter: true,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Gestión de reservas online",
     starter: true,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Reseñas y valoraciones de clientes",
     starter: true,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Soporte por email",
     starter: true,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Servicios publicados",
     starter: "Hasta 5",
-    comision: "Ilimitados",
+    pro: "Ilimitados",
     premium: "Ilimitados",
   },
   {
     texto: "Posición destacada en búsqueda",
     starter: false,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Notificaciones automáticas al cliente",
     starter: false,
-    comision: true,
+    pro: true,
     premium: true,
   },
   {
     texto: "Panel de estadísticas",
     starter: false,
-    comision: true,
+    pro: true,
     premium: true,
-  },
-  {
-    texto: "Comisión por reserva derivada",
-    starter: false,
-    comision: "Desde 3 %",
-    premium: false,
   },
   {
     texto: "Acceso a red de distribuidores",
     starter: false,
-    comision: false,
+    pro: false,
     premium: true,
   },
   {
     texto: 'Badge "Taller Premium"',
     starter: false,
-    comision: false,
+    pro: false,
     premium: true,
   },
   {
     texto: "Herramientas de marketing",
     starter: false,
-    comision: false,
+    pro: false,
     premium: true,
   },
   {
     texto: "Estadísticas avanzadas e informes PDF",
     starter: false,
-    comision: false,
+    pro: false,
     premium: true,
   },
   {
     texto: "Soporte prioritario 24 h",
     starter: false,
-    comision: false,
+    pro: false,
     premium: true,
   },
 ];
 
 const PREGUNTAS_FRECUENTES: PreguntaFrecuente[] = [
   {
-    pregunta: "¿Cuándo me cobra Gartify en el plan Comisión?",
+    pregunta: "¿Qué incluye el plan Pro?",
     respuesta:
-      "Solo cuando Gartify deriva directamente un cliente nuevo a tu taller y ese cliente completa una reserva confirmada. Las reservas que gestionas tú de forma directa —clientes habituales, teléfono, paseo— no generan ninguna comisión.",
+      "El plan Pro incluye servicios ilimitados, posición destacada en búsquedas, sello Gartify Verificado, estadísticas de visitas, gestión de horarios y huecos, y soporte prioritario, todo por 29 €/mes sin comisiones por reserva.",
   },
   {
     pregunta: "¿Puedo cambiar de plan en cualquier momento?",
@@ -225,11 +218,11 @@ export default function PreciosPage() {
           </h1>
 
           <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-blue-100">
-            Empieza gratis, paga solo cuando Gartify te trae clientes o accede
-            a la tarifa plana Premium sin comisiones.
+            Empieza gratis o elige la cuota fija que mejor se adapta a tu
+            taller. Sin comisiones por reserva en todos los planes de pago.
           </p>
 
-          {/* Toggle anual / mensual */}
+          {/* Toggle anual / mensual — solo afecta al plan Premium */}
           <div className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 p-1 text-sm font-semibold backdrop-blur-sm">
             <button
               onClick={() => setCiclo("mensual")}
@@ -279,11 +272,12 @@ export default function PreciosPage() {
                 <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-1">
                   Starter
                 </p>
-                <div className="flex items-end gap-1 mb-2">
+                <div className="flex items-end gap-1 mb-1">
                   <span className="text-5xl font-bold text-gartify-dark">0</span>
                   <span className="mb-1 text-xl font-semibold text-gartify-dark">€</span>
                   <span className="mb-1 text-sm text-gartify-gray">/mes</span>
                 </div>
+                <p className="text-sm font-bold text-gartify-green mb-2">Gratis</p>
                 <p className="text-sm text-gartify-gray leading-relaxed">
                   Alta gratuita sin permanencia. Ideal para empezar a recibir
                   reservas online.
@@ -318,7 +312,7 @@ export default function PreciosPage() {
               </Link>
             </div>
 
-            {/* ── Plan Comisión (destacado) ─────────────── */}
+            {/* ── Plan Pro (destacado) ──────────────────── */}
             <div className="relative flex flex-col rounded-2xl border-2 border-gartify-orange bg-white p-8 shadow-xl ring-4 ring-gartify-orange/10 transition-shadow duration-300 hover:shadow-2xl">
               {/* Badge más popular */}
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -331,66 +325,29 @@ export default function PreciosPage() {
               {/* Cabecera */}
               <div className="mb-6 mt-2">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gartify-orange/10">
-                  <TrendingUp className="h-6 w-6 text-gartify-orange" />
+                  <Zap className="h-6 w-6 text-gartify-orange" />
                 </div>
                 <p className="text-xs font-bold uppercase tracking-widest text-gartify-orange mb-1">
-                  Comisión
+                  Pro
                 </p>
                 <div className="flex items-end gap-1 mb-2">
-                  <span className="text-5xl font-bold text-gartify-dark">0</span>
+                  <span className="text-5xl font-bold text-gartify-dark">29</span>
                   <span className="mb-1 text-xl font-semibold text-gartify-dark">€</span>
                   <span className="mb-1 text-sm text-gartify-gray">/mes</span>
                 </div>
                 <p className="text-sm text-gartify-gray leading-relaxed">
-                  Sin cuota fija. Gartify solo cobra cuando te deriva un
-                  cliente que confirma reserva.
+                  Cuota mensual fija. Sin comisiones por reserva. Crece con
+                  todas las herramientas.
                 </p>
-              </div>
-
-              {/* Tabla de tramos */}
-              <div className="mb-6 overflow-hidden rounded-xl border border-gartify-orange/20 bg-gartify-orange/5">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gartify-orange/20 bg-gartify-orange/10">
-                      <th className="px-3 py-2 text-left text-xs font-bold text-gartify-dark">
-                        Reservas / mes
-                      </th>
-                      <th className="px-3 py-2 text-right text-xs font-bold text-gartify-dark">
-                        Comisión
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { rango: "1 – 20",    comision: "8 %" },
-                      { rango: "21 – 50",   comision: "6 %" },
-                      { rango: "51 – 100",  comision: "4 %" },
-                      { rango: "+ 100",     comision: "3 %" },
-                    ].map(({ rango, comision }, i) => (
-                      <tr
-                        key={rango}
-                        className={cn(
-                          "border-b border-gartify-orange/10 last:border-0",
-                          i % 2 === 0 ? "bg-white" : "bg-gartify-orange/5"
-                        )}
-                      >
-                        <td className="px-3 py-2 text-gartify-dark">{rango}</td>
-                        <td className="px-3 py-2 text-right font-bold text-gartify-orange">
-                          {comision}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
               </div>
 
               {/* Características adicionales */}
               <ul className="mb-8 flex-1 space-y-3">
                 {[
-                  { icono: Check,    texto: "Todo lo del plan Starter" },
-                  { icono: Wrench,   texto: "Servicios ilimitados" },
-                  { icono: Search,   texto: "Posición destacada en búsqueda" },
-                  { icono: Bell,     texto: "Notificaciones automáticas al cliente" },
+                  { icono: Check,     texto: "Todo lo del plan Starter" },
+                  { icono: Wrench,    texto: "Servicios ilimitados" },
+                  { icono: Search,    texto: "Posición destacada en búsqueda" },
+                  { icono: Bell,      texto: "Notificaciones automáticas al cliente" },
                   { icono: BarChart3, texto: "Panel de estadísticas" },
                 ].map(({ icono: Icono, texto }) => (
                   <li key={texto} className="flex items-center gap-3 text-sm text-gartify-dark">
@@ -401,12 +358,12 @@ export default function PreciosPage() {
               </ul>
 
               {/* CTA */}
-              <Link href="/registro?tipo=taller&plan=comision">
+              <Link href="/registro?tipo=taller&plan=pro">
                 <Button
                   className="w-full bg-gartify-orange text-white hover:bg-gartify-orange/90 font-semibold"
                   size="lg"
                 >
-                  Activar plan
+                  Empezar con Pro
                 </Button>
               </Link>
             </div>
@@ -438,16 +395,15 @@ export default function PreciosPage() {
                   </p>
                 )}
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Tarifa plana sin comisiones. Máximo rendimiento para talleres
-                  con volumen.
+                  Máxima visibilidad y herramientas exclusivas para talleres que
+                  quieren liderar su zona.
                 </p>
               </div>
 
               {/* Características */}
               <ul className="mb-8 flex-1 space-y-3">
                 {[
-                  { icono: Check,      texto: "Sin comisiones por reserva" },
-                  { icono: Check,      texto: "Todo lo del plan Comisión" },
+                  { icono: Check,      texto: "Todo lo del plan Pro" },
                   { icono: Package,    texto: "Red de distribuidores de recambios" },
                   { icono: Crown,      texto: 'Badge "Taller Premium" visible' },
                   { icono: Headphones, texto: "Soporte prioritario 24 h" },
@@ -505,10 +461,10 @@ export default function PreciosPage() {
                   <th className="bg-gartify-orange/5 px-4 py-5 text-center">
                     <span className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-gartify-orange">
                       <Star className="h-3 w-3" />
-                      Comisión
+                      Pro
                     </span>
                     <br />
-                    <span className="text-lg font-bold text-gartify-dark">Gratis</span>
+                    <span className="text-lg font-bold text-gartify-dark">29 €/mes</span>
                   </th>
                   <th className="bg-gartify-dark px-4 py-5 text-center rounded-tr-2xl">
                     <span className="text-xs font-bold uppercase tracking-widest text-gartify-orange">
@@ -522,7 +478,7 @@ export default function PreciosPage() {
                 </tr>
               </thead>
               <tbody>
-                {CARACTERISTICAS.map(({ texto, starter, comision, premium }, i) => (
+                {CARACTERISTICAS.map(({ texto, starter, pro, premium }, i) => (
                   <tr
                     key={texto}
                     className={cn(
@@ -537,7 +493,7 @@ export default function PreciosPage() {
                       <IconoCaracteristica valor={starter} />
                     </td>
                     <td className="bg-gartify-orange/5 px-4 py-3.5 text-center">
-                      <IconoCaracteristica valor={comision} />
+                      <IconoCaracteristica valor={pro} />
                     </td>
                     <td className="bg-gartify-dark/5 px-4 py-3.5 text-center">
                       <IconoCaracteristica valor={premium} />

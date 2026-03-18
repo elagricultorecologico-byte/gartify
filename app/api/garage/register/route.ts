@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { sendMail } from "@/lib/mailer";
+import { welcomeGarageEmail } from "@/lib/emails/templates";
 
 const schema = z.object({
   ownerName:   z.string().min(2),
@@ -45,6 +47,9 @@ export async function POST(req: Request) {
         },
       },
     });
+
+    const { subject, html } = welcomeGarageEmail(data.ownerName, data.garageName);
+    void sendMail({ to: data.email, subject, html });
 
     return NextResponse.json({ ok: true });
   } catch {
