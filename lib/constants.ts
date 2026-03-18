@@ -205,7 +205,7 @@ export const ALL_SERVICES: ServiceMeta[] = [
 
 // ─── Subconjuntos derivados ───────────────────────────────────────────────────
 
-const POPULAR_TYPES = ["ITV", "REVISION", "DIAGNOSTICO", "CLIMATIZACION"];
+const POPULAR_TYPES = ["ITV", "REVISION", "DIAGNOSTICO", "CLIMATIZACION", "CAMBIO_ACEITE", "FRENOS", "NEUMATICOS", "ELECTRICIDAD"];
 const SEARCHABLE_TYPES = [
   "ITV", "PRE_ITV", "REVISION", "CAMBIO_ACEITE",
   "FRENOS", "NEUMATICOS", "CLIMATIZACION", "DIAGNOSTICO", "ELECTRICIDAD",
