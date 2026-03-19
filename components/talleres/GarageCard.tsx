@@ -67,7 +67,7 @@ export function GarageCard({ id, name, description, city, address, rating, revie
           className="h-20 w-20 object-contain p-2 rounded-xl"
         />
         {plan === "PREMIUM" && (
-          <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+          <div className="absolute top-2 left-2 flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
             <Crown className="h-2.5 w-2.5" />
             Premium
           </div>
