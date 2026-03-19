@@ -221,6 +221,25 @@ export function GarageFilters() {
           )}
         </Section>
 
+        {/* Tipo de vehículo */}
+        <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={false}>
+          <div className="grid grid-cols-2 gap-1.5">
+            {VEHICLE_TYPES.map((tipo) => {
+              const activo = sp.get("vehicleType") === tipo;
+              return (
+                <button key={tipo} type="button" onClick={() => update("vehicleType", activo ? "ALL" : tipo)} aria-pressed={activo}
+                  className={cn(
+                    "flex items-center gap-1.5 h-8 px-2 rounded-lg border text-xs font-medium transition-all",
+                    activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                  )}>
+                  <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
+                  {VEHICLE_LABELS[tipo]}
+                </button>
+              );
+            })}
+          </div>
+        </Section>
+
         {/* Servicio */}
         <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={false}>
           <div className="relative">
@@ -266,25 +285,6 @@ export function GarageFilters() {
                 {RATING_OPTIONS.map((r) => <SelectItem key={r.value} value={r.value}><RatingStars stars={r.stars} /></SelectItem>)}
               </SelectContent>
             </Select>
-          </div>
-        </Section>
-
-        {/* Tipo de vehículo */}
-        <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={false}>
-          <div className="grid grid-cols-2 gap-1.5">
-            {VEHICLE_TYPES.map((tipo) => {
-              const activo = sp.get("vehicleType") === tipo;
-              return (
-                <button key={tipo} type="button" onClick={() => update("vehicleType", activo ? "ALL" : tipo)} aria-pressed={activo}
-                  className={cn(
-                    "flex items-center gap-1.5 h-8 px-2 rounded-lg border text-xs font-medium transition-all",
-                    activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
-                  )}>
-                  <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
-                  {VEHICLE_LABELS[tipo]}
-                </button>
-              );
-            })}
           </div>
         </Section>
 
