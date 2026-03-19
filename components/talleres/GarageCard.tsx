@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MapPin, Star, Clock, ShieldCheck, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatPrice, SERVICE_LABELS } from "@/lib/utils";
+import { formatPrice, SERVICE_LABELS, VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
 
 type Service = { id: string; type: string; name: string; price: number; duration: number };
 
@@ -19,7 +19,20 @@ type GarageCardProps = {
   logo?: string | null;
   lat?: number | null;
   lng?: number | null;
+  vehicleTypes?: string | null;
 };
+
+/** Parsea el JSON de vehicleTypes almacenado en SQLite y devuelve un array tipado */
+function parsearTiposVehiculo(raw: string | null | undefined): VehicleType[] {
+  try {
+    const parsed = JSON.parse(raw ?? '["COCHE"]') as string[];
+    return parsed.filter((v): v is VehicleType =>
+      (VEHICLE_TYPES as readonly string[]).includes(v)
+    );
+  } catch {
+    return ["COCHE"];
+  }
+}
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -34,8 +47,9 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng }: GarageCardProps) {
+export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng, vehicleTypes }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
+  const tiposVehiculo = parsearTiposVehiculo(vehicleTypes);
   const hasMap = lat != null && lng != null;
   const mapsUrl = lat != null && lng != null
     ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
@@ -106,6 +120,21 @@ export function GarageCard({ id, name, description, city, address, rating, revie
               +{services.length - 3} más
             </span>
           )}
+        </div>
+
+        {/* Tipos de vehículo aceptados */}
+        <div className="flex flex-wrap gap-1.5">
+          {tiposVehiculo.map((tipo) => (
+            <span
+              key={tipo}
+              title={VEHICLE_LABELS[tipo]}
+              className="inline-flex items-center gap-1 rounded-full bg-orange-50 text-gartify-orange text-xs px-2.5 py-0.5 font-medium border border-orange-100"
+              aria-label={VEHICLE_LABELS[tipo]}
+            >
+              <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
+              {VEHICLE_LABELS[tipo]}
+            </span>
+          ))}
         </div>
 
         {/* Price + CTA */}

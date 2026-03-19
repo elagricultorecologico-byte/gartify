@@ -129,10 +129,11 @@ async function main() {
   // Garage 1
   const garage1 = await prisma.garage.upsert({
     where: { ownerId: owner1.id },
-    update: { plan: "STARTER" },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]) },
     create: {
       name: "Taller Martínez Auto",
       plan: "STARTER",
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]),
       description: "Taller mecánico con más de 20 años de experiencia en Madrid. Especialistas en ITV, revisiones y reparaciones de todo tipo de vehículos.",
       address: "Calle Alcalá, 142",
       city: "Madrid",
@@ -162,10 +163,11 @@ async function main() {
   // Garage 2
   const garage2 = await prisma.garage.upsert({
     where: { ownerId: owner2.id },
-    update: { plan: "STARTER" },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]) },
     create: {
       name: "AutoService López",
       plan: "STARTER",
+      vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]),
       description: "Centro de mantenimiento y reparación oficial. Trabajamos con todas las marcas. Presupuesto gratuito sin compromiso.",
       address: "Paseo de la Castellana, 89",
       city: "Madrid",
@@ -196,10 +198,11 @@ async function main() {
   // Garage 3
   const garage3 = await prisma.garage.upsert({
     where: { ownerId: owner3.id },
-    update: { plan: "STARTER" },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]) },
     create: {
       name: "Mecánica Rápida Vallecas",
       plan: "STARTER",
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO"]),
       description: "Servicio rápido y económico en el barrio de Vallecas. Cita previa en menos de 24 horas. Sin sorpresas en el presupuesto.",
       address: "Calle de Payaso Fofó, 5",
       city: "Madrid",
@@ -228,10 +231,11 @@ async function main() {
   // Garage 4 — Barcelona Eixample
   const garage4 = await prisma.garage.upsert({
     where: { ownerId: owner4.id },
-    update: { plan: "PRO" },
+    update: { plan: "PRO", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMPER"]) },
     create: {
       name: "Taller Puig Motor",
       plan: "PRO",
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMPER"]),
       description: "Taller familiar en el Eixample con 30 años de historia. Especialistas en marcas alemanas y japonesas. Presupuesto sin compromiso.",
       address: "Carrer de Muntaner, 212",
       city: "Barcelona",
@@ -263,10 +267,11 @@ async function main() {
   // Garage 5 — Barcelona Gràcia
   const garage5 = await prisma.garage.upsert({
     where: { ownerId: owner5.id },
-    update: { plan: "PRO" },
+    update: { plan: "PRO", vehicleTypes: JSON.stringify(["COCHE", "AUTOCARAVANA", "CAMPER"]) },
     create: {
       name: "AutoGràcia Ferrer",
       plan: "PRO",
+      vehicleTypes: JSON.stringify(["COCHE", "AUTOCARAVANA", "CAMPER"]),
       description: "Taller de confianza en el barrio de Gràcia. Reparaciones rápidas, transparencia total en los presupuestos y recogida a domicilio disponible.",
       address: "Carrer de Verdi, 78",
       city: "Barcelona",
@@ -296,10 +301,11 @@ async function main() {
   // Garage 6 — Sant Feliu de Llobregat
   const garage6 = await prisma.garage.upsert({
     where: { ownerId: owner6.id },
-    update: { plan: "PREMIUM" },
+    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]) },
     create: {
       name: "Soler Automòbils",
       plan: "PREMIUM",
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]),
       description: "Taller mecánico oficial en Sant Feliu de Llobregat. Más de 15 años de experiencia. Servicio de sustitución y coche de cortesía disponible.",
       address: "Carrer de la Creu, 34",
       city: "Sant Feliu de Llobregat",
@@ -330,10 +336,11 @@ async function main() {
   // Garage 7 — Sant Feliu de Llobregat
   const garage7 = await prisma.garage.upsert({
     where: { ownerId: owner7.id },
-    update: { plan: "PREMIUM" },
+    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]) },
     create: {
       name: "TallerRàpid Sant Feliu",
       plan: "PREMIUM",
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO"]),
       description: "El taller más rápido del Baix Llobregat. Cita el mismo día, diagnóstico gratuito en la primera visita y recogida a domicilio.",
       address: "Avinguda de Can Nadal, 15",
       city: "Sant Feliu de Llobregat",

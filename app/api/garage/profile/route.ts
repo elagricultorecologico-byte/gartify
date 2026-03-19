@@ -3,6 +3,10 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { z } from "zod";
 
+const TIPOS_VEHICULO_VALIDOS = [
+  "COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION",
+] as const;
+
 const schema = z.object({
   name:        z.string().min(1),
   description: z.string().optional(),
@@ -13,6 +17,11 @@ const schema = z.object({
   email:       z.string().email().optional().or(z.literal("")),
   courtesyCar:   z.boolean().optional(),
   pickupService: z.boolean().optional(),
+  // Array de tipos de vehículo aceptados por el taller
+  vehicleTypes: z
+    .array(z.enum(TIPOS_VEHICULO_VALIDOS))
+    .min(1, "Debe seleccionar al menos un tipo de vehículo")
+    .optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -26,11 +35,18 @@ export async function PATCH(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
 
+  // Extraemos vehicleTypes del resto para serializar como JSON string en SQLite
+  const { vehicleTypes, ...restoData } = parsed.data;
+
   const updated = await db.garage.update({
     where: { id: garage.id },
     data: {
-      ...parsed.data,
+      ...restoData,
       email: parsed.data.email || undefined,
+      // Solo actualizamos vehicleTypes si viene en el body; mínimo ["COCHE"]
+      ...(vehicleTypes !== undefined && {
+        vehicleTypes: JSON.stringify(vehicleTypes),
+      }),
     },
   });
 

@@ -5,10 +5,15 @@ import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
 import { bookingConfirmationEmail, garageNewBookingEmail } from "@/lib/emails/templates";
 
+const TIPOS_VEHICULO_VALIDOS = [
+  "COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION",
+] as const;
+
 const schema = z.object({
   garageId:     z.string(),
   serviceId:    z.string(),
   date:         z.string(),
+  vehicleType:  z.enum(TIPOS_VEHICULO_VALIDOS).default("COCHE"),
   vehiclePlate: z.string().optional(),
   vehicleModel: z.string().optional(),
   notes:        z.string().optional(),
@@ -32,6 +37,7 @@ export async function POST(req: Request) {
         serviceId:    data.serviceId,
         date:         new Date(data.date),
         totalPrice:   service.price,
+        vehicleType:  data.vehicleType,
         vehiclePlate: data.vehiclePlate,
         vehicleModel: data.vehicleModel,
         notes:        data.notes,

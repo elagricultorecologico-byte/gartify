@@ -35,6 +35,7 @@ model Garage {
   rating        Float           @default(0)
   reviewCount   Int             @default(0)
   plan          String          @default("STARTER") // STARTER | PRO | PREMIUM
+  vehicleTypes  String          @default("[\"COCHE\"]") // JSON array: COCHE|MOTO|FURGONETA|AUTOCARAVANA|CAMPER|CAMION
   isVerified    Boolean         @default(false)
   isActive      Boolean         @default(true)
   courtesyCar   Boolean         @default(false)
@@ -85,6 +86,7 @@ model Booking {
   service      GarageService @relation(fields: [serviceId], references: [id])
   date         DateTime
   status       String    @default("PENDING")
+  vehicleType  String    @default("COCHE")
   vehiclePlate String?
   vehicleModel String?
   notes        String?

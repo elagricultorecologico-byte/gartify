@@ -9,7 +9,10 @@ import {
   Clock, CheckCircle, AlertCircle, Loader2,
   CalendarDays, Car, Banknote,
 } from "lucide-react";
-import { formatPrice, SERVICE_LABELS } from "@/lib/utils";
+import {
+  formatPrice, SERVICE_LABELS,
+  VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType,
+} from "@/lib/utils";
 
 type Service = {
   id: string;
@@ -45,11 +48,13 @@ function formatSlot(iso: string) {
   return new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 }
 
-const STEPS = ["Servicio", "Fecha y hora", "Confirmación"];
+const STEPS = ["Vehículo", "Servicio", "Fecha y hora", "Confirmación"];
 
 export function BookingWizard({ garageId, garageName, services, preselectedServiceId }: Props) {
   const router = useRouter();
-  const [step, setStep] = useState(preselectedServiceId ? 2 : 1);
+  // Step 1: tipo de vehículo, Step 2: servicio, Step 3: fecha/hora, Step 4: confirmación
+  const [step, setStep] = useState(1);
+  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>("COCHE");
   const [selectedService, setSelectedService] = useState<Service | null>(
     services.find((s) => s.id === preselectedServiceId) ?? null
   );
@@ -105,6 +110,7 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
         garageId,
         serviceId: selectedService.id,
         date: selectedSlot,
+        vehicleType: selectedVehicleType,
         vehiclePlate: vehiclePlate || undefined,
         vehicleModel: vehicleModel || undefined,
         notes: notes || undefined,
@@ -164,8 +170,8 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
         ))}
       </div>
 
-      {/* ── Sticky service summary (steps 2 & 3) ── */}
-      {selectedService && step > 1 && (
+      {/* ── Sticky service summary (steps 3 & 4) ── */}
+      {selectedService && step > 2 && (
         <div className="sticky top-16 z-10 -mx-1 px-1 mb-5">
           <div className="flex items-center justify-between gap-3 bg-white/90 backdrop-blur-sm border border-gray-200 shadow-sm rounded-xl px-4 py-2.5">
             <div className="flex items-center gap-2 min-w-0">
@@ -184,8 +190,47 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
         </div>
       )}
 
-      {/* ── Step 1 — Service ── */}
+      {/* ── Step 1 — Tipo de vehículo ── */}
       {step === 1 && (
+        <div className="space-y-4">
+          <h2 className="text-lg font-bold text-gartify-blue mb-4">¿Qué tipo de vehículo traes?</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {VEHICLE_TYPES.map((tipo) => {
+              const seleccionado = selectedVehicleType === tipo;
+              return (
+                <button
+                  key={tipo}
+                  type="button"
+                  onClick={() => setSelectedVehicleType(tipo)}
+                  aria-pressed={seleccionado}
+                  className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                    seleccionado
+                      ? "border-gartify-orange bg-gartify-orange/5 shadow-md scale-[1.02]"
+                      : "border-gray-200 bg-white hover:border-gartify-orange/40 hover:shadow-sm"
+                  }`}
+                >
+                  {seleccionado && (
+                    <CheckCircle className="absolute top-2 right-2 h-4 w-4 text-gartify-orange" aria-hidden="true" />
+                  )}
+                  <span className="text-3xl" aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
+                  <span className={`text-sm font-semibold ${seleccionado ? "text-gartify-orange" : "text-gartify-blue"}`}>
+                    {VEHICLE_LABELS[tipo]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <Button
+            className="w-full mt-2 h-11 font-semibold bg-gartify-green hover:bg-gartify-green/90 text-white"
+            onClick={() => setStep(2)}
+          >
+            Continuar con {VEHICLE_LABELS[selectedVehicleType]}
+          </Button>
+        </div>
+      )}
+
+      {/* ── Step 2 — Service ── */}
+      {step === 2 && (
         <div className="space-y-3">
           <h2 className="text-lg font-bold text-gartify-blue mb-4">Elige un servicio</h2>
           {services.map((s) => (
@@ -231,18 +276,27 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
               </div>
             </div>
           ))}
-          <Button
-            className="w-full mt-2 h-11 font-semibold transition-all duration-200 bg-gartify-green hover:bg-gartify-green/90 text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:border-gray-200 disabled:shadow-none"
-            disabled={!selectedService}
-            onClick={() => setStep(2)}
-          >
-            {selectedService ? `Continuar con ${selectedService.name}` : "Selecciona un servicio"}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gartify-gray"
+              onClick={() => setStep(1)}
+            >
+              Atrás
+            </Button>
+            <Button
+              className="flex-1 h-11 font-semibold transition-all duration-200 bg-gartify-green hover:bg-gartify-green/90 text-white disabled:bg-gray-100 disabled:text-gray-400 disabled:border disabled:border-gray-200 disabled:shadow-none"
+              disabled={!selectedService}
+              onClick={() => setStep(3)}
+            >
+              {selectedService ? `Continuar con ${selectedService.name}` : "Selecciona un servicio"}
+            </Button>
+          </div>
         </div>
       )}
 
-      {/* ── Step 2 — Date / Time ── */}
-      {step === 2 && (
+      {/* ── Step 3 — Date / Time ── */}
+      {step === 3 && (
         <div className="space-y-5">
           <h2 className="text-lg font-bold text-gartify-blue mb-4">Elige fecha y hora</h2>
 
@@ -348,14 +402,14 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
             <Button
               variant="outline"
               className="border-gray-300 text-gartify-gray"
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
             >
               Atrás
             </Button>
             <Button
               className="flex-1 bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold h-11"
               disabled={!selectedSlot}
-              onClick={() => setStep(3)}
+              onClick={() => setStep(4)}
             >
               Continuar
             </Button>
@@ -363,8 +417,8 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
         </div>
       )}
 
-      {/* ── Step 3 — Confirm ── */}
-      {step === 3 && selectedService && (
+      {/* ── Step 4 — Confirm ── */}
+      {step === 4 && selectedService && (
         <div className="space-y-4">
           <h2 className="text-lg font-bold text-gartify-blue mb-4">Confirmar reserva</h2>
 
@@ -375,8 +429,12 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
             </div>
             <div className="p-4 space-y-2.5 text-sm">
               {[
-                { label: "Taller",       value: garageName },
-                { label: "Servicio",     value: selectedService.name },
+                { label: "Taller",         value: garageName },
+                {
+                  label: "Vehículo",
+                  value: `${VEHICLE_ICONS[selectedVehicleType]} ${VEHICLE_LABELS[selectedVehicleType]}`,
+                },
+                { label: "Servicio",       value: selectedService.name },
                 {
                   label: "Fecha y hora",
                   value: new Date(selectedSlot).toLocaleString("es-ES", {
@@ -467,7 +525,7 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
             <Button
               variant="outline"
               className="border-gray-300 text-gartify-gray"
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
             >
               Atrás
             </Button>

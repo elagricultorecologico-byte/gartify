@@ -7,6 +7,37 @@ export function cn(...inputs: ClassValue[]) {
 
 export { SERVICE_LABELS } from "@/lib/constants"
 
+// ── Tipos de vehículo ─────────────────────────────────────────────────────────
+
+export const VEHICLE_TYPES = [
+  "COCHE",
+  "MOTO",
+  "FURGONETA",
+  "AUTOCARAVANA",
+  "CAMPER",
+  "CAMION",
+] as const
+
+export type VehicleType = (typeof VEHICLE_TYPES)[number]
+
+export const VEHICLE_LABELS: Record<string, string> = {
+  COCHE:        "Coche",
+  MOTO:         "Moto",
+  FURGONETA:    "Furgoneta",
+  AUTOCARAVANA: "Autocaravana",
+  CAMPER:       "Camper",
+  CAMION:       "Camión",
+}
+
+export const VEHICLE_ICONS: Record<string, string> = {
+  COCHE:        "🚗",
+  MOTO:         "🏍️",
+  FURGONETA:    "🚐",
+  AUTOCARAVANA: "🚌",
+  CAMPER:       "🏕️",
+  CAMION:       "🚚",
+}
+
 export const BOOKING_STATUS_LABELS: Record<string, string> = {
   PENDING:   "Pendiente",
   CONFIRMED: "Confirmada",

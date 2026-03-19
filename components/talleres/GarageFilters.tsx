@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation, Car, PackageCheck, Loader2, CheckCircle } from "lucide-react";
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 
 const PRICE_RANGES = [
   { value: "0-30",   label: "Hasta 30 €" },
@@ -118,7 +118,7 @@ export function GarageFilters() {
   }
 
   const hasLocation = sp.has("userLat") && sp.has("userLng");
-  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida"]
+  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType"]
     .filter(isActive).length;
   const hasFilters = activeCount > 0 || hasLocation;
 
@@ -313,6 +313,33 @@ export function GarageFilters() {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+        </div>
+
+        {/* Tipo de vehículo */}
+        <div>
+          <FilterLabel>Tipo de vehículo</FilterLabel>
+          <div className="grid grid-cols-2 gap-1.5">
+            {VEHICLE_TYPES.map((tipo) => {
+              const activo = sp.get("vehicleType") === tipo;
+              return (
+                <button
+                  key={tipo}
+                  type="button"
+                  onClick={() => update("vehicleType", activo ? "ALL" : tipo)}
+                  aria-pressed={activo}
+                  className={cn(
+                    "flex items-center gap-1.5 h-9 px-2.5 rounded-lg border text-xs font-medium transition-all",
+                    activo
+                      ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30"
+                      : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                  )}
+                >
+                  <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
+                  {VEHICLE_LABELS[tipo]}
+                </button>
+              );
+            })}
           </div>
         </div>
 

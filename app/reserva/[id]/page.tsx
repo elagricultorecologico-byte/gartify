@@ -11,6 +11,7 @@ import {
 import {
   formatPrice, formatDateTime,
   SERVICE_LABELS, BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS,
+  VEHICLE_LABELS, VEHICLE_ICONS,
 } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -46,6 +47,7 @@ export default async function BookingConfirmationPage({
       date: true,
       status: true,
       totalPrice: true,
+      vehicleType: true,
       vehicleModel: true,
       vehiclePlate: true,
       notes: true,
@@ -179,12 +181,20 @@ export default async function BookingConfirmationPage({
           </div>
 
           {/* Vehículo */}
-          {hasVehicleInfo && (
+          {(hasVehicleInfo || booking.vehicleType) && (
             <>
               <div className="h-px bg-gray-100" role="separator" />
               <p className="text-xs font-bold uppercase tracking-wide text-gartify-gray">
                 Vehículo
               </p>
+              {/* Tipo de vehículo — siempre visible */}
+              <div className="flex items-center gap-3">
+                <Car className="h-4 w-4 text-gartify-mid shrink-0" aria-hidden="true" />
+                <span className="flex items-center gap-1.5 text-foreground">
+                  <span aria-hidden="true">{VEHICLE_ICONS[booking.vehicleType ?? "COCHE"]}</span>
+                  {VEHICLE_LABELS[booking.vehicleType ?? "COCHE"] ?? booking.vehicleType}
+                </span>
+              </div>
               {booking.vehicleModel && (
                 <div className="flex items-center gap-3">
                   <Car className="h-4 w-4 text-gartify-mid shrink-0" aria-hidden="true" />

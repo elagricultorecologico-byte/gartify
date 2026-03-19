@@ -9,7 +9,7 @@ import {
   CheckCircle, AlertCircle, Loader2, Building2,
   MapPin, Phone, Mail, ChevronRight, Camera, X, Car, PackageCheck,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
 import type { Garage } from "@prisma/client";
 
 export function GarageProfileForm({ garage }: { garage: Garage }) {
@@ -22,6 +22,28 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
 
   const [courtesyCar, setCourtesyCar] = useState(garage.courtesyCar ?? false);
   const [pickupService, setPickupService] = useState(garage.pickupService ?? false);
+
+  // Parsear el JSON de vehicleTypes almacenado en SQLite como string
+  const vehicleTypesParsados = (() => {
+    try {
+      const parsed = JSON.parse(garage.vehicleTypes ?? '["COCHE"]') as string[];
+      return parsed.filter((v): v is VehicleType =>
+        (VEHICLE_TYPES as readonly string[]).includes(v)
+      );
+    } catch {
+      return ["COCHE"] as VehicleType[];
+    }
+  })();
+  const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<VehicleType[]>(vehicleTypesParsados);
+
+  function toggleVehicleType(tipo: VehicleType) {
+    setSelectedVehicleTypes((prev) => {
+      const yaSeleccionado = prev.includes(tipo);
+      // Al menos un tipo debe quedar seleccionado
+      if (yaSeleccionado && prev.length === 1) return prev;
+      return yaSeleccionado ? prev.filter((t) => t !== tipo) : [...prev, tipo];
+    });
+  }
 
   // — Estado logo —
   const [logoPreview, setLogoPreview] = useState<string | null>(garage.logo ?? null);
@@ -99,6 +121,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
         email:       fd.get("email"),
         courtesyCar,
         pickupService,
+        vehicleTypes: selectedVehicleTypes,
       }),
     });
 
@@ -355,6 +378,39 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 />
               </div>
             </div>
+          </div>
+
+          {/* — Tipos de vehículo — */}
+          <div className="pt-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+              <Car className="h-3.5 w-3.5" aria-hidden="true" />Tipos de vehículo que atiendes
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {VEHICLE_TYPES.map((tipo) => {
+                const activo = selectedVehicleTypes.includes(tipo);
+                return (
+                  <button
+                    key={tipo}
+                    type="button"
+                    onClick={() => toggleVehicleType(tipo)}
+                    aria-pressed={activo}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all",
+                      activo
+                        ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero"
+                        : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                    )}
+                  >
+                    <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
+                    {VEHICLE_LABELS[tipo]}
+                    {activo && <CheckCircle className="h-3.5 w-3.5 ml-1 text-gartify-hero" aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-gartify-gray mt-2">
+              Selecciona al menos un tipo. Los clientes podrán filtrar talleres por tipo de vehículo.
+            </p>
           </div>
 
           {/* — Servicios adicionales — */}

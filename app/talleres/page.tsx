@@ -4,10 +4,12 @@ import { GarageCard } from "@/components/talleres/GarageCard";
 import { GarageFilters } from "@/components/talleres/GarageFilters";
 import { Search } from "lucide-react";
 import { SERVICE_LABELS } from "@/lib/constants";
+import { VEHICLE_LABELS } from "@/lib/utils";
 
 type SearchParams = {
   servicio?: string; ciudad?: string; precio?: string; rating?: string;
   distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
+  vehicleType?: string;
 };
 
 function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
@@ -53,6 +55,8 @@ export default async function TalleresPage({
   const distanciaKm = searchParams.distancia ? parseInt(searchParams.distancia) : null;
   const cocheCortesia = searchParams.cocheCortesia === "true";
   const recogida = searchParams.recogida === "true";
+  // vehicleType: filtra garages cuyo campo JSON vehicleTypes contenga el tipo
+  const vehicleType = searchParams.vehicleType ?? null;
 
   let garages = await db.garage.findMany({
     where: {
@@ -66,6 +70,8 @@ export default async function TalleresPage({
       ...(ratingMin !== null && { rating: { gte: ratingMin } }),
       ...(cocheCortesia && { courtesyCar: true }),
       ...(recogida && { pickupService: true }),
+      // Filtro por tipo de vehículo: SQLite contains sobre el JSON array serializado
+      ...(vehicleType && { vehicleTypes: { contains: vehicleType } }),
       ...((searchParams.servicio || precioFilter) && {
         services: {
           some: {
@@ -99,7 +105,16 @@ export default async function TalleresPage({
           {searchParams.ciudad ? ` en ${searchParams.ciudad}` : ""}
         </h1>
         <p className="text-muted-foreground text-sm">
-          {searchParams.servicio ? `Filtrando por: ${SERVICE_LABELS[searchParams.servicio] ?? searchParams.servicio.replace(/_/g, " ")}` : "Mostrando todos los servicios"}
+          {[
+            searchParams.servicio
+              ? `Servicio: ${SERVICE_LABELS[searchParams.servicio] ?? searchParams.servicio.replace(/_/g, " ")}`
+              : null,
+            vehicleType
+              ? `Vehículo: ${VEHICLE_LABELS[vehicleType] ?? vehicleType}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(" · ") || "Mostrando todos los servicios"}
         </p>
       </div>
 
@@ -135,6 +150,7 @@ export default async function TalleresPage({
                 logo={g.logo}
                 lat={g.lat}
                 lng={g.lng}
+                vehicleTypes={g.vehicleTypes}
               />
             ))
           )}
