@@ -152,6 +152,7 @@ export default async function TalleresPage({
                 lat={g.lat}
                 lng={g.lng}
                 vehicleTypes={g.vehicleTypes}
+                plan={g.plan}
               />
             ))
           )}

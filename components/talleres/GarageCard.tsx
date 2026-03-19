@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Star, Clock, ShieldCheck, ExternalLink } from "lucide-react";
+import { MapPin, Star, Clock, ShieldCheck, ExternalLink, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, SERVICE_LABELS, VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
@@ -20,6 +20,7 @@ type GarageCardProps = {
   lat?: number | null;
   lng?: number | null;
   vehicleTypes?: string | null;
+  plan?: string | null;
 };
 
 /** Parsea el JSON de vehicleTypes almacenado en SQLite y devuelve un array tipado */
@@ -47,7 +48,7 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng, vehicleTypes }: GarageCardProps) {
+export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng, vehicleTypes, plan }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
   const tiposVehiculo = parsearTiposVehiculo(vehicleTypes);
   const hasMap = lat != null && lng != null;
@@ -58,13 +59,19 @@ export function GarageCard({ id, name, description, city, address, rating, revie
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-orange/40 transition-all overflow-hidden flex flex-col sm:flex-row">
       {/* Left: logo / avatar */}
-      <div className="sm:w-36 sm:shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[100px] sm:min-h-0 overflow-hidden border-r border-gray-200">
+      <div className="relative sm:w-36 sm:shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[100px] sm:min-h-0 overflow-hidden border-r border-gray-200">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={logo ?? "/logo-taller-def.png"}
           alt={logo ? `Logo de ${name}` : "Gartify"}
           className="h-20 w-20 object-contain p-2 rounded-xl"
         />
+        {plan === "PREMIUM" && (
+          <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+            <Crown className="h-2.5 w-2.5" />
+            Premium
+          </div>
+        )}
       </div>
 
       {/* Center: content */}
