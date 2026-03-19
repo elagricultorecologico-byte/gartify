@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { db } from "@/lib/db";
 import { GarageCard } from "@/components/talleres/GarageCard";
 import { GarageFilters } from "@/components/talleres/GarageFilters";
+import { GaragePagination } from "@/components/talleres/GaragePagination";
 import { Search } from "lucide-react";
 import { SERVICE_LABELS } from "@/lib/constants";
 import { VEHICLE_LABELS } from "@/lib/utils";
 
+const DEFAULT_PAGE_SIZE = 10;
+const VALID_PAGE_SIZES = [5, 10, 20, 50];
+
 type SearchParams = {
   servicio?: string; ciudad?: string; precio?: string; rating?: string;
   distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
-  vehicleType?: string; premium?: string;
+  vehicleType?: string; premium?: string; page?: string; pageSize?: string;
 };
 
 function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
@@ -57,6 +62,9 @@ export default async function TalleresPage({
   const recogida = searchParams.recogida === "true";
   const premiumOnly = searchParams.premium === "true";
   const vehicleType = searchParams.vehicleType ?? null;
+  const currentPage = Math.max(1, parseInt(searchParams.page ?? "1"));
+  const parsedSize = parseInt(searchParams.pageSize ?? String(DEFAULT_PAGE_SIZE));
+  const pageSize = VALID_PAGE_SIZES.includes(parsedSize) ? parsedSize : DEFAULT_PAGE_SIZE;
 
   let garages = await db.garage.findMany({
     where: {
@@ -97,12 +105,17 @@ export default async function TalleresPage({
     );
   }
 
+  const total = garages.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedGarages = garages.slice((safePage - 1) * pageSize, safePage * pageSize);
+
   return (
     <div className="container max-w-6xl py-8">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gartify-blue mb-1">
-          {garages.length} taller{garages.length !== 1 ? "es" : ""} encontrado{garages.length !== 1 ? "s" : ""}
+          {total} taller{total !== 1 ? "es" : ""} encontrado{total !== 1 ? "s" : ""}
           {searchParams.ciudad ? ` en ${searchParams.ciudad}` : ""}
         </h1>
         <p className="text-muted-foreground text-sm">
@@ -129,32 +142,42 @@ export default async function TalleresPage({
 
         {/* Lista de talleres */}
         <div className="flex-1 space-y-4">
-          {garages.length === 0 ? (
+          {total === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <Search className="h-10 w-10 mx-auto mb-3 opacity-40" />
               <p className="font-medium">No se encontraron talleres</p>
               <p className="text-sm mt-1">Prueba con otra ciudad o servicio</p>
             </div>
           ) : (
-            garages.map((g) => (
-              <GarageCard
-                key={g.id}
-                id={g.id}
-                name={g.name}
-                description={g.description}
-                city={g.city}
-                address={g.address}
-                rating={g.rating}
-                reviewCount={g.reviewCount}
-                isVerified={g.isVerified}
-                services={g.services}
-                logo={g.logo}
-                lat={g.lat}
-                lng={g.lng}
-                vehicleTypes={g.vehicleTypes}
-                plan={g.plan}
-              />
-            ))
+            <>
+              {paginatedGarages.map((g) => (
+                <GarageCard
+                  key={g.id}
+                  id={g.id}
+                  name={g.name}
+                  description={g.description}
+                  city={g.city}
+                  address={g.address}
+                  rating={g.rating}
+                  reviewCount={g.reviewCount}
+                  isVerified={g.isVerified}
+                  services={g.services}
+                  logo={g.logo}
+                  lat={g.lat}
+                  lng={g.lng}
+                  vehicleTypes={g.vehicleTypes}
+                  plan={g.plan}
+                />
+              ))}
+              <Suspense>
+                <GaragePagination
+                  page={safePage}
+                  totalPages={totalPages}
+                  total={total}
+                  pageSize={pageSize}
+                />
+              </Suspense>
+            </>
           )}
         </div>
 
