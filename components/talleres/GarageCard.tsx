@@ -167,29 +167,28 @@ export function GarageCard({ id, name, description, city, address, rating, revie
         </div>
       </div>
 
-      {/* Right: mini map (Google Maps Embed) */}
+      {/* Right: mini map (Google Maps Static) */}
       {hasMap && (
-        <div className="hidden sm:block sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100 relative group">
-          <iframe
-            title={`Mapa ${name}`}
-            src={`https://maps.google.com/maps?q=${mapsQuery}&z=15&output=embed`}
-            className="w-full h-full border-0 pointer-events-none"
+        <a
+          href={`https://www.google.com/maps?q=${mapsQuery}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Ver ${name} en Google Maps`}
+          className="hidden sm:block sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100 relative group"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`https://maps.googleapis.com/maps/api/staticmap?center=${mapsQuery}&zoom=15&size=176x200&markers=color:orange%7C${mapsQuery}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
+            alt={`Mapa de ${name}`}
+            className="w-full h-full object-cover"
             loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
           />
-          <a
-            href={`https://www.google.com/maps?q=${mapsQuery}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Ver ${name} en Google Maps`}
-            className="absolute inset-0 flex items-end justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
+          <div className="absolute inset-0 flex items-end justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <span className="inline-flex items-center gap-1 rounded bg-white/90 border border-gray-200 text-xs text-gartify-blue font-medium px-2 py-1 shadow-sm">
               <ExternalLink className="h-3 w-3" /> Ver mapa
             </span>
-          </a>
-        </div>
+          </div>
+        </a>
       )}
     </div>
   );
