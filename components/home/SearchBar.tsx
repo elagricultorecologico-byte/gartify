@@ -59,7 +59,7 @@ export function SearchBar({ className }: { className?: string }) {
       <div className="relative flex-1">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Ciudad o código postal"
+          placeholder="Ciudad o CP"
           value={ciudad}
           onChange={(e) => setCiudad(e.target.value)}
           className="pl-9 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg"
