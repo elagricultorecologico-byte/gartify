@@ -14,7 +14,8 @@ const schema = z.object({
   address:     z.string().min(5),
   city:        z.string().min(2),
   postalCode:  z.string().length(5),
-  description: z.string().optional(),
+  description:  z.string().optional(),
+  vehicleTypes: z.array(z.string()).min(1).optional(),
 });
 
 export async function POST(req: Request) {
@@ -36,13 +37,14 @@ export async function POST(req: Request) {
         role:     "GARAGE_OWNER",
         garage: {
           create: {
-            name:        data.garageName,
-            description: data.description,
-            address:     data.address,
-            city:        data.city,
-            postalCode:  data.postalCode,
-            phone:       data.phone,
-            email:       data.email,
+            name:         data.garageName,
+            description:  data.description,
+            address:      data.address,
+            city:         data.city,
+            postalCode:   data.postalCode,
+            phone:        data.phone,
+            email:        data.email,
+            vehicleTypes: JSON.stringify(data.vehicleTypes ?? ["COCHE"]),
           },
         },
       },

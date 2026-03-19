@@ -5,8 +5,9 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, User, Building2, AlertCircle, Loader2,
-  MapPin, Lock, Mail, ChevronRight,
+  MapPin, Lock, Mail, ChevronRight, Car,
 } from "lucide-react";
+import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +54,15 @@ export function RegistroForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [vehicleTypes, setVehicleTypes] = useState<string[]>(["COCHE"]);
+
+  function toggleVehicle(type: string) {
+    setVehicleTypes(prev =>
+      prev.includes(type)
+        ? prev.length > 1 ? prev.filter(t => t !== type) : prev // mínimo 1
+        : [...prev, type]
+    );
+  }
 
   async function handleGoogle() {
     setGoogleLoading(true);
@@ -116,12 +126,15 @@ export function RegistroForm() {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
 
+    if (vehicleTypes.length === 0) return setError("Selecciona al menos un tipo de vehículo");
+
     setLoading(true);
     const body = {
       ownerName, email, password,
       phone: fd.get("phone"),
       garageName, address, city, postalCode,
       description: fd.get("description"),
+      vehicleTypes,
     };
 
     const res = await fetch("/api/garage/register", {
@@ -391,6 +404,34 @@ export function RegistroForm() {
                         rows={2}
                       />
                     </div>
+                  </div>
+                </div>
+
+                {/* Tipos de vehículo */}
+                <div className="pt-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+                    <Car className="h-3.5 w-3.5" aria-hidden="true" />
+                    Vehículos que admite
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {VEHICLE_TYPES.map(type => {
+                      const active = vehicleTypes.includes(type);
+                      return (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => toggleVehicle(type)}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
+                            active
+                              ? "border-gartify-blue bg-blue-50 text-gartify-blue"
+                              : "border-gray-200 bg-white text-gartify-gray hover:border-gartify-blue/40"
+                          }`}
+                        >
+                          <span aria-hidden="true">{VEHICLE_ICONS[type]}</span>
+                          {VEHICLE_LABELS[type]}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
