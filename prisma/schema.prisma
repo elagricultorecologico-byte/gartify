@@ -48,7 +48,21 @@ model Garage {
   schedules     GarageSchedule[]
   invoices      AdminInvoice[]
   partOrders    PartOrder[]
+  offers        GarageOffer[]
   createdAt     DateTime        @default(now())
+}
+
+model GarageOffer {
+  id        String   @id @default(cuid())
+  garageId  String
+  garage    Garage   @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  label     String           // Ej: "Cambio de aceite express"
+  days      String           // JSON array de días: ["LUN","MAR"]
+  startTime String           // "10:00"
+  endTime   String           // "12:00"
+  price     Float            // Precio de la oferta
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
 }
 
 model GarageSchedule {

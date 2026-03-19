@@ -93,6 +93,7 @@ export default async function TalleresPage({
     },
     include: {
       services: { where: { isActive: true }, orderBy: { price: "asc" } },
+      offers:   { where: { isActive: true }, orderBy: { createdAt: "desc" } },
     },
     orderBy: { rating: "desc" },
   });
@@ -155,7 +156,6 @@ export default async function TalleresPage({
                   key={g.id}
                   id={g.id}
                   name={g.name}
-                  description={g.description}
                   city={g.city}
                   address={g.address}
                   rating={g.rating}
@@ -167,6 +167,9 @@ export default async function TalleresPage({
                   lng={g.lng}
                   vehicleTypes={g.vehicleTypes}
                   plan={g.plan}
+                  courtesyCar={g.courtesyCar}
+                  pickupService={g.pickupService}
+                  offers={g.offers}
                 />
               ))}
               <Suspense>

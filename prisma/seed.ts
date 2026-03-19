@@ -10,6 +10,7 @@ async function main() {
   await prisma.review.deleteMany();
   await prisma.booking.deleteMany();
   await prisma.garageService.deleteMany();
+  await prisma.garageOffer.deleteMany();
   await prisma.partOrderLine.deleteMany();
   await prisma.partOrder.deleteMany();
   await prisma.distributorPart.deleteMany();
@@ -181,6 +182,7 @@ async function main() {
       isVerified: true,
       isActive: true,
       courtesyCar: true,
+      pickupService: true,
       ownerId: owner2.id,
     },
   });
@@ -319,6 +321,7 @@ async function main() {
       isVerified: true,
       isActive: true,
       courtesyCar: true,
+      pickupService: true,
       ownerId: owner6.id,
     },
   });
@@ -382,6 +385,70 @@ async function main() {
     await prisma.garageSchedule.deleteMany({ where: { garageId: g.id } });
     await prisma.garageSchedule.createMany({ data: DEFAULT_SCHEDULE(g.id) });
   }
+
+  // ── Ofertas de horario demo ──────────────────────────────────────────────
+  // Garage 1 (Taller Martínez Auto, Madrid): 2 ofertas
+  await prisma.garageOffer.createMany({
+    data: [
+      {
+        garageId:  garage1.id,
+        label:     "Cambio de aceite express",
+        days:      JSON.stringify(["LUN", "MAR"]),
+        startTime: "10:00",
+        endTime:   "12:00",
+        price:     19.99,
+        isActive:  true,
+      },
+      {
+        garageId:  garage1.id,
+        label:     "Pre-ITV urgente",
+        days:      JSON.stringify(["MIE", "JUE", "VIE"]),
+        startTime: "08:00",
+        endTime:   "10:00",
+        price:     15.00,
+        isActive:  true,
+      },
+    ],
+  });
+
+  // Garage 3 (Mecánica Rápida Vallecas, Madrid): 1 oferta
+  await prisma.garageOffer.createMany({
+    data: [
+      {
+        garageId:  garage3.id,
+        label:     "Diagnóstico gratuito primer servicio",
+        days:      JSON.stringify(["LUN", "MIE", "VIE"]),
+        startTime: "09:00",
+        endTime:   "11:00",
+        price:     0.01,
+        isActive:  true,
+      },
+    ],
+  });
+
+  // Garage 5 (AutoGràcia Ferrer, Barcelona): 2 ofertas
+  await prisma.garageOffer.createMany({
+    data: [
+      {
+        garageId:  garage5.id,
+        label:     "Cambio de neumáticos + equilibrado",
+        days:      JSON.stringify(["SAB"]),
+        startTime: "09:00",
+        endTime:   "13:00",
+        price:     89.90,
+        isActive:  true,
+      },
+      {
+        garageId:  garage5.id,
+        label:     "Revisión frenos completo",
+        days:      JSON.stringify(["MAR", "JUE"]),
+        startTime: "16:00",
+        endTime:   "19:00",
+        price:     49.00,
+        isActive:  true,
+      },
+    ],
+  });
 
   // ── Reservas y reseñas demo ──────────────────────────────────────────────
   const clienteUser = await prisma.user.findUniqueOrThrow({ where: { email: "cliente@gartify.es" } });

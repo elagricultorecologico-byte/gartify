@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import {
   Settings, Plus, Calendar, Euro, Star,
-  TrendingUp, CalendarClock, Package,
+  TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
@@ -30,6 +30,7 @@ export default async function TallerPortalPage() {
     select: {
       id: true,
       name: true,
+      plan: true,
       rating: true,
       services: {
         where: { isActive: true },
@@ -71,8 +72,28 @@ export default async function TallerPortalPage() {
     <div className="container max-w-5xl py-10">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gartify-blue">{garage.name}</h1>
-          <p className="text-muted-foreground text-sm mt-1">Panel de gestión del taller</p>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-2xl font-bold text-gartify-blue">{garage.name}</h1>
+            {garage.plan === "STARTER" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 text-xs font-bold px-3 py-1">
+                <Wrench className="h-3.5 w-3.5" />
+                Starter
+              </span>
+            )}
+            {garage.plan === "PRO" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold px-3 py-1">
+                <Zap className="h-3.5 w-3.5" />
+                Pro
+              </span>
+            )}
+            {garage.plan === "PREMIUM" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-700 text-xs font-bold px-3 py-1">
+                <Crown className="h-3.5 w-3.5" />
+                Premium
+              </span>
+            )}
+          </div>
+          <p className="text-muted-foreground text-sm">Panel de gestión del taller</p>
         </div>
         <div className="flex gap-2">
           <Link href="/cuenta/taller/servicios">
@@ -85,6 +106,12 @@ export default async function TallerPortalPage() {
             <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
               <CalendarClock className="h-4 w-4" aria-hidden="true" />
               Horario
+            </Button>
+          </Link>
+          <Link href="/cuenta/taller/ofertas">
+            <Button variant="outline" size="sm" className="gap-2 border-gartify-orange/40 text-gartify-orange hover:bg-orange-50">
+              <Tag className="h-4 w-4" aria-hidden="true" />
+              Ofertas
             </Button>
           </Link>
           <Link href="/cuenta/taller/recambios">
