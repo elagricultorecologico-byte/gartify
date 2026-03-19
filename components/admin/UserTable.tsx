@@ -1,12 +1,23 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mail, Chrome, Pencil, Trash2, Loader2, X, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Mail, Chrome, Pencil, Trash2, Loader2, X, Check, ChevronLeft, ChevronRight, Zap, Crown, Wrench, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
+
+const PLAN_ICON: Record<string, React.ReactNode> = {
+  STARTER: <Wrench className="h-3 w-3 text-gray-400" />,
+  PRO:     <Zap    className="h-3 w-3 text-blue-500" />,
+  PREMIUM: <Crown  className="h-3 w-3 text-amber-500" />,
+};
+const PLAN_LABEL: Record<string, string> = {
+  STARTER: "Starter",
+  PRO:     "Pro",
+  PREMIUM: "Premium",
+};
 
 const ROLE_LABELS: Record<string, string> = {
   CUSTOMER:     "Conductor",
@@ -25,7 +36,7 @@ type User = {
   role: string;
   password: string | null;
   createdAt: Date;
-  garage: { name: string } | null;
+  garage: { name: string; plan: string } | null;
 };
 
 type EditState = {
@@ -44,10 +55,23 @@ export function UserTable({ users: initial }: { users: User[] }) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("ALL");
 
-  const totalPages = Math.max(1, Math.ceil(users.length / pageSize));
+  const filteredUsers = users.filter(u => {
+    const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
+    const q = search.toLowerCase();
+    const matchesSearch = !q
+      || (u.name ?? "").toLowerCase().includes(q)
+      || u.email.toLowerCase().includes(q)
+      || (u.phone ?? "").includes(q)
+      || (u.garage?.name ?? "").toLowerCase().includes(q);
+    return matchesRole && matchesSearch;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / pageSize));
   const safePage = Math.min(page, totalPages);
-  const paginatedUsers = users.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const paginatedUsers = filteredUsers.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   function startEdit(u: User) {
     setEditId(u.id);
@@ -92,6 +116,37 @@ export function UserTable({ users: initial }: { users: User[] }) {
   }
 
   return (
+    <div>
+      {/* Barra de búsqueda y filtro */}
+      <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+          <Input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            placeholder="Buscar por nombre, email, teléfono…"
+            className="h-8 pl-8 text-sm"
+          />
+        </div>
+        <select
+          value={roleFilter}
+          onChange={e => { setRoleFilter(e.target.value); setPage(1); }}
+          className="h-8 border border-gray-200 rounded-md px-2 bg-white text-xs text-gartify-gray"
+        >
+          <option value="ALL">Todos los roles</option>
+          <option value="CUSTOMER">Conductores</option>
+          <option value="GARAGE_OWNER">Talleres</option>
+        </select>
+        {(search || roleFilter !== "ALL") && (
+          <button
+            onClick={() => { setSearch(""); setRoleFilter("ALL"); setPage(1); }}
+            className="text-xs text-gartify-gray hover:text-red-500 flex items-center gap-1"
+          >
+            <X className="h-3 w-3" /> Limpiar
+          </button>
+        )}
+      </div>
+
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
@@ -121,7 +176,11 @@ export function UserTable({ users: initial }: { users: User[] }) {
                   ) : (
                     <>
                       <p className="font-semibold text-gartify-blue">{u.name ?? "—"}</p>
-                      {u.garage && <p className="text-xs text-muted-foreground">{u.garage.name}</p>}
+                      {u.garage && (
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          {u.garage.name}
+                        </p>
+                      )}
                     </>
                   )}
                 </td>
@@ -142,7 +201,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
                 </td>
 
                 {/* Teléfono */}
-                <td className="px-5 py-3">
+                <td className="px-5 py-3 whitespace-nowrap">
                   {isEditing ? (
                     <Input
                       value={editData.phone}
@@ -167,9 +226,19 @@ export function UserTable({ users: initial }: { users: User[] }) {
                       <option value="GARAGE_OWNER">Taller</option>
                     </select>
                   ) : (
-                    <Badge className={`text-xs ${ROLE_COLORS[u.role] ?? ""}`}>
-                      {ROLE_LABELS[u.role] ?? u.role}
-                    </Badge>
+                    <div className="flex items-center gap-1.5">
+                      <Badge className={`text-xs ${ROLE_COLORS[u.role] ?? ""}`}>
+                        {ROLE_LABELS[u.role] ?? u.role}
+                      </Badge>
+                      {u.garage && (
+                        <span
+                          title={`Plan ${PLAN_LABEL[u.garage.plan] ?? u.garage.plan}`}
+                          className="flex items-center"
+                        >
+                          {PLAN_ICON[u.garage.plan] ?? PLAN_ICON.STARTER}
+                        </span>
+                      )}
+                    </div>
                   )}
                 </td>
 
@@ -241,10 +310,10 @@ export function UserTable({ users: initial }: { users: User[] }) {
               </tr>
             );
           })}
-          {users.length === 0 && (
+          {filteredUsers.length === 0 && (
             <tr>
               <td colSpan={7} className="px-5 py-10 text-center text-muted-foreground text-sm">
-                No hay usuarios registrados
+                {users.length === 0 ? "No hay usuarios registrados" : "No hay resultados para esta búsqueda"}
               </td>
             </tr>
           )}
@@ -265,7 +334,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
             ))}
           </select>
           <span className="text-gray-400">
-            {users.length === 0 ? "0" : `${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, users.length)}`} de {users.length}
+            {filteredUsers.length === 0 ? "0" : `${(safePage - 1) * pageSize + 1}–${Math.min(safePage * pageSize, filteredUsers.length)}`} de {filteredUsers.length}
           </span>
         </div>
 
@@ -313,6 +382,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
           </Button>
         </div>
       </div>
+    </div>
     </div>
   );
 }

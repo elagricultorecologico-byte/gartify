@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (user.role !== "ADMIN") redirect("/");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       {/* Barra admin */}
       <nav className="bg-gartify-dark border-b border-white/10 px-6 py-3 flex items-center gap-6">
         <span className="text-white font-bold text-sm tracking-wide uppercase">

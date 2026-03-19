@@ -34,6 +34,7 @@ model Garage {
   logo          String?
   rating        Float           @default(0)
   reviewCount   Int             @default(0)
+  plan          String          @default("STARTER") // STARTER | PRO | PREMIUM
   isVerified    Boolean         @default(false)
   isActive      Boolean         @default(true)
   courtesyCar   Boolean         @default(false)
