@@ -166,20 +166,22 @@ export function GarageCard({ id, name, description, city, address, rating, revie
         </div>
       </div>
 
-      {/* Right: mini map */}
+      {/* Right: mini map (Google Maps Embed) */}
       {hasMap && (
         <div className="hidden sm:block sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100 relative group">
           <iframe
             title={`Mapa ${name}`}
-            src={`https://www.openstreetmap.org/export/embed.html?bbox=${lng! - 0.008},${lat! - 0.006},${lng! + 0.008},${lat! + 0.006}&layer=mapnik&marker=${lat},${lng}`}
+            src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${lat},${lng}&zoom=15`}
             className="w-full h-full border-0 pointer-events-none"
             loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
           />
           <a
-            href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`}
+            href={`https://www.google.com/maps?q=${lat},${lng}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Ver ${name} en el mapa`}
+            aria-label={`Ver ${name} en Google Maps`}
             className="absolute inset-0 flex items-end justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <span className="inline-flex items-center gap-1 rounded bg-white/90 border border-gray-200 text-xs text-gartify-blue font-medium px-2 py-1 shadow-sm">
