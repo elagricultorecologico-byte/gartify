@@ -172,7 +172,7 @@ export function GarageCard({ id, name, description, city, address, rating, revie
         <div className="hidden sm:block sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100 relative group">
           <iframe
             title={`Mapa ${name}`}
-            src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${mapsQuery}&zoom=15`}
+            src={`https://maps.google.com/maps?q=${mapsQuery}&z=15&output=embed`}
             className="w-full h-full border-0 pointer-events-none"
             loading="lazy"
             allowFullScreen
