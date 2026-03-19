@@ -25,18 +25,6 @@ export function SearchBar({ className }: { className?: string }) {
 
   return (
     <form onSubmit={handleSearch} className={`flex flex-col sm:flex-row gap-3 ${className}`}>
-      {/* Selector de servicio */}
-      <Select onValueChange={setServicio}>
-        <SelectTrigger className="sm:w-48 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg px-3">
-          <SelectValue placeholder="¿Qué necesitas?" />
-        </SelectTrigger>
-        <SelectContent>
-          {SEARCHABLE_SERVICES.map((s) => (
-            <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
       {/* Selector de tipo de vehículo */}
       <Select onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
         <SelectTrigger className="sm:w-40 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg px-3">
@@ -51,6 +39,18 @@ export function SearchBar({ className }: { className?: string }) {
                 {VEHICLE_LABELS[tipo]}
               </span>
             </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Selector de servicio */}
+      <Select onValueChange={setServicio}>
+        <SelectTrigger className="sm:w-48 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg px-3">
+          <SelectValue placeholder="¿Qué necesitas?" />
+        </SelectTrigger>
+        <SelectContent>
+          {SEARCHABLE_SERVICES.map((s) => (
+            <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>
           ))}
         </SelectContent>
       </Select>
