@@ -129,6 +129,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
           {/* Avatar strip */}
           <div className="sm:w-48 shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[120px] sm:min-h-0">
             {garage.logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={garage.logo}
                 alt={garage.name}

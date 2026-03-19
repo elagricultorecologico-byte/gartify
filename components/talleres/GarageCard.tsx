@@ -59,6 +59,7 @@ export function GarageCard({ id, name, description, city, address, rating, revie
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-orange/40 transition-all overflow-hidden flex flex-col sm:flex-row">
       {/* Left: logo / avatar */}
       <div className="sm:w-36 sm:shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[100px] sm:min-h-0 overflow-hidden border-r border-gray-200">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={logo ?? "/logo-taller-def.png"}
           alt={logo ? `Logo de ${name}` : "Gartify"}

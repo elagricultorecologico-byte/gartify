@@ -157,6 +157,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
             {/* Preview */}
             <div className="shrink-0">
               <div className="h-24 w-24 rounded-xl overflow-hidden border-2 border-gray-200 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={logoPreview ?? "/logo-gartify-default.svg"}
                   alt="Vista previa del logo"
