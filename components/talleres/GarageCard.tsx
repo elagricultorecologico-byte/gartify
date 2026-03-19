@@ -51,10 +51,11 @@ function StarRating({ rating }: { rating: number }) {
 export function GarageCard({ id, name, description, city, address, rating, reviewCount, isVerified, services, logo, lat, lng, vehicleTypes, plan }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
   const tiposVehiculo = parsearTiposVehiculo(vehicleTypes);
-  const hasMap = lat != null && lng != null;
-  const mapsUrl = lat != null && lng != null
-    ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-    : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${address}, ${city}`)}`;
+  const hasMap = true;
+  const mapsQuery = lat != null && lng != null
+    ? `${lat},${lng}`
+    : encodeURIComponent(`${address}, ${city}, España`);
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-orange/40 transition-all overflow-hidden flex flex-col sm:flex-row">
@@ -171,14 +172,14 @@ export function GarageCard({ id, name, description, city, address, rating, revie
         <div className="hidden sm:block sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100 relative group">
           <iframe
             title={`Mapa ${name}`}
-            src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${lat},${lng}&zoom=15`}
+            src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${mapsQuery}&zoom=15`}
             className="w-full h-full border-0 pointer-events-none"
             loading="lazy"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
           />
           <a
-            href={`https://www.google.com/maps?q=${lat},${lng}`}
+            href={`https://www.google.com/maps?q=${mapsQuery}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Ver ${name} en Google Maps`}
