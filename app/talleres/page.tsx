@@ -123,7 +123,7 @@ export default async function TalleresPage({
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
 
         {/* Sidebar filtros — fijo en desktop */}
-        <aside className="lg:w-72 lg:shrink-0 lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+        <aside className="lg:w-72 lg:shrink-0 lg:sticky lg:top-24">
           <GarageFilters />
         </aside>
 

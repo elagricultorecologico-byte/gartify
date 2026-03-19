@@ -2,15 +2,17 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation, Car, PackageCheck, Loader2, CheckCircle, Crown } from "lucide-react";
+import {
+  Collapsible, CollapsibleContent, CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation,
+  Car, PackageCheck, Loader2, CheckCircle, Crown, ChevronDown,
+} from "lucide-react";
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 
@@ -55,11 +57,40 @@ function RatingStars({ stars }: { stars: number }) {
   );
 }
 
-function FilterLabel({ children }: { children: React.ReactNode }) {
+function Section({
+  label,
+  icon,
+  active,
+  defaultOpen = true,
+  children,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  active?: boolean;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
-    <span className="block text-[10px] font-semibold uppercase tracking-widest text-gartify-gray mb-1.5 select-none">
-      {children}
-    </span>
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger className="w-full flex items-center justify-between py-2 group">
+        <span className={cn(
+          "flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest select-none",
+          active ? "text-gartify-hero" : "text-gartify-gray"
+        )}>
+          {icon}
+          {label}
+          {active && <span className="h-1.5 w-1.5 rounded-full bg-gartify-hero" />}
+        </span>
+        <ChevronDown className={cn(
+          "h-3.5 w-3.5 text-gartify-gray/60 transition-transform duration-200",
+          open && "rotate-180"
+        )} />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pb-3">
+        {children}
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
@@ -86,10 +117,7 @@ export function GarageFilters() {
   }
 
   function requestLocation() {
-    if (!navigator.geolocation) {
-      setGeoError("Tu navegador no soporta geolocalización.");
-      return;
-    }
+    if (!navigator.geolocation) { setGeoError("Tu navegador no soporta geolocalización."); return; }
     setGeoLoading(true);
     setGeoError("");
     navigator.geolocation.getCurrentPosition(
@@ -101,19 +129,14 @@ export function GarageFilters() {
         router.push(`/talleres?${params.toString()}`);
         setGeoLoading(false);
       },
-      () => {
-        setGeoError("No se pudo obtener tu ubicación.");
-        setGeoLoading(false);
-      },
+      () => { setGeoError("No se pudo obtener tu ubicación."); setGeoLoading(false); },
       { timeout: 8000 }
     );
   }
 
   function clearLocation() {
     const params = new URLSearchParams(sp.toString());
-    params.delete("userLat");
-    params.delete("userLng");
-    params.delete("distancia");
+    params.delete("userLat"); params.delete("userLng"); params.delete("distancia");
     router.push(`/talleres?${params.toString()}`);
   }
 
@@ -123,12 +146,12 @@ export function GarageFilters() {
   const hasFilters = activeCount > 0 || hasLocation;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
       {/* Cabecera */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
         <div className="flex items-center gap-2 text-gartify-blue">
           <SlidersHorizontal className="h-4 w-4 shrink-0" />
-          <span className="text-sm font-semibold">Filtrar resultados</span>
+          <span className="text-sm font-semibold">Filtros</span>
         </div>
         {hasFilters && (
           <Button
@@ -146,257 +169,152 @@ export function GarageFilters() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
+      {/* Secciones */}
+      <div className="px-4 divide-y divide-gray-100">
 
-        {/* Ubicación (ciudad/CP) */}
-        <div>
-          <FilterLabel>Ubicación</FilterLabel>
+        {/* Ubicación */}
+        <Section label="Ubicación" icon={<MapPin className="h-3 w-3" />} active={isActive("ciudad")}>
           <div className="relative">
-            <MapPin
-              className={cn(
-                "pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2",
-                isActive("ciudad") ? "text-gartify-hero" : "text-gartify-gray/70"
-              )}
-            />
+            <MapPin className={cn("pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2", isActive("ciudad") ? "text-gartify-hero" : "text-gartify-gray/70")} />
             <Input
               placeholder="Ciudad o CP"
               defaultValue={sp.get("ciudad") ?? ""}
-              className={cn("h-10 pl-8 text-sm transition-all", activeRing("ciudad"))}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") update("ciudad", (e.target as HTMLInputElement).value);
-              }}
+              className={cn("h-9 pl-8 text-sm transition-all", activeRing("ciudad"))}
+              onKeyDown={(e) => { if (e.key === "Enter") update("ciudad", (e.target as HTMLInputElement).value); }}
               onBlur={(e) => update("ciudad", e.target.value)}
             />
           </div>
-        </div>
+        </Section>
 
-        {/* Distancia (geolocalización) */}
-        <div>
-          <FilterLabel>Distancia</FilterLabel>
+        {/* Distancia */}
+        <Section label="Distancia" icon={<Navigation className="h-3 w-3" />} active={hasLocation} defaultOpen={false}>
           {!hasLocation ? (
             <div className="space-y-1.5">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={requestLocation}
-                disabled={geoLoading}
-                className="w-full h-10 gap-2 text-sm font-medium text-gartify-hero border-gartify-hero/30 hover:bg-gartify-hero/5"
-              >
-                {geoLoading ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                ) : (
-                  <Navigation className="h-3.5 w-3.5" />
-                )}
+              <Button type="button" variant="outline" size="sm" onClick={requestLocation} disabled={geoLoading}
+                className="w-full h-9 gap-2 text-sm font-medium text-gartify-hero border-gartify-hero/30 hover:bg-gartify-hero/5">
+                {geoLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Navigation className="h-3.5 w-3.5" />}
                 {geoLoading ? "Detectando..." : "Usar mi ubicación"}
               </Button>
-              {geoError && (
-                <p className="text-[11px] text-red-500">{geoError}</p>
-              )}
+              {geoError && <p className="text-[11px] text-red-500">{geoError}</p>}
             </div>
           ) : (
             <div className="space-y-2">
               <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gartify-hero/5 border border-gartify-hero/20">
                 <CheckCircle className="h-3.5 w-3.5 text-gartify-hero shrink-0" />
                 <span className="text-xs text-gartify-hero font-medium flex-1">Ubicación detectada</span>
-                <button
-                  type="button"
-                  onClick={clearLocation}
-                  className="text-gartify-gray/60 hover:text-red-500 transition-colors"
-                  aria-label="Quitar ubicación"
-                >
+                <button type="button" onClick={clearLocation} className="text-gartify-gray/60 hover:text-red-500 transition-colors" aria-label="Quitar ubicación">
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
               <div className="relative">
-                <Navigation
-                  className={cn(
-                    "pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10",
-                    isActive("distancia") ? "text-gartify-hero" : "text-gartify-gray/70"
-                  )}
-                />
-                <Select
-                  defaultValue={sp.get("distancia") ?? "10"}
-                  onValueChange={(v) => update("distancia", v)}
-                >
-                  <SelectTrigger className={cn("h-10 w-full pl-8 text-sm transition-all", activeRing("distancia"))}>
+                <Navigation className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("distancia") ? "text-gartify-hero" : "text-gartify-gray/70")} />
+                <Select defaultValue={sp.get("distancia") ?? "10"} onValueChange={(v) => update("distancia", v)}>
+                  <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("distancia"))}>
                     <SelectValue placeholder="Radio de búsqueda" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    {DISTANCE_OPTIONS.map((d) => (
-                      <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
-                    ))}
+                    {DISTANCE_OPTIONS.map((d) => <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
             </div>
           )}
-        </div>
+        </Section>
 
         {/* Servicio */}
-        <div>
-          <FilterLabel>Servicio</FilterLabel>
+        <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={false}>
           <div className="relative">
-            <Wrench
-              className={cn(
-                "pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10",
-                isActive("servicio") ? "text-gartify-hero" : "text-gartify-gray/70"
-              )}
-            />
-            <Select
-              defaultValue={sp.get("servicio") ?? "ALL"}
-              onValueChange={(v) => update("servicio", v)}
-            >
-              <SelectTrigger className={cn("h-10 w-full pl-8 text-sm transition-all", activeRing("servicio"))}>
+            <Wrench className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("servicio") ? "text-gartify-hero" : "text-gartify-gray/70")} />
+            <Select defaultValue={sp.get("servicio") ?? "ALL"} onValueChange={(v) => update("servicio", v)}>
+              <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("servicio"))}>
                 <SelectValue placeholder="Todos los servicios" />
               </SelectTrigger>
               <SelectContent position="popper">
                 <SelectItem value="ALL">Todos los servicios</SelectItem>
-                {SEARCHABLE_SERVICES.map((s) => (
-                  <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>
-                ))}
+                {SEARCHABLE_SERVICES.map((s) => <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-        </div>
+        </Section>
 
         {/* Precio */}
-        <div>
-          <FilterLabel>Precio</FilterLabel>
+        <Section label="Precio" icon={<Euro className="h-3 w-3" />} active={isActive("precio")} defaultOpen={false}>
           <div className="relative">
-            <Euro
-              className={cn(
-                "pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10",
-                isActive("precio") ? "text-gartify-hero" : "text-gartify-gray/70"
-              )}
-            />
-            <Select
-              defaultValue={sp.get("precio") ?? "ALL"}
-              onValueChange={(v) => update("precio", v)}
-            >
-              <SelectTrigger className={cn("h-10 w-full pl-8 text-sm transition-all", activeRing("precio"))}>
+            <Euro className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("precio") ? "text-gartify-hero" : "text-gartify-gray/70")} />
+            <Select defaultValue={sp.get("precio") ?? "ALL"} onValueChange={(v) => update("precio", v)}>
+              <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("precio"))}>
                 <SelectValue placeholder="Cualquier precio" />
               </SelectTrigger>
               <SelectContent position="popper">
                 <SelectItem value="ALL">Cualquier precio</SelectItem>
-                {PRICE_RANGES.map((r) => (
-                  <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
-                ))}
+                {PRICE_RANGES.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-        </div>
+        </Section>
 
         {/* Valoración */}
-        <div>
-          <FilterLabel>Valoración</FilterLabel>
+        <Section label="Valoración" icon={<Star className="h-3 w-3" />} active={isActive("rating")} defaultOpen={false}>
           <div className="relative">
-            <Star
-              className={cn(
-                "pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10",
-                isActive("rating") ? "fill-yellow-400 text-yellow-400" : "text-gartify-gray/70"
-              )}
-            />
-            <Select
-              defaultValue={sp.get("rating") ?? "ALL"}
-              onValueChange={(v) => update("rating", v)}
-            >
-              <SelectTrigger className={cn("h-10 w-full pl-8 text-sm transition-all", activeRing("rating"))}>
+            <Star className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("rating") ? "fill-yellow-400 text-yellow-400" : "text-gartify-gray/70")} />
+            <Select defaultValue={sp.get("rating") ?? "ALL"} onValueChange={(v) => update("rating", v)}>
+              <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("rating"))}>
                 <SelectValue placeholder="Cualquier valoración" />
               </SelectTrigger>
               <SelectContent position="popper">
                 <SelectItem value="ALL">Cualquier valoración</SelectItem>
-                {RATING_OPTIONS.map((r) => (
-                  <SelectItem key={r.value} value={r.value}>
-                    <RatingStars stars={r.stars} />
-                  </SelectItem>
-                ))}
+                {RATING_OPTIONS.map((r) => <SelectItem key={r.value} value={r.value}><RatingStars stars={r.stars} /></SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-        </div>
+        </Section>
 
         {/* Tipo de vehículo */}
-        <div>
-          <FilterLabel>Tipo de vehículo</FilterLabel>
+        <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={false}>
           <div className="grid grid-cols-2 gap-1.5">
             {VEHICLE_TYPES.map((tipo) => {
               const activo = sp.get("vehicleType") === tipo;
               return (
-                <button
-                  key={tipo}
-                  type="button"
-                  onClick={() => update("vehicleType", activo ? "ALL" : tipo)}
-                  aria-pressed={activo}
+                <button key={tipo} type="button" onClick={() => update("vehicleType", activo ? "ALL" : tipo)} aria-pressed={activo}
                   className={cn(
-                    "flex items-center gap-1.5 h-9 px-2.5 rounded-lg border text-xs font-medium transition-all",
-                    activo
-                      ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30"
-                      : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
-                  )}
-                >
+                    "flex items-center gap-1.5 h-8 px-2 rounded-lg border text-xs font-medium transition-all",
+                    activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                  )}>
                   <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
                   {VEHICLE_LABELS[tipo]}
                 </button>
               );
             })}
           </div>
-        </div>
+        </Section>
 
         {/* Extras */}
-        <div>
-          <FilterLabel>Extras</FilterLabel>
-          <div className="flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => update("cocheCortesia", isActive("cocheCortesia") ? "ALL" : "true")}
+        <Section label="Extras" icon={<PackageCheck className="h-3 w-3" />} active={isActive("cocheCortesia") || isActive("recogida") || isActive("premium")} defaultOpen={false}>
+          <div className="flex flex-col gap-1.5">
+            {[
+              { key: "cocheCortesia", icon: <Car className="h-3.5 w-3.5 shrink-0" />, label: "Vehículo de cortesía" },
+              { key: "recogida",      icon: <PackageCheck className="h-3.5 w-3.5 shrink-0" />, label: "Servicio de recogida" },
+            ].map(({ key, icon, label }) => (
+              <button key={key} type="button" onClick={() => update(key, isActive(key) ? "ALL" : "true")}
+                className={cn(
+                  "w-full flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all",
+                  isActive(key) ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                )}>
+                {icon}{label}
+                {isActive(key) && <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-gartify-hero" />}
+              </button>
+            ))}
+            <button type="button" onClick={() => update("premium", isActive("premium") ? "ALL" : "true")}
               className={cn(
-                "w-full flex items-center gap-2.5 h-10 px-3 rounded-lg border text-sm font-medium transition-all",
-                isActive("cocheCortesia")
-                  ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30"
-                  : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
-              )}
-            >
-              <Car className="h-3.5 w-3.5 shrink-0" />
-              Vehículo de cortesía
-              {isActive("cocheCortesia") && (
-                <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-gartify-hero" />
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() => update("recogida", isActive("recogida") ? "ALL" : "true")}
-              className={cn(
-                "w-full flex items-center gap-2.5 h-10 px-3 rounded-lg border text-sm font-medium transition-all",
-                isActive("recogida")
-                  ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30"
-                  : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
-              )}
-            >
-              <PackageCheck className="h-3.5 w-3.5 shrink-0" />
-              Servicio de recogida
-              {isActive("recogida") && (
-                <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-gartify-hero" />
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={() => update("premium", isActive("premium") ? "ALL" : "true")}
-              className={cn(
-                "w-full flex items-center gap-2.5 h-10 px-3 rounded-lg border text-sm font-medium transition-all",
-                isActive("premium")
-                  ? "bg-amber-50 border-amber-300 text-amber-700 ring-2 ring-amber-200"
-                  : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
-              )}
-            >
+                "w-full flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all",
+                isActive("premium") ? "bg-amber-50 border-amber-300 text-amber-700 ring-2 ring-amber-200" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+              )}>
               <Crown className={cn("h-3.5 w-3.5 shrink-0", isActive("premium") ? "text-amber-500" : "")} />
               Taller Premium
-              {isActive("premium") && (
-                <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-amber-500" />
-              )}
+              {isActive("premium") && <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-amber-500" />}
             </button>
           </div>
-        </div>
+        </Section>
 
       </div>
     </div>
