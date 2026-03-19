@@ -118,7 +118,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
   return (
     <div>
       {/* Barra de búsqueda y filtro */}
-      <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100">
+      <div className="flex items-center gap-2 px-3 py-3 border-b border-gray-100">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
           <Input
@@ -151,13 +151,13 @@ export function UserTable({ users: initial }: { users: User[] }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50">
-            <th className="text-left px-5 py-3 text-xs font-semibold text-gartify-gray">Nombre</th>
-            <th className="text-left px-5 py-3 text-xs font-semibold text-gartify-gray">Email</th>
-            <th className="text-left px-5 py-3 text-xs font-semibold text-gartify-gray">Teléfono</th>
-            <th className="text-left px-5 py-3 text-xs font-semibold text-gartify-gray">Rol</th>
-            <th className="text-left px-5 py-3 text-xs font-semibold text-gartify-gray">Acceso</th>
-            <th className="text-left px-5 py-3 text-xs font-semibold text-gartify-gray">Alta</th>
-            <th className="px-5 py-3" />
+            <th className="text-left px-3 py-3 text-xs font-semibold text-gartify-gray">Nombre</th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-gartify-gray">Email</th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-gartify-gray">Teléfono</th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-gartify-gray">Rol</th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-gartify-gray">Acceso</th>
+            <th className="text-left px-3 py-3 text-xs font-semibold text-gartify-gray">Alta</th>
+            <th className="px-3 py-3" />
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
@@ -166,7 +166,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
             return (
               <tr key={u.id} className="hover:bg-gray-50 transition-colors">
                 {/* Nombre */}
-                <td className="px-5 py-3">
+                <td className="px-3 py-3">
                   {isEditing ? (
                     <Input
                       value={editData.name}
@@ -186,7 +186,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
                 </td>
 
                 {/* Email */}
-                <td className="px-5 py-3">
+                <td className="px-3 py-3 max-w-[180px]">
                   {isEditing ? (
                     <Input
                       value={editData.email}
@@ -194,14 +194,15 @@ export function UserTable({ users: initial }: { users: User[] }) {
                       className="h-8 text-sm w-44"
                     />
                   ) : (
-                    <span className="flex items-center gap-1 text-gartify-gray">
-                      <Mail className="h-3 w-3 shrink-0" />{u.email}
+                    <span className="flex items-center gap-1 text-gartify-gray min-w-0">
+                      <Mail className="h-3 w-3 shrink-0" />
+                      <span className="truncate" title={u.email}>{u.email}</span>
                     </span>
                   )}
                 </td>
 
                 {/* Teléfono */}
-                <td className="px-5 py-3 whitespace-nowrap">
+                <td className="px-3 py-3 whitespace-nowrap">
                   {isEditing ? (
                     <Input
                       value={editData.phone}
@@ -215,7 +216,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
                 </td>
 
                 {/* Rol */}
-                <td className="px-5 py-3">
+                <td className="px-3 py-3">
                   {isEditing ? (
                     <select
                       value={editData.role}
@@ -243,7 +244,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
                 </td>
 
                 {/* Acceso */}
-                <td className="px-5 py-3">
+                <td className="px-3 py-3">
                   {u.password ? (
                     <span className="flex items-center gap-1 text-xs text-gartify-gray">
                       <Mail className="h-3 w-3" /> Email
@@ -261,7 +262,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
                 </td>
 
                 {/* Acciones */}
-                <td className="px-5 py-3">
+                <td className="px-3 py-3">
                   {isEditing ? (
                     <div className="flex items-center gap-1">
                       <Button
@@ -321,7 +322,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
       </table>
 
       {/* Footer: filas por página + paginador */}
-      <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 bg-gray-50 text-xs text-gartify-gray">
+      <div className="flex items-center justify-between px-3 py-3 border-t border-gray-100 bg-gray-50 text-xs text-gartify-gray">
         <div className="flex items-center gap-2">
           <span>Filas por página</span>
           <select
