@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation, Car, PackageCheck, Loader2, CheckCircle } from "lucide-react";
+import { X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation, Car, PackageCheck, Loader2, CheckCircle, Crown } from "lucide-react";
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 
@@ -118,7 +118,7 @@ export function GarageFilters() {
   }
 
   const hasLocation = sp.has("userLat") && sp.has("userLng");
-  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType"]
+  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType", "premium"]
     .filter(isActive).length;
   const hasFilters = activeCount > 0 || hasLocation;
 
@@ -377,6 +377,22 @@ export function GarageFilters() {
               Servicio de recogida
               {isActive("recogida") && (
                 <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-gartify-hero" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => update("premium", isActive("premium") ? "ALL" : "true")}
+              className={cn(
+                "w-full flex items-center gap-2.5 h-10 px-3 rounded-lg border text-sm font-medium transition-all",
+                isActive("premium")
+                  ? "bg-amber-50 border-amber-300 text-amber-700 ring-2 ring-amber-200"
+                  : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+              )}
+            >
+              <Crown className={cn("h-3.5 w-3.5 shrink-0", isActive("premium") ? "text-amber-500" : "")} />
+              Taller Premium
+              {isActive("premium") && (
+                <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-amber-500" />
               )}
             </button>
           </div>

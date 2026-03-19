@@ -9,7 +9,7 @@ import { VEHICLE_LABELS } from "@/lib/utils";
 type SearchParams = {
   servicio?: string; ciudad?: string; precio?: string; rating?: string;
   distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
-  vehicleType?: string;
+  vehicleType?: string; premium?: string;
 };
 
 function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
@@ -55,7 +55,7 @@ export default async function TalleresPage({
   const distanciaKm = searchParams.distancia ? parseInt(searchParams.distancia) : null;
   const cocheCortesia = searchParams.cocheCortesia === "true";
   const recogida = searchParams.recogida === "true";
-  // vehicleType: filtra garages cuyo campo JSON vehicleTypes contenga el tipo
+  const premiumOnly = searchParams.premium === "true";
   const vehicleType = searchParams.vehicleType ?? null;
 
   let garages = await db.garage.findMany({
@@ -70,6 +70,7 @@ export default async function TalleresPage({
       ...(ratingMin !== null && { rating: { gte: ratingMin } }),
       ...(cocheCortesia && { courtesyCar: true }),
       ...(recogida && { pickupService: true }),
+      ...(premiumOnly && { plan: "PREMIUM" }),
       // Filtro por tipo de vehículo: SQLite contains sobre el JSON array serializado
       ...(vehicleType && { vehicleTypes: { contains: vehicleType } }),
       ...((searchParams.servicio || precioFilter) && {
