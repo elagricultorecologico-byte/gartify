@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, Clock, Wrench } from "lucide-react";
 import Link from "next/link";
-import { formatPrice, SERVICE_LABELS } from "@/lib/utils";
+import { formatPrice, SERVICE_LABELS, VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
 import { ServiceForm } from "@/components/cuenta/ServiceForm";
 
 export const metadata: Metadata = {
@@ -25,13 +25,14 @@ export default async function ServiciosPage() {
       id: true,
       services: {
         select: {
-          id: true,
-          type: true,
-          name: true,
-          description: true,
-          duration: true,
-          price: true,
-          isActive: true,
+          id:           true,
+          type:         true,
+          name:         true,
+          description:  true,
+          duration:     true,
+          price:        true,
+          isActive:     true,
+          vehicleTypes: true,
         },
         orderBy: { name: "asc" },
       },
@@ -91,9 +92,32 @@ export default async function ServiciosPage() {
   );
 }
 
-type ServiceItem = { id: string; type: string; name: string | null; description: string | null; price: number; duration: number; isActive: boolean };
+type ServiceItem = {
+  id:           string;
+  type:         string;
+  name:         string | null;
+  description:  string | null;
+  price:        number;
+  duration:     number;
+  isActive:     boolean;
+  vehicleTypes: string;
+};
+
+/** Parsea el JSON de vehicleTypes almacenado en SQLite y devuelve un array tipado */
+function parsearTiposVehiculo(raw: string): VehicleType[] {
+  try {
+    const parsed = JSON.parse(raw) as string[];
+    return parsed.filter((v): v is VehicleType =>
+      (VEHICLE_TYPES as readonly string[]).includes(v)
+    );
+  } catch {
+    return ["COCHE"];
+  }
+}
 
 function ServiceRow({ s, inactive }: { s: ServiceItem; inactive?: boolean }) {
+  const tiposVehiculo = parsearTiposVehiculo(s.vehicleTypes);
+
   return (
     <div className={`bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col sm:flex-row ${inactive ? "border-gray-200" : "border-gray-200 hover:border-gartify-orange/40 hover:shadow-md"} transition-all`}>
       {/* Left accent */}
@@ -114,9 +138,26 @@ function ServiceRow({ s, inactive }: { s: ServiceItem; inactive?: boolean }) {
           {s.description && (
             <p className="text-xs text-muted-foreground line-clamp-1">{s.description}</p>
           )}
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Clock className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-            {s.duration} min
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Clock className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
+              {s.duration} min
+            </div>
+            {/* Iconos de tipos de vehículo */}
+            {tiposVehiculo.length > 0 && (
+              <div className="flex items-center gap-1" aria-label="Tipos de vehículo admitidos">
+                {tiposVehiculo.map((tipo) => (
+                  <span
+                    key={tipo}
+                    title={VEHICLE_LABELS[tipo]}
+                    aria-label={VEHICLE_LABELS[tipo]}
+                    className="text-sm leading-none"
+                  >
+                    {VEHICLE_ICONS[tipo]}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <p className="text-xl font-bold text-gartify-orange shrink-0">{formatPrice(s.price)}</p>

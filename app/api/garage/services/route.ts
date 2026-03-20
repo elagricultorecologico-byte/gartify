@@ -6,12 +6,16 @@ import { z } from "zod";
 const SERVICE_TYPES = ["ITV","PRE_ITV","REVISION","CAMBIO_ACEITE","FRENOS","NEUMATICOS","CLIMATIZACION","DIAGNOSTICO","ELECTRICIDAD","OTRO"] as const;
 
 const schema = z.object({
-  garageId:    z.string(),
-  type:        z.enum(SERVICE_TYPES),
-  name:        z.string().min(1),
-  description: z.string().optional(),
-  price:       z.number().positive(),
-  duration:    z.number().int().positive(),
+  garageId:     z.string(),
+  type:         z.enum(SERVICE_TYPES),
+  name:         z.string().min(1),
+  description:  z.string().optional(),
+  price:        z.number().positive(),
+  duration:     z.number().int().positive(),
+  vehicleTypes: z
+    .array(z.string())
+    .min(1, "Selecciona al menos un tipo de vehículo")
+    .default(["COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION"]),
 });
 
 export async function POST(req: Request) {
@@ -22,16 +26,25 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
 
-  const { garageId, type, name, description, price, duration } = parsed.data;
+  const { garageId, type, name, description, price, duration, vehicleTypes } = parsed.data;
 
-  // Verify the garage belongs to this user
+  // Verificar que el taller pertenece al usuario autenticado
   const garage = await db.garage.findUnique({ where: { id: garageId } });
   if (!garage || garage.ownerId !== session.user.id) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 
   const service = await db.garageService.create({
-    data: { garageId, type, name, description, price, duration },
+    data: {
+      garageId,
+      type,
+      name,
+      description,
+      price,
+      duration,
+      // Persiste como JSON array serializado, igual que Garage.vehicleTypes
+      vehicleTypes: JSON.stringify(vehicleTypes),
+    },
   });
 
   return NextResponse.json(service, { status: 201 });

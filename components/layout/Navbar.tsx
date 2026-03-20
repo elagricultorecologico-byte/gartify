@@ -91,6 +91,9 @@ export function Navbar() {
                       <Link href="/cuenta/taller" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <Settings className="h-4 w-4 text-gartify-blue" />Mi portal
                       </Link>
+                      <Link href="/cuenta/taller/perfil" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <User className="h-4 w-4 text-gartify-blue" />Perfil del taller
+                      </Link>
                       <Link href="/cuenta/taller/servicios" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <Wrench className="h-4 w-4 text-gartify-blue" />
                         Servicios

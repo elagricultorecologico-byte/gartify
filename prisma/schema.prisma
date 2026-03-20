@@ -82,16 +82,17 @@ model GarageSchedule {
 }
 
 model GarageService {
-  id          String    @id @default(cuid())
-  garageId    String
-  garage      Garage    @relation(fields: [garageId], references: [id], onDelete: Cascade)
-  type        String
-  name        String
-  description String?
-  price       Float
-  duration    Int
-  isActive    Boolean   @default(true)
-  bookings    Booking[]
+  id           String    @id @default(cuid())
+  garageId     String
+  garage       Garage    @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  type         String
+  name         String
+  description  String?
+  price        Float
+  duration     Int
+  isActive     Boolean   @default(true)
+  vehicleTypes String    @default("[\"COCHE\",\"MOTO\",\"FURGONETA\",\"AUTOCARAVANA\",\"CAMPER\",\"CAMION\"]") // JSON array: tipos de vehículo que admite este servicio
+  bookings     Booking[]
 }
 
 model Booking {

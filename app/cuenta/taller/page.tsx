@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import {
-  Settings, Plus, Calendar, Euro, Star,
+  Plus, Calendar, Euro, Star,
   TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
@@ -148,12 +148,6 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
             <Button variant="outline" size="sm" className="gap-2 border-gartify-orange/40 text-gartify-orange hover:bg-orange-50">
               <Package className="h-4 w-4" aria-hidden="true" />
               Recambios
-            </Button>
-          </Link>
-          <Link href="/cuenta/taller/perfil">
-            <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
-              <Settings className="h-4 w-4" aria-hidden="true" />
-              Perfil
             </Button>
           </Link>
         </div>
