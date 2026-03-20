@@ -156,14 +156,14 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
           <div className="flex items-start gap-5 flex-wrap sm:flex-nowrap">
             {/* Preview */}
             <div className="shrink-0">
-              <div className="h-24 w-24 rounded-xl overflow-hidden border-2 border-gray-200 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center">
+              <div className="h-24 w-24 rounded-xl overflow-hidden border-2 border-gray-200 bg-white flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={logoPreview ?? "/logo-letra-fondo-azul.png"}
                   alt="Vista previa del logo"
                   className={logoPreview && logoPreview !== "/logo-letra-fondo-azul.png"
                     ? "w-full h-full object-cover rounded-xl"
-                    : "h-16 w-16 object-contain opacity-80 rounded-xl"}
+                    : "w-full h-full object-cover rounded-xl"}
                 />
               </div>
               {logoPreview && logoPreview !== (garage.logo ?? null) && logoFile && (

@@ -2,14 +2,40 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, User, LogOut, Settings } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, LogOut, Settings, CreditCard, Wrench, Tag, CalendarClock, User } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const isGarageOwner = (session?.user as { role?: string })?.role === "GARAGE_OWNER";
+  const isAdmin = (session?.user as { role?: string })?.role === "ADMIN";
+  const firstName = session?.user?.name?.split(" ")[0] ?? "Usuario";
+  const initial = session?.user?.name?.charAt(0).toUpperCase() ?? "U";
+  const [counts, setCounts] = useState<{ services: number; offers: number } | null>(null);
+
+  const fetchCounts = useCallback(async () => {
+    if (!isGarageOwner) return;
+    const res = await fetch("/api/garage/counts");
+    if (res.ok) setCounts(await res.json() as { services: number; offers: number });
+  }, [isGarageOwner]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (dropdownOpen) fetchCounts();
+  }, [dropdownOpen, fetchCounts]);
 
   return (
     <header className="sticky top-0 z-50 bg-gartify-blue shadow-md">
@@ -36,48 +62,76 @@ export function Navbar() {
         </nav>
 
         {/* Auth */}
-        <div className="hidden md:flex items-center gap-2 text-sm font-bold tracking-wide uppercase">
+        <div className="hidden md:flex items-center gap-2">
           {session ? (
-            <>
-              {isGarageOwner ? (
-                /* — Garage owner: accesos directos al portal — */
-                <>
-                  <Link href="/cuenta/taller">
-                    <Button variant="ghost" size="sm" className="gap-2 text-white hover:text-white hover:bg-white/10">
-                      <Settings className="h-4 w-4" />
-                      Mi portal
-                    </Button>
-                  </Link>
-                  <Link href="/cuenta/taller/servicios">
-                    <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
-                      Servicios
-                    </Button>
-                  </Link>
-                  <Link href="/cuenta/taller/perfil">
-                    <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
-                      Perfil
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                /* — Cliente: enlace a mis reservas — */
-                <Link href="/cuenta">
-                  <Button variant="ghost" size="sm" className="gap-2 text-white hover:text-white hover:bg-white/10">
-                    <User className="h-4 w-4" />
-                    {session.user?.name?.split(" ")[0] ?? "Mi cuenta"}
-                  </Button>
-                </Link>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/70 hover:text-white hover:bg-white/10"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                aria-label="Cerrar sesión"
+            <div className="relative" ref={dropdownRef}>
+              {/* Avatar trigger */}
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors"
               >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </>
+                <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                  {initial}
+                </div>
+                <span className="text-white text-sm font-semibold">{firstName}</span>
+              </button>
+
+              {/* Dropdown */}
+              {dropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
+                  {/* Header */}
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="text-xs text-muted-foreground">Conectado como</p>
+                    <p className="text-sm font-semibold text-gartify-blue truncate">{session.user?.name}</p>
+                  </div>
+
+                  {/* Links según rol */}
+                  {isGarageOwner ? (
+                    <>
+                      <Link href="/cuenta/taller" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <Settings className="h-4 w-4 text-gartify-blue" />Mi portal
+                      </Link>
+                      <Link href="/cuenta/taller/servicios" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <Wrench className="h-4 w-4 text-gartify-blue" />
+                        Servicios
+                        {counts && <span className="ml-auto text-xs text-muted-foreground">({counts.services})</span>}
+                      </Link>
+                      <Link href="/cuenta/taller/ofertas" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <Tag className="h-4 w-4 text-gartify-blue" />
+                        Ofertas
+                        {counts && <span className="ml-auto text-xs text-muted-foreground">({counts.offers})</span>}
+                      </Link>
+                      <Link href="/cuenta/taller/planes" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <CreditCard className="h-4 w-4 text-gartify-blue" />Planes
+                      </Link>
+                    </>
+                  ) : isAdmin ? (
+                    <Link href="/admin" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      <Settings className="h-4 w-4 text-gartify-blue" />Panel admin
+                    </Link>
+                  ) : (
+                    <>
+                      <Link href="/cuenta" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <CalendarClock className="h-4 w-4 text-gartify-blue" />Mis reservas
+                      </Link>
+                      <Link href="/cuenta/perfil" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <User className="h-4 w-4 text-gartify-blue" />Mi perfil
+                      </Link>
+                    </>
+                  )}
+
+                  {/* Cerrar sesión */}
+                  <div className="border-t border-gray-100 mt-1 pt-1">
+                    <button
+                      onClick={() => signOut({ callbackUrl: "/" })}
+                      className="flex items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-red-50 w-full"
+                    >
+                      <LogOut className="h-4 w-4" />Cerrar sesión
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Link href="/login">
@@ -109,11 +163,18 @@ export function Navbar() {
           <Link href="/precios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Precios</Link>
           {session ? (
             <>
+              <div className="flex items-center gap-2 pb-2 border-b border-white/10">
+                <div className="h-7 w-7 rounded-full bg-gartify-orange flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
+                </div>
+                <span className="text-white text-sm font-semibold">{session.user?.name ?? "Usuario"}</span>
+              </div>
               {isGarageOwner ? (
                 <>
                   <Link href="/cuenta/taller" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Mi portal</Link>
                   <Link href="/cuenta/taller/servicios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Servicios</Link>
                   <Link href="/cuenta/taller/perfil" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Perfil del taller</Link>
+                  <Link href="/cuenta/taller/planes" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Planes y suscripcion</Link>
                 </>
               ) : (
                 <Link href="/cuenta" className="block text-sm text-white" onClick={() => setOpen(false)}>Mis reservas</Link>

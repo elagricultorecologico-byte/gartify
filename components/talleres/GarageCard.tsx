@@ -1,8 +1,14 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { MapPin, Star, Clock, ShieldCheck, ExternalLink, Crown, Car, PackageCheck, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, SERVICE_LABELS, VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
+
+const GarageCardMap = dynamic(
+  () => import("./GarageCardMap").then((m) => m.GarageCardMap),
+  { ssr: false, loading: () => <div className="hidden sm:block sm:w-44 sm:shrink-0 bg-gray-50 animate-pulse border-l border-gray-100" /> }
+);
 
 type Service = { id: string; type: string; name: string; price: number; duration: number };
 
@@ -86,55 +92,20 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-orange/40 transition-all overflow-hidden flex flex-col sm:flex-row">
-      {/* Left: mapa con logo superpuesto */}
-      <a
-        href={`https://www.google.com/maps?q=${mapsQuery}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Ver ${name} en Google Maps`}
-        className="relative sm:w-44 sm:shrink-0 min-h-[120px] sm:min-h-0 overflow-hidden border-r border-gray-100 group block"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`https://maps.googleapis.com/maps/api/staticmap?center=${mapsQuery}&zoom=15&size=176x220&markers=icon:${process.env.NEXT_PUBLIC_BASE_URL}/logo-letra-fondo-azul.png%7Cscale:1%7C${mapsQuery}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
-          alt={`Mapa de ${name}`}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-        {/* Capa azul semitransparente */}
-        <div className="absolute inset-0 bg-gartify-hero/50" />
-        {/* Logo superpuesto centrado */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl p-1.5 shadow-md">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logo ?? "/logo-letra-fondo-azul.png"}
-              alt={logo ? `Logo de ${name}` : "Gartify"}
-              className="h-14 w-14 object-contain rounded-xl"
-            />
-          </div>
-        </div>
-        {/* Badge Premium */}
-        {plan === "PREMIUM" && (
-          <div className="absolute top-2 left-2 flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
-            <Crown className="h-2.5 w-2.5" />
-            Premium
-          </div>
-        )}
-        {/* Hover overlay */}
-        <div className="absolute inset-0 flex items-end justify-end p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <span className="inline-flex items-center gap-1 rounded bg-white/90 border border-gray-200 text-xs text-gartify-blue font-medium px-2 py-1 shadow-sm">
-            <ExternalLink className="h-3 w-3" /> Ver mapa
-          </span>
-        </div>
-      </a>
-
       {/* Center: content */}
       <div className="flex-1 px-4 py-3 flex flex-col gap-2 min-w-0">
 
         {/* Fila 1: nombre + rating */}
         <div className="flex items-center justify-between gap-2 min-w-0">
-          <h3 className="font-bold text-gartify-blue text-base leading-tight truncate">{name}</h3>
+          <div className="flex items-center gap-2 min-w-0">
+            <h3 className="font-bold text-gartify-blue text-base leading-tight truncate">{name}</h3>
+            {plan === "PREMIUM" && (
+              <span className="inline-flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm shrink-0">
+                <Crown className="h-2.5 w-2.5" />
+                Premium
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1 shrink-0">
             <StarRating rating={rating} />
             <span className="text-sm font-bold text-foreground">{rating.toFixed(1)}</span>
@@ -180,15 +151,19 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
               {VEHICLE_ICONS[tipo]}
             </span>
           ))}
-          {/* Extras inline */}
-          {courtesyCar && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 text-xs px-2.5 py-0.5 font-medium border border-green-100">
-              <Car className="h-3 w-3" />Coche cortesía
-            </span>
-          )}
-          {pickupService && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 text-xs px-2.5 py-0.5 font-medium border border-purple-100">
-              <PackageCheck className="h-3 w-3" />Recogida
+          {/* Extras inline — agrupados para que no se separen al hacer wrap */}
+          {(courtesyCar || pickupService) && (
+            <span className="inline-flex items-center gap-1.5">
+              {courtesyCar && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 text-xs px-2.5 py-0.5 font-medium border border-green-100">
+                  <Car className="h-3 w-3" />Coche cortesía
+                </span>
+              )}
+              {pickupService && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 text-xs px-2.5 py-0.5 font-medium border border-purple-100">
+                  <PackageCheck className="h-3 w-3" />Recogida
+                </span>
+              )}
             </span>
           )}
         </div>
@@ -238,6 +213,11 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
             </Button>
           </Link>
         </div>
+      </div>
+
+      {/* Right: mapa interactivo Google Maps */}
+      <div className="hidden sm:block relative sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100">
+        <GarageCardMap lat={lat} lng={lng} address={`${address}, ${city}, España`} mapsUrl={mapsUrl} />
       </div>
 
     </div>

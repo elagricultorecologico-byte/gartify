@@ -6,10 +6,11 @@ import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import {
   Settings, Plus, Calendar, Euro, Star,
-  TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown,
+  TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
+import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function TallerPortalPage() {
+interface PropsTallerPortalPage {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function TallerPortalPage({ searchParams }: PropsTallerPortalPage) {
+  const params = await searchParams;
+  const suscripcionActivada = params.success === "1";
+
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
@@ -31,6 +39,8 @@ export default async function TallerPortalPage() {
       id: true,
       name: true,
       plan: true,
+      planExpiresAt: true,
+      stripeSubscriptionId: true,
       rating: true,
       services: {
         where: { isActive: true },
@@ -70,6 +80,9 @@ export default async function TallerPortalPage() {
 
   return (
     <div className="container max-w-5xl py-10">
+      {/* Banner de confirmación de suscripción exitosa */}
+      {suscripcionActivada && <BannerExitoSuscripcion plan={garage.plan} />}
+
       <div className="flex items-center justify-between mb-8">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -94,8 +107,25 @@ export default async function TallerPortalPage() {
             )}
           </div>
           <p className="text-muted-foreground text-sm">Panel de gestión del taller</p>
+          {/* Fecha de próxima renovación para planes de pago */}
+          {garage.planExpiresAt && garage.plan !== "STARTER" && (
+            <p className="text-xs text-muted-foreground">
+              Renueva el{" "}
+              {new Intl.DateTimeFormat("es-ES", { dateStyle: "medium" }).format(garage.planExpiresAt)}
+            </p>
+          )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Link href="/cuenta/taller/planes">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 border-gartify-orange/50 text-gartify-orange hover:bg-orange-50 font-semibold"
+            >
+              <CreditCard className="h-4 w-4" aria-hidden="true" />
+              {garage.stripeSubscriptionId ? "Gestionar plan" : "Mejorar plan"}
+            </Button>
+          </Link>
           <Link href="/cuenta/taller/servicios">
             <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
               <Plus className="h-4 w-4" aria-hidden="true" />

@@ -346,6 +346,7 @@ export default function PreciosPage() {
                 {[
                   { icono: Check,     texto: "Todo lo del plan Starter" },
                   { icono: Wrench,    texto: "Servicios ilimitados" },
+                  { icono: Tag,       texto: "Ofertas especiales de horario" },
                   { icono: Search,    texto: "Posición destacada en búsqueda" },
                   { icono: Bell,      texto: "Notificaciones automáticas al cliente" },
                   { icono: BarChart3, texto: "Panel de estadísticas" },

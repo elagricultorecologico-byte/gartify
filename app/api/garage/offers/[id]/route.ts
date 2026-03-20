@@ -23,7 +23,7 @@ export async function DELETE(
     where: { id: params.id },
     select: {
       id:     true,
-      garage: { select: { ownerId: true } },
+      garage: { select: { ownerId: true, plan: true } },
     },
   });
 
@@ -33,6 +33,10 @@ export async function DELETE(
 
   if (oferta.garage.ownerId !== usuario.id) {
     return NextResponse.json({ error: "No tienes permiso para eliminar esta oferta" }, { status: 403 });
+  }
+
+  if (oferta.garage.plan !== "PRO" && oferta.garage.plan !== "PREMIUM") {
+    return NextResponse.json({ error: "Plan Pro o Premium requerido" }, { status: 403 });
   }
 
   await db.garageOffer.delete({ where: { id: params.id } });

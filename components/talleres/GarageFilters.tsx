@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/collapsible";
 import {
   X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation,
-  Car, PackageCheck, Loader2, CheckCircle, Crown, ChevronDown,
+  Car, PackageCheck, Loader2, CheckCircle, Crown, ChevronDown, Zap,
 } from "lucide-react";
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
@@ -141,7 +141,7 @@ export function GarageFilters() {
   }
 
   const hasLocation = sp.has("userLat") && sp.has("userLng");
-  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType", "premium"]
+  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType", "premium", "conOfertas"]
     .filter(isActive).length;
   const hasFilters = activeCount > 0 || hasLocation;
 
@@ -289,7 +289,7 @@ export function GarageFilters() {
         </Section>
 
         {/* Extras */}
-        <Section label="Extras" icon={<PackageCheck className="h-3 w-3" />} active={isActive("cocheCortesia") || isActive("recogida") || isActive("premium")} defaultOpen={false}>
+        <Section label="Extras" icon={<PackageCheck className="h-3 w-3" />} active={isActive("cocheCortesia") || isActive("recogida") || isActive("premium") || isActive("conOfertas")} defaultOpen={false}>
           <div className="flex flex-col gap-1.5">
             {[
               { key: "cocheCortesia", icon: <Car className="h-3.5 w-3.5 shrink-0" />, label: "Vehículo de cortesía" },
@@ -312,6 +312,15 @@ export function GarageFilters() {
               <Crown className={cn("h-3.5 w-3.5 shrink-0", isActive("premium") ? "text-amber-500" : "")} />
               Taller Premium
               {isActive("premium") && <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-amber-500" />}
+            </button>
+            <button type="button" onClick={() => update("conOfertas", isActive("conOfertas") ? "ALL" : "true")}
+              className={cn(
+                "w-full flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all",
+                isActive("conOfertas") ? "bg-green-50 border-green-300 text-green-700 ring-2 ring-green-200" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+              )}>
+              <Zap className={cn("h-3.5 w-3.5 shrink-0", isActive("conOfertas") ? "text-green-600 fill-green-500" : "")} />
+              Con ofertas especiales
+              {isActive("conOfertas") && <CheckCircle className="h-3.5 w-3.5 ml-auto shrink-0 text-green-600" />}
             </button>
           </div>
         </Section>

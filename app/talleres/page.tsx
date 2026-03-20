@@ -14,7 +14,7 @@ const VALID_PAGE_SIZES = [5, 10, 20, 50];
 type SearchParams = {
   servicio?: string; ciudad?: string; precio?: string; rating?: string;
   distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
-  vehicleType?: string; premium?: string; page?: string; pageSize?: string;
+  vehicleType?: string; premium?: string; page?: string; pageSize?: string; conOfertas?: string;
 };
 
 function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
@@ -61,6 +61,7 @@ export default async function TalleresPage({
   const cocheCortesia = searchParams.cocheCortesia === "true";
   const recogida = searchParams.recogida === "true";
   const premiumOnly = searchParams.premium === "true";
+  const conOfertas = searchParams.conOfertas === "true";
   const vehicleType = searchParams.vehicleType ?? null;
   const currentPage = Math.max(1, parseInt(searchParams.page ?? "1"));
   const parsedSize = parseInt(searchParams.pageSize ?? String(DEFAULT_PAGE_SIZE));
@@ -79,6 +80,7 @@ export default async function TalleresPage({
       ...(cocheCortesia && { courtesyCar: true }),
       ...(recogida && { pickupService: true }),
       ...(premiumOnly && { plan: "PREMIUM" }),
+      ...(conOfertas && { offers: { some: { isActive: true } } }),
       // Filtro por tipo de vehículo: SQLite contains sobre el JSON array serializado
       ...(vehicleType && { vehicleTypes: { contains: vehicleType } }),
       ...((searchParams.servicio || precioFilter) && {

@@ -34,8 +34,12 @@ model Garage {
   logo          String?
   rating        Float           @default(0)
   reviewCount   Int             @default(0)
-  plan          String          @default("STARTER") // STARTER | PRO | PREMIUM
-  vehicleTypes  String          @default("[\"COCHE\"]") // JSON array: COCHE|MOTO|FURGONETA|AUTOCARAVANA|CAMPER|CAMION
+  plan                 String    @default("STARTER")  // STARTER | PRO | PREMIUM
+  stripeCustomerId     String?                         // ID de cliente en Stripe
+  stripeSubscriptionId String?                         // ID de suscripción activa en Stripe
+  stripePriceId        String?                         // Price ID de Stripe activo
+  planExpiresAt        DateTime?                       // Fecha de expiración / próxima renovación
+  vehicleTypes         String    @default("[\"COCHE\"]") // JSON array: COCHE|MOTO|FURGONETA|AUTOCARAVANA|CAMPER|CAMION
   isVerified    Boolean         @default(false)
   isActive      Boolean         @default(true)
   courtesyCar   Boolean         @default(false)

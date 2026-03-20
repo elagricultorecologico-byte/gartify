@@ -33,11 +33,15 @@ export async function GET() {
 
   const taller = await db.garage.findUnique({
     where: { ownerId: usuario.id },
-    select: { id: true },
+    select: { id: true, plan: true },
   });
 
   if (!taller) {
     return NextResponse.json({ error: "Taller no encontrado" }, { status: 404 });
+  }
+
+  if (taller.plan !== "PRO" && taller.plan !== "PREMIUM") {
+    return NextResponse.json({ error: "Plan Pro o Premium requerido" }, { status: 403 });
   }
 
   const ofertas = await db.garageOffer.findMany({
@@ -93,11 +97,15 @@ export async function POST(request: Request) {
 
   const taller = await db.garage.findUnique({
     where: { ownerId: usuario.id },
-    select: { id: true },
+    select: { id: true, plan: true },
   });
 
   if (!taller) {
     return NextResponse.json({ error: "Taller no encontrado" }, { status: 404 });
+  }
+
+  if (taller.plan !== "PRO" && taller.plan !== "PREMIUM") {
+    return NextResponse.json({ error: "Plan Pro o Premium requerido" }, { status: 403 });
   }
 
   const oferta = await db.garageOffer.create({
