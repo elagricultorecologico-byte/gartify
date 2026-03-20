@@ -1,6 +1,6 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { MapPin, Star, Clock, ShieldCheck, ExternalLink, Crown, Car, PackageCheck, Zap } from "lucide-react";
+import { MapPin, Star, Clock, ShieldCheck, Crown, Car, PackageCheck, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, SERVICE_LABELS, VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
@@ -82,7 +82,7 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, logo, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers }: GarageCardProps) {
+export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, logo: _logo, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
   const tiposVehiculo = parsearTiposVehiculo(vehicleTypes);
   const mapsQuery = lat != null && lng != null

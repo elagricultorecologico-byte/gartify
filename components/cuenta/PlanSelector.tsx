@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Check, Loader2, Zap, Crown, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -65,7 +64,6 @@ const COLORES_CTA: Record<Plan, string> = {
 // ── Componente ─────────────────────────────────────────────────────────────────
 
 export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSelector) {
-  const router = useRouter();
   const [esMensual, setEsMensual] = useState(true);
   const [cargandoPlan, setCargandoPlan] = useState<Plan | null>(null);
   const [cargandoPortal, setCargandoPortal] = useState(false);
