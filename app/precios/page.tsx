@@ -147,7 +147,7 @@ const PREGUNTAS_FRECUENTES: PreguntaFrecuente[] = [
   {
     pregunta: "¿Cómo funciona el descuento por pago anual en el plan Premium?",
     respuesta:
-      "Al elegir facturación anual pagas 59 €/mes en lugar de 79 €/mes, lo que supone un ahorro de 240 € al año. Se cobra un único pago de 708 € al activar el plan.",
+      "Al elegir facturación anual pagas 59 €/mes en lugar de 79 €/mes, lo que supone un ahorro de 237 € al año. Se cobra un único pago de 711 € al activar el plan.",
   },
   {
     pregunta: "¿Qué incluye el acceso a la red de distribuidores de recambios?",
@@ -191,7 +191,8 @@ export default function PreciosPage() {
   const [ciclo, setCiclo] = useState<EstadoToggle>("mensual");
 
   const esMensual = ciclo === "mensual";
-  const precioPremium = esMensual ? "79" : "59";
+  const precioPro     = esMensual ? "29"  : "22";   // 261 €/año ÷ 12 ≈ 22 €/mes
+  const precioPremium = esMensual ? "79"  : "59";   // 711 €/año ÷ 12 ≈ 59 €/mes
 
   return (
     <>
@@ -331,10 +332,16 @@ export default function PreciosPage() {
                   Pro
                 </p>
                 <div className="flex items-end gap-1 mb-2">
-                  <span className="text-5xl font-bold text-gartify-dark">29</span>
+                  <span className="text-5xl font-bold text-gartify-dark">{precioPro}</span>
                   <span className="mb-1 text-xl font-semibold text-gartify-dark">€</span>
                   <span className="mb-1 text-sm text-gartify-gray">/mes</span>
                 </div>
+                {!esMensual && (
+                  <p className="text-sm text-gartify-gray mb-1">
+                    <span className="line-through">29 €/mes</span>{" "}
+                    <span className="font-semibold text-gartify-green">Ahorra 87 €/año</span>
+                  </p>
+                )}
                 <p className="text-sm text-gartify-gray leading-relaxed">
                   Cuota mensual fija. Sin comisiones por reserva. Crece con
                   todas las herramientas.
@@ -391,7 +398,7 @@ export default function PreciosPage() {
                   <p className="text-sm text-slate-400 mb-1">
                     <span className="line-through">79 €/mes</span>{" "}
                     <span className="font-semibold text-gartify-green">
-                      Ahorra 240 €/año
+                      Ahorra 237 €/año
                     </span>
                   </p>
                 )}
@@ -465,7 +472,7 @@ export default function PreciosPage() {
                       Pro
                     </span>
                     <br />
-                    <span className="text-lg font-bold text-gartify-dark">29 €/mes</span>
+                    <span className="text-lg font-bold text-gartify-dark">{precioPro} €/mes</span>
                   </th>
                   <th className="bg-gartify-dark px-4 py-5 text-center rounded-tr-2xl">
                     <span className="text-xs font-bold uppercase tracking-widest text-gartify-orange">

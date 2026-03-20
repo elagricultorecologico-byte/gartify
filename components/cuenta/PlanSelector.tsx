@@ -166,7 +166,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
         <span className={cn("text-sm font-medium flex items-center gap-1.5", !esMensual ? "text-foreground" : "text-muted-foreground")}>
           Anual
           <span className="inline-flex items-center rounded-full bg-green-100 border border-green-200 text-green-700 text-xs font-bold px-2 py-0.5">
-            -30%
+            -25%
           </span>
         </span>
       </div>
@@ -227,9 +227,14 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
                       </span>
                     </p>
                     {!esMensual && (
-                      <p className="text-xs text-green-600 font-medium mt-0.5">
-                        Equivale a {(datos.precioAnual / 12).toFixed(0)} €/mes
-                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-xs text-green-600 font-medium">
+                          Equivale a {(datos.precioAnual / 12).toFixed(0)} €/mes
+                        </p>
+                        <p className="text-xs text-green-700 font-bold bg-green-100 rounded-full px-2 py-0.5">
+                          Ahorras {(datos.precioMensual * 12) - datos.precioAnual}€/año
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}

@@ -36,7 +36,7 @@ export const PLANES = {
   PRO: {
     nombre: "Pro",
     precioMensual: 29,
-    precioAnual: 249,
+    precioAnual: 261,
     descripcion: "Para talleres en crecimiento que quieren más visibilidad.",
     caracteristicas: [
       "Todo lo del plan Starter",
@@ -53,8 +53,8 @@ export const PLANES = {
   },
   PREMIUM: {
     nombre: "Premium",
-    precioMensual: 59,
-    precioAnual: 499,
+    precioMensual: 79,
+    precioAnual: 711,
     descripcion: "La experiencia completa para talleres líderes en su zona.",
     caracteristicas: [
       "Todo lo del plan Pro",
