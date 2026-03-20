@@ -82,7 +82,7 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, logo: _logo, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers }: GarageCardProps) {
+export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers }: GarageCardProps) {
   const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
   const tiposVehiculo = parsearTiposVehiculo(vehicleTypes);
   const mapsQuery = lat != null && lng != null
