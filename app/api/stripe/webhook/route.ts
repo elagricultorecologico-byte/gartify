@@ -72,10 +72,9 @@ export async function POST(req: Request): Promise<NextResponse> {
           break;
         }
 
-        // Calcular fecha de próxima renovación
-        const planExpiresAt = suscripcion.current_period_end
-          ? new Date(suscripcion.current_period_end * 1000)
-          : null;
+        // Calcular fecha de próxima renovación (campo movido en API reciente)
+        const periodEnd = (suscripcion as unknown as { current_period_end?: number }).current_period_end;
+        const planExpiresAt = periodEnd ? new Date(periodEnd * 1000) : null;
 
         await db.garage.update({
           where: { id: garageId },
@@ -106,9 +105,8 @@ export async function POST(req: Request): Promise<NextResponse> {
         const priceId = suscripcion.items.data[0]?.price.id ?? "";
         const plan = planDesdePriceId(priceId);
 
-        const planExpiresAt = suscripcion.current_period_end
-          ? new Date(suscripcion.current_period_end * 1000)
-          : null;
+        const periodEnd2 = (suscripcion as unknown as { current_period_end?: number }).current_period_end;
+        const planExpiresAt = periodEnd2 ? new Date(periodEnd2 * 1000) : null;
 
         await db.garage.update({
           where: { id: garageId },
