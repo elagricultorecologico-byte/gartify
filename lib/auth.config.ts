@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import { NextResponse } from "next/server";
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -7,9 +8,23 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnCuenta = nextUrl.pathname.startsWith("/cuenta");
-      const isOnAdmin  = nextUrl.pathname.startsWith("/admin");
-      if (isOnCuenta || isOnAdmin) return isLoggedIn;
+      const rol = (auth?.user as { role?: string } | undefined)?.role;
+      const pathname = nextUrl.pathname;
+
+      const isOnCuenta      = pathname.startsWith("/cuenta");
+      const isOnAdmin       = pathname.startsWith("/admin");
+      const isOnDistribuidor = pathname.startsWith("/distribuidor");
+
+      // Rutas protegidas: requieren sesión activa
+      if (isOnCuenta || isOnAdmin || isOnDistribuidor) {
+        if (!isLoggedIn) return false; // redirige a /login
+      }
+
+      // Si un DISTRIBUTOR accede a /cuenta, redirigir a su dashboard
+      if (isOnCuenta && rol === "DISTRIBUTOR") {
+        return NextResponse.redirect(new URL("/distribuidor/dashboard", nextUrl));
+      }
+
       return true;
     },
     jwt({ token, user }) {

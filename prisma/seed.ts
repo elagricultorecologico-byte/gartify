@@ -525,6 +525,19 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
   // ── Distribuidores de recambios ──────────────────────────────────────────
 
+  // Usuario para el distribuidor de pruebas
+  const distUser1 = await prisma.user.upsert({
+    where: { email: "distribuidor@recambiosgarcia.es" },
+    update: {},
+    create: {
+      name: "García Recambios",
+      email: "distribuidor@recambiosgarcia.es",
+      password: await bcrypt.hash("password123", 10),
+      phone: "91 400 12 34",
+      role: "DISTRIBUTOR",
+    },
+  });
+
   const dist1 = await prisma.distributor.create({
     data: {
       name: "Recambios García & Hijos",
@@ -532,6 +545,7 @@ async function main() {
       phone: "91 400 12 34",
       website: "https://recambiosgarcia.es",
       isActive: true,
+      userId: distUser1.id,
     },
   });
 
@@ -659,6 +673,107 @@ async function main() {
       ],
     });
   }
+  // ── Pedidos de prueba para dist1 (Recambios García & Hijos) ─────────────
+
+  // Recuperar las distributorParts de dist1
+  const dpFiltroAceite = await prisma.distributorPart.findFirst({ where: { distributorId: dist1.id, referenciaProveedor: "G-OEM-FILTRO-ACEITE-001" } });
+  const dpPastillas    = await prisma.distributorPart.findFirst({ where: { distributorId: dist1.id, referenciaProveedor: "G-OEM-PASTILLAS-DEL-BOSCH" } });
+  const dpDisco        = await prisma.distributorPart.findFirst({ where: { distributorId: dist1.id, referenciaProveedor: "G-OEM-DISCO-DEL-BREMBO-280" } });
+  const dpAceite       = await prisma.distributorPart.findFirst({ where: { distributorId: dist1.id, referenciaProveedor: "G-OEM-ACEITE-CASTROL-5W30-5L" } });
+  const dpFiltroAire   = await prisma.distributorPart.findFirst({ where: { distributorId: dist1.id, referenciaProveedor: "G-OEM-FILTRO-AIRE-MAHLE-LX" } });
+  const dpBateria      = await prisma.distributorPart.findFirst({ where: { distributorId: dist1.id, referenciaProveedor: "G-OEM-BATERIA-VARTA-60AH" } });
+
+  if (dpFiltroAceite && dpPastillas && dpDisco && dpAceite && dpFiltroAire && dpBateria) {
+    // Pedido 1 — Taller Martínez Auto — DELIVERED (entregado hace 15 días, estado reciente)
+    await prisma.partOrder.create({
+      data: {
+        garageId:       garage1.id,
+        distributorId:  dist1.id,
+        status:         "DELIVERED",
+        statusUpdatedAt: new Date(),
+        totalAmount:    dpFiltroAceite.precioCoste * 4 + dpPastillas.precioCoste * 2,
+        createdAt:      new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+        lines: {
+          create: [
+            { distributorPartId: dpFiltroAceite.id, cantidad: 4, precioUnitario: dpFiltroAceite.precioCoste },
+            { distributorPartId: dpPastillas.id,    cantidad: 2, precioUnitario: dpPastillas.precioCoste },
+          ],
+        },
+      },
+    });
+
+    // Pedido 2 — AutoService López — SHIPPED (lleva >24h en este estado: retrasado)
+    await prisma.partOrder.create({
+      data: {
+        garageId:       garage2.id,
+        distributorId:  dist1.id,
+        status:         "SHIPPED",
+        statusUpdatedAt: new Date(Date.now() - 30 * 60 * 60 * 1000), // 30h sin actualizar
+        totalAmount:    dpDisco.precioCoste * 2 + dpAceite.precioCoste * 3,
+        createdAt:      new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        lines: {
+          create: [
+            { distributorPartId: dpDisco.id,   cantidad: 2, precioUnitario: dpDisco.precioCoste },
+            { distributorPartId: dpAceite.id,  cantidad: 3, precioUnitario: dpAceite.precioCoste },
+          ],
+        },
+      },
+    });
+
+    // Pedido 3 — Taller Puig Motor — CONFIRMED (lleva >24h en este estado: retrasado)
+    await prisma.partOrder.create({
+      data: {
+        garageId:       garage4.id,
+        distributorId:  dist1.id,
+        status:         "CONFIRMED",
+        statusUpdatedAt: new Date(Date.now() - 30 * 60 * 60 * 1000), // 30h sin actualizar
+        totalAmount:    dpFiltroAire.precioCoste * 5 + dpFiltroAceite.precioCoste * 5,
+        createdAt:      new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        lines: {
+          create: [
+            { distributorPartId: dpFiltroAire.id,   cantidad: 5, precioUnitario: dpFiltroAire.precioCoste },
+            { distributorPartId: dpFiltroAceite.id, cantidad: 5, precioUnitario: dpFiltroAceite.precioCoste },
+          ],
+        },
+      },
+    });
+
+    // Pedido 4 — Mecánica Rápida Vallecas — PENDING (lleva >24h sin confirmar: retrasado)
+    await prisma.partOrder.create({
+      data: {
+        garageId:       garage3.id,
+        distributorId:  dist1.id,
+        status:         "PENDING",
+        statusUpdatedAt: new Date(Date.now() - 48 * 60 * 60 * 1000), // 48h sin actualizar
+        totalAmount:    dpBateria.precioCoste * 1 + dpPastillas.precioCoste * 4,
+        createdAt:      new Date(Date.now() - 3 * 60 * 60 * 1000),
+        lines: {
+          create: [
+            { distributorPartId: dpBateria.id,   cantidad: 1, precioUnitario: dpBateria.precioCoste },
+            { distributorPartId: dpPastillas.id, cantidad: 4, precioUnitario: dpPastillas.precioCoste },
+          ],
+        },
+      },
+    });
+
+    // Pedido 5 — AutoGràcia Ferrer — PENDING (recién llegado, dentro del plazo)
+    await prisma.partOrder.create({
+      data: {
+        garageId:       garage5.id,
+        distributorId:  dist1.id,
+        status:         "PENDING",
+        statusUpdatedAt: new Date(), // reciente
+        totalAmount:    dpAceite.precioCoste * 6,
+        createdAt:      new Date(Date.now() - 30 * 60 * 1000),
+        lines: {
+          create: [
+            { distributorPartId: dpAceite.id, cantidad: 6, precioUnitario: dpAceite.precioCoste },
+          ],
+        },
+      },
+    });
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
 
   console.log("✅ Seed completado:");
@@ -675,6 +790,7 @@ async function main() {
   console.log("   Taller 5: taller5@gartify.es / password123 (Barcelona - Gràcia)");
   console.log("   Taller 6: taller6@gartify.es / password123 (Sant Feliu de Llobregat)");
   console.log("   Taller 7: taller7@gartify.es / password123 (Sant Feliu de Llobregat)");
+  console.log("   Distribuidor: distribuidor@recambiosgarcia.es / password123");
 }
 
 main()

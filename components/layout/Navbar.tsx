@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, CreditCard, Wrench, Tag, CalendarClock, User } from "lucide-react";
+import { Menu, X, LogOut, Settings, CreditCard, Wrench, Tag, CalendarClock, User, Truck } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -11,8 +11,10 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const isGarageOwner = (session?.user as { role?: string })?.role === "GARAGE_OWNER";
-  const isAdmin = (session?.user as { role?: string })?.role === "ADMIN";
+  const rol = (session?.user as { role?: string })?.role;
+  const isGarageOwner = rol === "GARAGE_OWNER";
+  const isAdmin = rol === "ADMIN";
+  const isDistributor = rol === "DISTRIBUTOR";
   const firstName = session?.user?.name?.split(" ")[0] ?? "Usuario";
   const initial = session?.user?.name?.charAt(0).toUpperCase() ?? "U";
   const [counts, setCounts] = useState<{ services: number; offers: number } | null>(null);
@@ -112,6 +114,10 @@ export function Navbar() {
                     <Link href="/admin" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Settings className="h-4 w-4 text-gartify-blue" />Panel admin
                     </Link>
+                  ) : isDistributor ? (
+                    <Link href="/distribuidor/dashboard" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      <Truck className="h-4 w-4 text-gartify-blue" />Mi dashboard
+                    </Link>
                   ) : (
                     <>
                       <Link href="/cuenta" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
@@ -179,6 +185,8 @@ export function Navbar() {
                   <Link href="/cuenta/taller/perfil" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Perfil del taller</Link>
                   <Link href="/cuenta/taller/planes" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Planes y suscripcion</Link>
                 </>
+              ) : isDistributor ? (
+                <Link href="/distribuidor/dashboard" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Mi dashboard</Link>
               ) : (
                 <Link href="/cuenta" className="block text-sm text-white" onClick={() => setOpen(false)}>Mis reservas</Link>
               )}

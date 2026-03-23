@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String?
-  email     String    @unique
-  password  String?
-  phone     String?
-  role      String    @default("CUSTOMER")
-  bookings  Booking[]
-  reviews   Review[]
-  garage    Garage?
-  createdAt DateTime  @default(now())
+  id          String       @id @default(cuid())
+  name        String?
+  email       String       @unique
+  password    String?
+  phone       String?
+  role        String       @default("CUSTOMER")
+  bookings    Booking[]
+  reviews     Review[]
+  garage      Garage?
+  distributor Distributor?
+  createdAt   DateTime     @default(now())
 }
 
 model Garage {
@@ -141,6 +142,9 @@ model Distributor {
   website   String?
   logoUrl   String?
   isActive  Boolean           @default(true)
+  // Cuenta de usuario vinculada al distribuidor (opcional: puede existir sin cuenta)
+  userId    String?           @unique
+  user      User?             @relation(fields: [userId], references: [id])
   parts     DistributorPart[]
   orders    PartOrder[]
   createdAt DateTime          @default(now())
@@ -190,11 +194,12 @@ model PartOrder {
   distributorId String
   distributor   Distributor     @relation(fields: [distributorId], references: [id])
   lines         PartOrderLine[]
-  status        String          @default("PENDING") // PENDING|CONFIRMED|SHIPPED|DELIVERED|CANCELLED
-  totalAmount   Float
-  notes         String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  status          String          @default("PENDING") // PENDING|CONFIRMED|SHIPPED|DELIVERED|CANCELLED
+  statusUpdatedAt DateTime        @default(now())     // Momento de la última transición de estado
+  totalAmount     Float
+  notes           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 model PartOrderLine {
