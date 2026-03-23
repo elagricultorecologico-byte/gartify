@@ -71,7 +71,7 @@ const ESTADO_BADGE: Record<EstadoPedido, string> = {
 
 function TimelineCompacto({ estado }: { estado: EstadoPedido }) {
   if (estado === "CANCELLED") {
-    return <XCircle className="h-4 w-4 text-red-400 shrink-0" title="Cancelado" />;
+    return <XCircle className="h-4 w-4 text-red-400 shrink-0" aria-label="Cancelado" />;
   }
   const indiceActual = FLUJO.indexOf(estado);
   return (
@@ -419,7 +419,7 @@ export function OrdersTable({ pedidosIniciales }: { pedidosIniciales: Pedido[] }
                   {vencido && (
                     <AlertTriangle
                       className="h-3.5 w-3.5 text-amber-500 shrink-0"
-                      title="+24h sin actualizar"
+                      aria-label="+24h sin actualizar"
                     />
                   )}
                 </div>
