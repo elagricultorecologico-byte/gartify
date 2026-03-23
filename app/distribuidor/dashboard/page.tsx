@@ -174,8 +174,10 @@ export default async function DistribuidorDashboardPage() {
   const ticketMedio = ticketMedioAgg._avg?.totalAmount ?? 0;
 
   // Serializar fechas (Date → string) para que el Client Component las pueda recibir
+  type EstadoPedido = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
   const pedidosSerializados = listaPedidos.map((p) => ({
     ...p,
+    status: p.status as EstadoPedido,
     createdAt: p.createdAt.toISOString(),
     statusUpdatedAt: p.statusUpdatedAt.toISOString(),
   }));
