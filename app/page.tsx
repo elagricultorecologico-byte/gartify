@@ -4,6 +4,7 @@ import {
   Search, Wrench, Package, Star, Shield,
   Users, ChevronRight,
   CheckCircle2, ClipboardList, BarChart3, Upload, CalendarCheck,
+  BadgeCheck,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -112,7 +113,7 @@ export default function HomePage() {
                 +500 talleres verificados en España
               </p>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight tracking-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-[1.1] tracking-tighter">
                 Reserva tu cita en el taller ideal{" "}
                 <span className="text-gartify-orange">sin llamadas ni sorpresas</span>
               </h1>
@@ -124,34 +125,60 @@ export default function HomePage() {
 
               <SearchBar />
 
-              <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-white/80">
+              <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-white">
                 <span className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                  <strong className="text-white">+2.000</strong> reseñas reales
+                  <Star className="h-4 w-4 text-gartify-orange shrink-0" aria-hidden="true" />
+                  <strong>+2.000</strong> reseñas reales
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                  <strong className="text-white">15</strong> provincias
+                  <Users className="h-4 w-4 text-gartify-orange shrink-0" aria-hidden="true" />
+                  <strong>15</strong> provincias
                 </span>
                 <span className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                  <strong className="text-white">0€</strong> comisiones
+                  <BadgeCheck className="h-4 w-4 text-gartify-orange shrink-0" aria-hidden="true" />
+                  <strong>0€</strong> comisiones
                 </span>
               </div>
             </div>
 
             {/* ── Columna derecha: imagen ── */}
-            <div className="hidden md:flex justify-center items-center">
+            <div className="hidden md:flex justify-center items-center py-8 px-6">
               <div className="relative w-full max-w-lg">
-                <div className="absolute inset-0 rounded-2xl bg-gartify-orange/20 blur-2xl scale-95" />
+
+                {/* Acento naranja rotado detrás (abajo-derecha) */}
+                <div className="absolute -bottom-5 -right-5 h-full w-full rounded-2xl bg-gartify-orange/40 rotate-3" />
+
+                {/* Acento azul claro opuesto (arriba-izquierda) */}
+                <div className="absolute -top-5 -left-5 h-full w-full rounded-2xl bg-white/10 -rotate-2" />
+
+                {/* Patrón de puntos esquina superior derecha */}
+                <div
+                  className="absolute -top-8 -right-8 h-32 w-32 opacity-25 z-10"
+                  style={{
+                    backgroundImage: "radial-gradient(circle, white 1.5px, transparent 1.5px)",
+                    backgroundSize: "10px 10px",
+                  }}
+                />
+
+                {/* Patrón de puntos esquina inferior izquierda */}
+                <div
+                  className="absolute -bottom-8 -left-8 h-28 w-28 opacity-20 z-10"
+                  style={{
+                    backgroundImage: "radial-gradient(circle, white 1.5px, transparent 1.5px)",
+                    backgroundSize: "10px 10px",
+                  }}
+                />
+
+                {/* Imagen principal */}
                 <Image
                   src="/taller-mecanico.png"
                   alt="Mecánico trabajando en un taller"
                   width={600}
                   height={500}
-                  className="relative rounded-2xl object-cover shadow-2xl w-full"
+                  className="relative rounded-2xl object-cover shadow-2xl w-full z-20"
                   priority
                 />
+
               </div>
             </div>
 
