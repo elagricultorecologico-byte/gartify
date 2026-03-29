@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   Search, Wrench, Package, Star, Shield,
   Users, ChevronRight,
@@ -101,42 +102,59 @@ export default function HomePage() {
           <div className="absolute left-1/2 top-1/4 h-80 w-80 -translate-x-1/2 rounded-full bg-gartify-mid/30 blur-3xl" />
         </div>
 
-        <div className="container max-w-5xl relative">
-          <div className="text-center">
-            <p className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white mb-6">
-              <span className="h-2 w-2 rounded-full bg-gartify-orange animate-pulse" />
-              +500 talleres verificados en España
-            </p>
+        <div className="container max-w-6xl relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
-              Reserva tu cita en el taller ideal{" "}
-              <br className="hidden sm:block" />
-              <span className="text-gartify-orange">sin llamadas ni sorpresas</span>
-            </h1>
+            {/* ── Columna izquierda: texto + buscador ── */}
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white mb-6">
+                <span className="h-2 w-2 rounded-full bg-gartify-orange animate-pulse" />
+                +500 talleres verificados en España
+              </p>
 
-            <p className="text-lg text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Busca por servicio y ciudad, compara reseñas reales y confirma tu cita en segundos.
-              El pago se realiza directamente en el taller.
-            </p>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight tracking-tight">
+                Reserva tu cita en el taller ideal{" "}
+                <span className="text-gartify-orange">sin llamadas ni sorpresas</span>
+              </h1>
 
-            <div className="mx-auto max-w-2xl">
+              <p className="text-lg text-blue-100 mb-8 leading-relaxed">
+                Busca por servicio y ciudad, compara reseñas reales y confirma tu cita en segundos.
+                El pago se realiza directamente en el taller.
+              </p>
+
               <SearchBar />
+
+              <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-white/80">
+                <span className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                  <strong className="text-white">+2.000</strong> reseñas reales
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                  <strong className="text-white">15</strong> provincias
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-white" />
+                  <strong className="text-white">0€</strong> comisiones
+                </span>
+              </div>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-white/80">
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white" />
-                <strong className="text-white">+2.000</strong> reseñas reales
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white" />
-                <strong className="text-white">15</strong> provincias
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white" />
-                <strong className="text-white">0€</strong> comisiones al reservar
-              </span>
+            {/* ── Columna derecha: imagen ── */}
+            <div className="hidden md:flex justify-center items-center">
+              <div className="relative w-full max-w-lg">
+                <div className="absolute inset-0 rounded-2xl bg-gartify-orange/20 blur-2xl scale-95" />
+                <Image
+                  src="/taller-mecanico.png"
+                  alt="Mecánico trabajando en un taller"
+                  width={600}
+                  height={500}
+                  className="relative rounded-2xl object-cover shadow-2xl w-full"
+                  priority
+                />
+              </div>
             </div>
+
           </div>
         </div>
 
