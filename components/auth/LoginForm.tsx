@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Wrench, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,8 @@ function GoogleButton({
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/cuenta";
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -66,14 +68,14 @@ export function LoginForm() {
     if (res?.error) {
       setError("Email o contraseña incorrectos");
     } else {
-      router.push("/cuenta");
+      router.push(callbackUrl);
       router.refresh();
     }
   }
 
   async function handleGoogle() {
     setGoogleLoading(true);
-    await signIn("google", { callbackUrl: "/cuenta" });
+    await signIn("google", { callbackUrl });
   }
 
   return (
@@ -157,7 +159,7 @@ export function LoginForm() {
             <p className="text-center text-sm text-muted-foreground">
               ¿No tienes cuenta?{" "}
               <Link
-                href="/registro"
+                href={callbackUrl !== "/cuenta" ? `/registro?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/registro"}
                 className="text-gartify-orange font-semibold hover:underline"
               >
                 Regístrate gratis

@@ -48,6 +48,7 @@ function GoogleButton({
 export function RegistroForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/cuenta";
   const [tab, setTab] = useState<"cliente" | "taller">(
     searchParams.get("tipo") === "taller" ? "taller" : "cliente"
   );
@@ -66,7 +67,7 @@ export function RegistroForm() {
 
   async function handleGoogle() {
     setGoogleLoading(true);
-    await signIn("google", { callbackUrl: "/cuenta" });
+    await signIn("google", { callbackUrl });
   }
 
   function switchTab(t: "cliente" | "taller") {
@@ -102,7 +103,7 @@ export function RegistroForm() {
       return;
     }
     await signIn("credentials", { email, password, redirect: false });
-    router.push("/cuenta");
+    router.push(callbackUrl);
     router.refresh();
   }
 
@@ -505,7 +506,7 @@ export function RegistroForm() {
             <p className="mt-5 text-center text-sm text-muted-foreground">
               ¿Ya tienes cuenta?{" "}
               <Link
-                href="/login"
+                href={callbackUrl !== "/cuenta" ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/login"}
                 className="text-gartify-orange font-semibold hover:underline"
               >
                 Inicia sesión
