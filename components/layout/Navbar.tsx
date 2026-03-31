@@ -17,6 +17,15 @@ export function Navbar() {
   const isDistributor = rol === "DISTRIBUTOR";
   const firstName = session?.user?.name?.split(" ")[0] ?? "Usuario";
   const initial = session?.user?.name?.charAt(0).toUpperCase() ?? "U";
+
+  const rolLabel = isAdmin ? "Administrador"
+    : isGarageOwner ? "Taller"
+    : isDistributor ? "Distribuidor"
+    : "Conductor";
+  const rolStyle = isAdmin ? "bg-purple-500/20 text-purple-200"
+    : isGarageOwner ? "bg-blue-400/20 text-blue-200"
+    : isDistributor ? "bg-orange-400/20 text-orange-200"
+    : "bg-white/10 text-white/60";
   const [counts, setCounts] = useState<{ services: number; offers: number } | null>(null);
 
   const fetchCounts = useCallback(async () => {
@@ -75,7 +84,10 @@ export function Navbar() {
                 <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
                   {initial}
                 </div>
-                <span className="text-white text-sm font-semibold">{firstName}</span>
+                <div className="flex flex-col items-start">
+                  <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
+                </div>
               </button>
 
               {/* Dropdown */}
@@ -176,7 +188,10 @@ export function Navbar() {
                 <div className="h-7 w-7 rounded-full bg-gartify-orange flex items-center justify-center text-white text-xs font-bold shrink-0">
                   {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
                 </div>
-                <span className="text-white text-sm font-semibold">{session.user?.name ?? "Usuario"}</span>
+                <div className="flex flex-col">
+                  <span className="text-white text-sm font-semibold leading-tight">{session.user?.name ?? "Usuario"}</span>
+                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight self-start ${rolStyle}`}>{rolLabel}</span>
+                </div>
               </div>
               {isGarageOwner ? (
                 <>
