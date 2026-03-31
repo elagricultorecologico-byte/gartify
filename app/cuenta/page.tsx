@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Car, Wrench, ChevronRight, Star } from "lucide-react";
+import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
+import { CancelBookingButton } from "@/components/cuenta/CancelBookingButton";
 import {
   formatPrice, formatDateTime,
   BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS, SERVICE_LABELS,
@@ -57,15 +59,18 @@ export default async function CuentaPage() {
   return (
     <div className="container max-w-3xl py-10">
       {/* Cabecera */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gartify-blue">Mis reservas</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Hola,{" "}
-          <span className="font-medium text-foreground">
-            {user.name?.split(" ")[0]}
-          </span>
-          . Aquí puedes gestionar tus citas.
-        </p>
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gartify-blue">Mis reservas</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Hola,{" "}
+            <span className="font-medium text-foreground">
+              {user.name?.split(" ")[0]}
+            </span>
+            . Aquí puedes gestionar tus citas.
+          </p>
+        </div>
+        <AutoRefresh />
       </div>
 
       {bookings.length === 0 ? (
@@ -187,6 +192,9 @@ export default async function CuentaPage() {
               {formatPrice(b.totalPrice)}
             </span>
             <div className="flex items-center gap-1">
+              {(b.status === "PENDING" || b.status === "CONFIRMED") && (
+                <CancelBookingButton bookingId={b.id} />
+              )}
               {b.status === "COMPLETED" && !b.review && (
                 <Link href={`/reserva/${b.id}/resena`}>
                   <Button

@@ -41,7 +41,7 @@ export function SearchBar({ className }: { className?: string }) {
       </Select>
 
       {/* Campo de ciudad */}
-      <div className="relative flex-1 sm:flex sm:items-center">
+      <div className="relative flex-1 min-w-[160px] sm:flex sm:items-center">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
           placeholder="Localidad o CP"
