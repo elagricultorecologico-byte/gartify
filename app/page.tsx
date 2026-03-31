@@ -103,7 +103,7 @@ export default function HomePage() {
           <div className="absolute left-1/2 top-1/4 h-80 w-80 -translate-x-1/2 rounded-full bg-gartify-mid/30 blur-3xl" />
         </div>
 
-        <div className="container max-w-6xl relative">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 
             {/* ── Columna izquierda: texto + buscador ── */}
@@ -191,7 +191,7 @@ export default function HomePage() {
           2. PROPUESTA DE VALOR POR ROL
       ══════════════════════════════════════════════════ */}
       <section className="py-20 bg-white">
-        <div className="container max-w-6xl">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="text-center mb-14">
             <SectionLabel>Para cada perfil</SectionLabel>
             <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark mb-4">
@@ -253,7 +253,7 @@ export default function HomePage() {
           3. SERVICIOS POPULARES
       ══════════════════════════════════════════════════ */}
       <section className="py-16 bg-slate-50">
-        <div className="container max-w-5xl">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="text-center mb-10">
             <SectionLabel>Servicios más reservados</SectionLabel>
             <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark">
@@ -292,7 +292,7 @@ export default function HomePage() {
           5. SOCIAL PROOF
       ══════════════════════════════════════════════════ */}
       <section className="py-10 bg-gradient-to-r from-gartify-hero to-gartify-mid">
-        <div className="container max-w-5xl">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="text-center mb-6">
             <h2 className="text-xl md:text-2xl font-bold text-white">
               La red de talleres más grande de España

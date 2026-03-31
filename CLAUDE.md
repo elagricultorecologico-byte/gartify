@@ -32,6 +32,7 @@ npm run db:generate  # Regenerate Prisma client after schema changes
 | Taller 5 | taller5@gartify.es | password123 | Barcelona - Gràcia |
 | Taller 6 | taller6@gartify.es | password123 | Sant Feliu de Llobregat |
 | Taller 7 | taller7@gartify.es | password123 | Sant Feliu de Llobregat |
+| Distribuidor 1 | distribuidor@recambiosgarcia.es | password123 | Recambios García & Hijos |
 
 ## Tech Stack
 

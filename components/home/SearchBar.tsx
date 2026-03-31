@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
@@ -24,10 +23,14 @@ export function SearchBar({ className }: { className?: string }) {
   };
 
   return (
-    <form onSubmit={handleSearch} aria-label="Buscar talleres" className={`flex flex-col sm:flex-row gap-3 ${className}`}>
+    <form
+      onSubmit={handleSearch}
+      aria-label="Buscar talleres"
+      className={`flex flex-col sm:flex-row sm:items-center gap-2 ${className}`}
+    >
       {/* Selector de servicio */}
       <Select onValueChange={setServicio}>
-        <SelectTrigger className="sm:w-48 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg px-3">
+        <SelectTrigger className="sm:w-48 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 rounded-none px-4 shrink-0">
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
         <SelectContent>
@@ -38,19 +41,19 @@ export function SearchBar({ className }: { className?: string }) {
       </Select>
 
       {/* Campo de ciudad */}
-      <div className="relative flex-1">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="relative flex-1 sm:flex sm:items-center">
+        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
-          placeholder="Ciudad o CP"
+          placeholder="Localidad o CP"
           value={ciudad}
           onChange={(e) => setCiudad(e.target.value)}
-          className="pl-9 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg"
+          className="pl-9 bg-white border-0 shadow-sm !h-12 text-sm text-gray-800 rounded-none w-full focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </div>
 
       {/* Selector de tipo de vehículo */}
       <Select onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
-        <SelectTrigger className="sm:w-40 bg-white border-gartify-blue/20 !h-12 text-sm text-gray-700 rounded-lg px-3">
+        <SelectTrigger className="sm:w-44 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 rounded-none px-4 shrink-0">
           <SelectValue placeholder="Tipo de vehículo" />
         </SelectTrigger>
         <SelectContent>
@@ -66,10 +69,15 @@ export function SearchBar({ className }: { className?: string }) {
         </SelectContent>
       </Select>
 
-      <Button type="submit" size="lg" className="h-12 gap-2 px-8 bg-gartify-green hover:bg-gartify-green/90 text-white">
+      {/* Botón buscar */}
+      <button
+        type="submit"
+        className="flex items-center justify-center gap-2 h-12 px-6 shrink-0 bg-gartify-orange hover:bg-gartify-orange/90 transition-colors text-white font-semibold text-sm rounded-none sm:rounded-none"
+        aria-label="Buscar talleres"
+      >
         <Search className="h-4 w-4" />
-        Buscar
-      </Button>
+        <span>Buscar</span>
+      </button>
     </form>
   );
 }

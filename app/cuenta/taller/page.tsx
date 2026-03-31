@@ -11,6 +11,7 @@ import {
 import { formatPrice } from "@/lib/utils";
 import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
 import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
+import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
 
 export const dynamic = "force-dynamic";
 
@@ -165,6 +166,11 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Indicador de actualización automática */}
+      <div className="flex justify-end mb-3">
+        <AutoRefresh />
       </div>
 
       <GarageBookingList bookings={garage.bookings} />

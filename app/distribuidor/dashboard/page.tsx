@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Package, ClipboardList, Truck, CheckCircle2, ThumbsUp, Euro, TrendingUp, AlertTriangle } from "lucide-react";
 import { OrdersTable } from "@/components/distribuidor/OrdersTable";
+import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Mi Dashboard — Distribuidor" };
@@ -252,13 +253,16 @@ export default async function DistribuidorDashboardPage() {
       </div>
 
       {/* Tabla de pedidos */}
-      <div className="mb-4">
-        <h2 className="text-base font-bold text-gartify-blue">
-          Pedidos recibidos
-        </h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          Gestiona el estado de cada pedido directamente desde aquí
-        </p>
+      <div className="mb-4 flex items-end justify-between gap-4">
+        <div>
+          <h2 className="text-base font-bold text-gartify-blue">
+            Pedidos recibidos
+          </h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Gestiona el estado de cada pedido directamente desde aquí
+          </p>
+        </div>
+        <AutoRefresh />
       </div>
 
       {/* Alerta pedidos sin atender */}
