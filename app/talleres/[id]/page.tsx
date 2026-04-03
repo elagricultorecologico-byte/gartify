@@ -5,6 +5,15 @@ import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Star, ShieldCheck, Clock, Wrench, CalendarCheck } from "lucide-react";
 import { formatPrice, formatDate, SERVICE_LABELS } from "@/lib/utils";
+
+function formatPhone(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("34") && digits.length === 11)
+    return `+34 ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)} ${digits.slice(9)}`;
+  if (digits.length === 9)
+    return `${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)} ${digits.slice(7)}`;
+  return phone;
+}
 import { GarageReserveCTA } from "@/components/talleres/GarageReserveCTA";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
@@ -208,11 +217,11 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                 <span className="text-muted-foreground">servicios disponibles</span>
               </div>
               <a
-                href={`tel:${garage.phone}`}
+                href={`tel:${formatPhone(garage.phone)}`}
                 className="flex items-center gap-1.5 text-sm text-gartify-mid hover:text-gartify-hero transition-colors font-medium"
               >
                 <Phone className="h-4 w-4 shrink-0" />
-                {garage.phone}
+                {formatPhone(garage.phone)}
               </a>
             </div>
           </div>
@@ -416,11 +425,11 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                     </Button>
                   </Link>
                   <a
-                    href={`tel:${garage.phone}`}
+                    href={`tel:${formatPhone(garage.phone)}`}
                     className="flex items-center justify-center gap-2 w-full h-10 rounded-lg border border-gartify-mid/30 text-gartify-mid hover:bg-gartify-mid/5 transition-colors text-sm font-medium"
                   >
                     <Phone className="h-4 w-4" />
-                    {garage.phone}
+                    {formatPhone(garage.phone)}
                   </a>
                 </div>
               </div>

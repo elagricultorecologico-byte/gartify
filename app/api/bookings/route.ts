@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
 import { bookingConfirmationEmail, garageNewBookingEmail } from "@/lib/emails/templates";
+import { sendNuevaReservaWhatsApp } from "@/lib/whatsapp";
 
 const TIPOS_VEHICULO_VALIDOS = [
   "COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION",
@@ -78,6 +79,20 @@ export async function POST(req: Request) {
     if (garageOwnerEmail) {
       const mail = garageNewBookingEmail(emailData);
       sendMail({ to: garageOwnerEmail, ...mail }).catch(console.error);
+    }
+
+    // 3. WhatsApp notification to garage
+    if (booking.garage.phone) {
+      sendNuevaReservaWhatsApp({
+        garagePhone:         booking.garage.phone,
+        customerName:        booking.user.name ?? "Cliente",
+        serviceName:         service.name,
+        serviceDescription:  service.description ?? undefined,
+        date:                booking.date,
+        vehicleModel:        booking.vehicleModel ?? undefined,
+        vehiclePlate:        booking.vehiclePlate ?? undefined,
+        bookingId:           booking.id,
+      }).catch(console.error);
     }
     // ───────────────────────────────────────────────────────────────────────
 

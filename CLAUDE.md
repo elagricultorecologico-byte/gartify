@@ -25,13 +25,13 @@ npm run db:generate  # Regenerate Prisma client after schema changes
 |-----|-------|-----------|-----------|
 | Admin | admin@gartify.es | admin123 | — |
 | Cliente | cliente@gartify.es | password123 | — |
-| Taller 1 | taller1@gartify.es | password123 | Madrid - Alcalá |
-| Taller 2 | taller2@gartify.es | password123 | Madrid - Castellana |
-| Taller 3 | taller3@gartify.es | password123 | Madrid - Vallecas |
-| Taller 4 | taller4@gartify.es | password123 | Barcelona - Eixample |
-| Taller 5 | taller5@gartify.es | password123 | Barcelona - Gràcia |
-| Taller 6 | taller6@gartify.es | password123 | Sant Feliu de Llobregat |
-| Taller 7 | taller7@gartify.es | password123 | Sant Feliu de Llobregat |
+| Taller 1 | taller1@gartify.es | password123 | Taller Martínez Auto — Madrid - Alcalá |
+| Taller 2 | taller2@gartify.es | password123 | AutoService López — Madrid - Castellana |
+| Taller 3 | taller3@gartify.es | password123 | Mecánica Rápida Vallecas — Madrid - Vallecas |
+| Taller 4 | taller4@gartify.es | password123 | Taller Puig Motor — Barcelona - Eixample |
+| Taller 5 | taller5@gartify.es | password123 | AutoGràcia Ferrer — Barcelona - Gràcia |
+| Taller 6 | taller6@gartify.es | password123 | Soler Automòbils — Sant Feliu de Llobregat |
+| Taller 7 | taller7@gartify.es | password123 | TallerRàpid Sant Feliu — Sant Feliu de Llobregat |
 | Distribuidor 1 | distribuidor@recambiosgarcia.es | password123 | Recambios García & Hijos |
 
 ## Tech Stack

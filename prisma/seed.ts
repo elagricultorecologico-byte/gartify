@@ -25,7 +25,7 @@ async function main() {
       name: "Carlos Martínez",
       email: "taller1@gartify.es",
       password: await bcrypt.hash("password123", 10),
-      phone: "91 123 45 67",
+      phone: "+34643703220",
       role: "GARAGE_OWNER",
     },
   });
@@ -130,7 +130,7 @@ async function main() {
   // Garage 1
   const garage1 = await prisma.garage.upsert({
     where: { ownerId: owner1.id },
-    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]) },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]), phone: "+34643703220" },
     create: {
       name: "Taller Martínez Auto",
       plan: "STARTER",
@@ -139,7 +139,7 @@ async function main() {
       address: "Calle Alcalá, 142",
       city: "Madrid",
       postalCode: "28009",
-      phone: "91 123 45 67",
+      phone: "+34643703220",
       email: "info@tallerMartinez.es",
       lat: 40.4194,
       lng: -3.6877,

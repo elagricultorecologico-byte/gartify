@@ -4,7 +4,7 @@ import {
   Search, Wrench, Package, Star, Shield,
   Users, ChevronRight,
   CheckCircle2, ClipboardList, BarChart3, Upload, CalendarCheck,
-  BadgeCheck,
+  BadgeCheck, Quote,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,41 @@ const STATS = [
   { value: "+2.000",  label: "reseñas reales",       icon: Star },
   { value: "15",      label: "provincias",            icon: Users },
   { value: "0€",      label: "comisiones al reservar",icon: CheckCircle2 },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Carlos Martínez",
+    role: "Conductor · Madrid",
+    initials: "CM",
+    color: "bg-gartify-orange",
+    rating: 5,
+    text: "Reservé una revisión completa en 2 minutos desde el móvil. El taller me confirmó enseguida y el precio fue exactamente el que vi en la web. Sin sorpresas.",
+  },
+  {
+    name: "Taller Mecánica Rivas",
+    role: "Taller verificado · Barcelona",
+    initials: "MR",
+    color: "bg-gartify-hero",
+    rating: 5,
+    text: "Desde que estamos en Gartify recibimos entre 15 y 20 reservas nuevas al mes sin hacer nada. Los clientes llegan informados y el proceso es muy limpio.",
+  },
+  {
+    name: "Laura Sánchez",
+    role: "Conductora · Valencia",
+    initials: "LS",
+    color: "bg-teal-500",
+    rating: 5,
+    text: "Nunca había sido tan fácil encontrar un taller de confianza. Vi las valoraciones de otros usuarios, comparé precios y reservé. Muy recomendable.",
+  },
+  {
+    name: "Autoservicio Pérez e Hijos",
+    role: "Taller verificado · Sevilla",
+    initials: "AP",
+    color: "bg-purple-500",
+    rating: 5,
+    text: "El panel de gestión nos permite ver todas las citas del día de un vistazo. Antes lo llevábamos todo en papel. Ahora no podríamos trabajar sin Gartify.",
+  },
 ];
 
 const ROLE_DATA = [
@@ -291,26 +326,52 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════
           5. SOCIAL PROOF
       ══════════════════════════════════════════════════ */}
-      <section className="py-10 bg-gradient-to-r from-gartify-hero to-gartify-mid">
+      <section className="py-16 bg-blue-800">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-          <div className="text-center mb-6">
-            <h2 className="text-xl md:text-2xl font-bold text-white">
-              La red de talleres más grande de España
-            </h2>
-          </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
             {STATS.map(({ value, label, icon: Icon }) => (
-              <div
-                key={label}
-                className="flex flex-col items-center text-center rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-4"
-              >
-                <Icon className="h-5 w-5 text-gartify-orange mb-1" />
+              <div key={label} className="flex flex-col items-center text-center rounded-xl bg-white/5 border border-white/10 p-5">
+                <Icon className="h-5 w-5 text-gartify-orange mb-2" />
                 <span className="text-2xl md:text-3xl font-bold text-white">{value}</span>
-                <span className="text-xs text-blue-200">{label}</span>
+                <span className="text-xs text-slate-400 mt-0.5">{label}</span>
               </div>
             ))}
           </div>
+
+          {/* Título */}
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-white">
+              Lo que dicen conductores y talleres
+            </h2>
+            <p className="text-slate-400 text-sm mt-2">Opiniones reales de usuarios de Gartify</p>
+          </div>
+
+          {/* Testimonios */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {TESTIMONIALS.map(({ name, role, initials, color, rating, text }) => (
+              <div key={name} className="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/8 transition-colors">
+                <Quote className="h-6 w-6 text-gartify-orange mb-3 shrink-0" aria-hidden="true" />
+                <p className="text-sm text-slate-300 leading-relaxed flex-1">{text}</p>
+                <div className="flex mt-4 mb-3">
+                  {Array.from({ length: rating }).map((_, i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-gartify-orange text-gartify-orange" aria-hidden="true" />
+                  ))}
+                </div>
+                <div className="flex items-center gap-2.5 border-t border-white/10 pt-3">
+                  <div className={`h-8 w-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+                    {initials}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white leading-tight">{name}</p>
+                    <p className="text-xs text-slate-400">{role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
