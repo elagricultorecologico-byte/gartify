@@ -4,7 +4,8 @@ import { formatDateTime } from "@/lib/utils";
 const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const from          = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
-const CONTENT_SID   = "HX37ed2b05561756c3f145930cee20702b";
+// Content SID para producción con botones nativos de WhatsApp
+// const CONTENT_SID = "HX37ed2b05561756c3f145930cee20702b";
 
 function getClient() {
   if (!accountSid || !authToken) {
