@@ -180,10 +180,6 @@ export default async function ModoTvPage() {
   const hoy = reservasHoy;
   const citasHoy       = hoy.filter((b) => b.status !== "CANCELLED").length;
   const completadasHoy = hoy.filter((b) => b.status === "COMPLETED").length;
-  const facturableHoy  = hoy
-    .filter((b) => b.status === "PENDING" || b.status === "CONFIRMED")
-    .reduce((s, b) => s + b.totalPrice, 0);
-
   const ahora = new Date();
   const proximaReserva = reservas
     .filter((r) => new Date(r.date) > ahora)

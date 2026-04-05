@@ -54,6 +54,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
   }, [bookings, search, statusFilter, orden]);
 
   // Resetear a página 1 cuando cambia el filtro o búsqueda
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { setPagina(1); }, [search, statusFilter]);
 
   const totalPaginas = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
