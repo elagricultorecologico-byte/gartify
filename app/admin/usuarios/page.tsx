@@ -18,7 +18,7 @@ export default async function AdminUsuariosPage() {
       role: true,
       password: true,
       createdAt: true,
-      garage: { select: { name: true, plan: true } },
+      garage: { select: { name: true, plan: true, phone: true } },
     },
   });
 

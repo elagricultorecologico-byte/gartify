@@ -36,7 +36,7 @@ type User = {
   role: string;
   password: string | null;
   createdAt: Date;
-  garage: { name: string; plan: string } | null;
+  garage: { name: string; plan: string; phone: string | null } | null;
 };
 
 type EditState = {
@@ -75,7 +75,8 @@ export function UserTable({ users: initial }: { users: User[] }) {
 
   function startEdit(u: User) {
     setEditId(u.id);
-    setEditData({ name: u.name ?? "", email: u.email, phone: u.phone ?? "", role: u.role });
+    const phone = u.role === "GARAGE_OWNER" ? (u.garage?.phone ?? u.phone ?? "") : (u.phone ?? "");
+    setEditData({ name: u.name ?? "", email: u.email, phone, role: u.role });
   }
 
   function cancelEdit() { setEditId(null); }
@@ -93,7 +94,14 @@ export function UserTable({ users: initial }: { users: User[] }) {
       }),
     });
     if (res.ok) {
-      setUsers(prev => prev.map(u => u.id === id ? { ...u, ...editData } : u));
+      setUsers(prev => prev.map(u => {
+        if (u.id !== id) return u;
+        const updated = { ...u, ...editData };
+        if (u.role === "GARAGE_OWNER" && u.garage) {
+          updated.garage = { ...u.garage, phone: editData.phone || null };
+        }
+        return updated;
+      }));
       setEditId(null);
     }
     setSaving(false);
@@ -211,7 +219,9 @@ export function UserTable({ users: initial }: { users: User[] }) {
                       placeholder="—"
                     />
                   ) : (
-                    <span className="text-gartify-gray">{u.phone ?? <span className="text-gray-300">—</span>}</span>
+                    <span className="text-gartify-gray">
+                      {(u.role === "GARAGE_OWNER" ? (u.garage?.phone ?? u.phone) : u.phone) ?? <span className="text-gray-300">—</span>}
+                    </span>
                   )}
                 </td>
 

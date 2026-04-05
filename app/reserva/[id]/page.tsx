@@ -13,6 +13,15 @@ import {
   SERVICE_LABELS, BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS,
   VEHICLE_LABELS, VEHICLE_ICONS,
 } from "@/lib/utils";
+
+function formatPhone(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("34") && digits.length === 11)
+    return `+34 ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)} ${digits.slice(9)}`;
+  if (digits.length === 9)
+    return `${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)} ${digits.slice(7)}`;
+  return phone;
+}
 import { Badge } from "@/components/ui/badge";
 
 export async function generateMetadata({
@@ -148,7 +157,7 @@ export default async function BookingConfirmationPage({
               href={`tel:${booking.garage.phone}`}
               className="text-muted-foreground hover:text-gartify-blue transition-colors"
             >
-              {booking.garage.phone}
+              {formatPhone(booking.garage.phone)}
             </a>
           </div>
 

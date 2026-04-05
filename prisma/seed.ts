@@ -20,7 +20,7 @@ async function main() {
   // Garage owners
   const owner1 = await prisma.user.upsert({
     where: { email: "taller1@gartify.es" },
-    update: {},
+    update: { phone: "+34643703220" },
     create: {
       name: "Carlos Martínez",
       email: "taller1@gartify.es",
@@ -32,19 +32,19 @@ async function main() {
 
   const owner2 = await prisma.user.upsert({
     where: { email: "taller2@gartify.es" },
-    update: {},
+    update: { phone: "687549904" },
     create: {
       name: "Ana López",
       email: "taller2@gartify.es",
       password: await bcrypt.hash("password123", 10),
-      phone: "91 234 56 78",
+      phone: "687549904",
       role: "GARAGE_OWNER",
     },
   });
 
   const owner3 = await prisma.user.upsert({
     where: { email: "taller3@gartify.es" },
-    update: {},
+    update: { phone: "91 345 67 89" },
     create: {
       name: "Pedro Sánchez",
       email: "taller3@gartify.es",
@@ -56,7 +56,7 @@ async function main() {
 
   const owner4 = await prisma.user.upsert({
     where: { email: "taller4@gartify.es" },
-    update: {},
+    update: { phone: "93 412 55 66" },
     create: {
       name: "Jordi Puig",
       email: "taller4@gartify.es",
@@ -68,7 +68,7 @@ async function main() {
 
   const owner5 = await prisma.user.upsert({
     where: { email: "taller5@gartify.es" },
-    update: {},
+    update: { phone: "93 666 77 88" },
     create: {
       name: "Rosa Ferrer",
       email: "taller5@gartify.es",
@@ -80,7 +80,7 @@ async function main() {
 
   const owner6 = await prisma.user.upsert({
     where: { email: "taller6@gartify.es" },
-    update: {},
+    update: { phone: "93 777 88 99" },
     create: {
       name: "Marc Soler",
       email: "taller6@gartify.es",
@@ -92,7 +92,7 @@ async function main() {
 
   const owner7 = await prisma.user.upsert({
     where: { email: "taller7@gartify.es" },
-    update: {},
+    update: { phone: "93 555 44 33" },
     create: {
       name: "Laia Vidal",
       email: "taller7@gartify.es",
@@ -164,7 +164,7 @@ async function main() {
   // Garage 2
   const garage2 = await prisma.garage.upsert({
     where: { ownerId: owner2.id },
-    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]) },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]), phone: "687549904" },
     create: {
       name: "AutoService López",
       plan: "STARTER",
@@ -173,7 +173,7 @@ async function main() {
       address: "Paseo de la Castellana, 89",
       city: "Madrid",
       postalCode: "28046",
-      phone: "91 234 56 78",
+      phone: "687549904",
       email: "autoservice@lopez.es",
       lat: 40.4448,
       lng: -3.6922,
