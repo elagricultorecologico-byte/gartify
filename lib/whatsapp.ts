@@ -7,6 +7,13 @@ const from          = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886
 // Content SID para producción con botones nativos de WhatsApp
 // const CONTENT_SID = "HX37ed2b05561756c3f145930cee20702b";
 
+function toE164(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("34") && digits.length === 11) return `+${digits}`;
+  if (digits.length === 9) return `+34${digits}`;
+  return `+${digits}`;
+}
+
 function getClient() {
   if (!accountSid || !authToken) {
     console.warn("[WhatsApp] Twilio credentials not configured — TWILIO_ACCOUNT_SID:", accountSid ? "OK" : "MISSING", "TWILIO_AUTH_TOKEN:", authToken ? "OK" : "MISSING");
@@ -43,7 +50,7 @@ export async function sendPropostaHoraWhatsApp(params: PropostaHoraParams) {
   const baseUrl     = process.env.NEXTAUTH_URL ?? "https://gartify.es";
   const tokenOk     = Buffer.from(`${bookingId}:ok`).toString("base64url");
   const tokenReject = Buffer.from(`${bookingId}:no`).toString("base64url");
-  const to          = `whatsapp:${clientPhone.replace(/\s/g, "")}`;
+  const to          = `whatsapp:${toE164(clientPhone)}`;
 
   const body = [
     `🔄 *Propuesta de nuevo horario*`,
@@ -81,7 +88,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   const descripcion     = serviceDescription || serviceName;
   const reagendarUrl    = `${baseUrl}/reserva/${bookingId}/reagendar?t=${tokenReschedule}`;
 
-  const to = `whatsapp:${garagePhone.replace(/\s/g, "")}`;
+  const to = `whatsapp:${toE164(garagePhone)}`;
 
   console.log("[WhatsApp] Sending to:", to, "from:", from);
 
