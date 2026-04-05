@@ -3,6 +3,13 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 
+function toE164(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("34") && digits.length === 11) return `+${digits}`;
+  if (digits.length === 9) return `+34${digits}`;
+  return `+${digits}`;
+}
+
 async function requireAdmin() {
   const session = await auth();
   const user = session?.user as { role?: string } | undefined;
@@ -23,6 +30,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   try {
     const body = await req.json();
     const data = patchSchema.parse(body);
+    if (data.phone) data.phone = toE164(data.phone);
     const user = await db.user.update({ where: { id: params.id }, data });
     // Si se actualiza el teléfono de un GARAGE_OWNER, sincronizarlo en Garage.phone
     if (data.phone !== undefined && user.role === "GARAGE_OWNER") {
