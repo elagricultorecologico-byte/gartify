@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Car, Clock, FileText, Hash, Phone, Search, Wrench } from "lucide-react";
+import { Car, Clock, FileText, Hash, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
 import { formatPrice, formatDateTime, SERVICE_LABELS } from "@/lib/utils";
@@ -20,18 +20,23 @@ export type GarageBookingItem = {
 const STATUS_TABS = [
   { value: "ALL",       label: "Todas" },
   { value: "PENDING",   label: "Pendientes" },
+  { value: "PROPOSED",  label: "Propuestas" },
   { value: "CONFIRMED", label: "Confirmadas" },
   { value: "COMPLETED", label: "Completadas" },
   { value: "CANCELLED", label: "Canceladas" },
 ] as const;
 
-export function GarageBookingList({ bookings }: { bookings: GarageBookingItem[] }) {
+const POR_PAGINA = 10;
+
+export function GarageBookingList({ bookings, garageId }: { bookings: GarageBookingItem[]; garageId: string }) {
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [statusFilter, setStatusFilter] = useState<string>("PENDING");
+  const [orden, setOrden] = useState<"asc" | "desc">("asc");
+  const [pagina, setPagina] = useState(1);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return bookings.filter((b) => {
+    const result = bookings.filter((b) => {
       if (statusFilter !== "ALL" && b.status !== statusFilter) return false;
       if (!q) return true;
       return (
@@ -41,7 +46,18 @@ export function GarageBookingList({ bookings }: { bookings: GarageBookingItem[] 
         b.user.phone?.includes(q)
       );
     });
-  }, [bookings, search, statusFilter]);
+    result.sort((a, b) => {
+      const diff = new Date(a.date).getTime() - new Date(b.date).getTime();
+      return orden === "asc" ? diff : -diff;
+    });
+    return result;
+  }, [bookings, search, statusFilter, orden]);
+
+  // Resetear a página 1 cuando cambia el filtro o búsqueda
+  useMemo(() => { setPagina(1); }, [search, statusFilter]);
+
+  const totalPaginas = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
+  const paginados = filtered.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
 
   if (bookings.length === 0) {
     return (
@@ -55,32 +71,39 @@ export function GarageBookingList({ bookings }: { bookings: GarageBookingItem[] 
 
   return (
     <div className="space-y-4">
-      {/* Barra de búsqueda + filtros */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      {/* Barra única: búsqueda + orden + filtros */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="relative w-48 shrink-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
-            placeholder="Buscar por nombre, matrícula o teléfono…"
+            placeholder="Nombre, matrícula…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
           />
         </div>
-        <div className="flex gap-1 flex-wrap">
-          {STATUS_TABS.map((tab) => (
-            <button
-              key={tab.value}
-              onClick={() => setStatusFilter(tab.value)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                statusFilter === tab.value
-                  ? "bg-gartify-blue text-white"
-                  : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors shrink-0"
+          aria-label="Ordenar por fecha"
+        >
+          {orden === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
+          Fecha
+        </button>
+        <div className="h-4 w-px bg-gray-200 shrink-0" />
+        {STATUS_TABS.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => setStatusFilter(tab.value)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
+              statusFilter === tab.value
+                ? "bg-gartify-blue text-white"
+                : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Resultados */}
@@ -89,17 +112,59 @@ export function GarageBookingList({ bookings }: { bookings: GarageBookingItem[] 
           No hay citas que coincidan con los filtros.
         </p>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((b) => (
-            <BookingCard key={b.id} b={b} />
-          ))}
-        </div>
+        <>
+          <div className="space-y-2">
+            {paginados.map((b) => (
+              <BookingCard key={b.id} b={b} garageId={garageId} />
+            ))}
+          </div>
+
+          {/* Paginador */}
+          {totalPaginas > 1 && (
+            <div className="flex items-center justify-between pt-2 text-sm text-muted-foreground">
+              <span>
+                {(pagina - 1) * POR_PAGINA + 1}–{Math.min(pagina * POR_PAGINA, filtered.length)} de {filtered.length}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setPagina((p) => Math.max(1, p - 1))}
+                  disabled={pagina === 1}
+                  className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                  aria-label="Página anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setPagina(n)}
+                    className={`min-w-[32px] h-8 rounded text-xs font-semibold transition-colors ${
+                      n === pagina
+                        ? "bg-gartify-blue text-white"
+                        : "hover:bg-gray-100 text-muted-foreground"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+                  disabled={pagina === totalPaginas}
+                  className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                  aria-label="Página siguiente"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 }
 
-function BookingCard({ b }: { b: GarageBookingItem }) {
+function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }) {
   const isPast = b.status !== "PENDING" && b.status !== "CONFIRMED";
   const initials = (b.user.name ?? "C")
     .split(" ")
@@ -110,83 +175,75 @@ function BookingCard({ b }: { b: GarageBookingItem }) {
 
   return (
     <article
-      className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col sm:flex-row ${
-        isPast ? "opacity-75" : "border-gray-200 hover:border-gartify-orange/40"
+      className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all p-4 ${
+        isPast ? "opacity-75 border-gray-100" : "border-gray-200 hover:border-gartify-orange/40"
       }`}
     >
-      <div
-        className={`sm:w-32 shrink-0 flex items-center justify-center min-h-[80px] sm:min-h-0 ${
-          isPast
-            ? "bg-gradient-to-br from-gray-400 to-gray-500"
-            : "bg-gradient-to-br from-gartify-hero to-gartify-mid"
-        }`}
-        aria-hidden="true"
-      >
-        <div className="flex flex-col items-center gap-1 p-3">
-          <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-            <span className="text-sm font-bold text-white">{initials}</span>
-          </div>
-          <Wrench className="h-3 w-3 text-white/60" />
+      <div className="flex items-start gap-3">
+        {/* Avatar */}
+        <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${
+          isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"
+        }`}>
+          {initials}
         </div>
-      </div>
 
-      <div className="flex-1 p-4 flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-gartify-blue text-sm">
-              {b.user.name ?? "Cliente"}
+        {/* Contenido */}
+        <div className="flex-1 min-w-0">
+          {/* Fila 1: nombre + estado */}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-gartify-blue text-sm">{b.user.name ?? "Cliente"}</span>
+              {b.user.phone && (
+                <a
+                  href={`tel:${b.user.phone}`}
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gartify-blue transition-colors"
+                >
+                  <Phone className="h-3 w-3" aria-hidden="true" />
+                  {b.user.phone}
+                </a>
+              )}
+            </div>
+            <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
+          </div>
+
+          {/* Fila 2: servicio + fecha + duración + vehículo */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100">
+              <Wrench className="h-3 w-3" aria-hidden="true" />
+              {SERVICE_LABELS[b.service.type] ?? b.service.name}
             </span>
-            {b.user.phone && (
-              <a
-                href={`tel:${b.user.phone}`}
-                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gartify-blue transition-colors"
-              >
-                <Phone className="h-3 w-3" aria-hidden="true" />
-                {b.user.phone}
-              </a>
-            )}
-          </div>
-          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} />
-        </div>
-
-        <span className="inline-flex items-center gap-1 self-start rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
-          {SERVICE_LABELS[b.service.type] ?? b.service.name}
-        </span>
-
-        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-            {formatDateTime(b.date instanceof Date ? b.date : new Date(b.date))}
-          </span>
-          <span className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-            {b.service.duration} min
-          </span>
-          {b.vehicleModel && (
             <span className="flex items-center gap-1">
-              <Car className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-              {b.vehicleModel}
+              <Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
+              {formatDateTime(b.date instanceof Date ? b.date : new Date(b.date))}
             </span>
-          )}
-          {b.vehiclePlate && (
-            <span className="flex items-center gap-1 font-mono font-semibold tracking-wider text-gartify-blue">
-              <Hash className="h-3.5 w-3.5 text-gartify-mid font-normal" aria-hidden="true" />
-              {b.vehiclePlate}
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
+              {b.service.duration} min
             </span>
-          )}
-        </div>
-
-        {b.notes && (
-          <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-2 text-xs text-muted-foreground">
-            <FileText className="h-3.5 w-3.5 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" />
-            <span>{b.notes}</span>
+            {b.vehicleModel && (
+              <span className="flex items-center gap-1">
+                <Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
+                {b.vehicleModel}
+              </span>
+            )}
+            {b.vehiclePlate && (
+              <span className="flex items-center gap-1 font-mono font-semibold tracking-wider text-gartify-blue">
+                <Hash className="h-3 w-3 text-gartify-mid font-normal" aria-hidden="true" />
+                {b.vehiclePlate}
+              </span>
+            )}
+            <span className="ml-auto font-bold text-gartify-orange text-sm">
+              {formatPrice(b.totalPrice)}
+            </span>
           </div>
-        )}
 
-        <div className="flex items-center pt-1 mt-auto border-t border-gray-100">
-          <span className="text-xl font-bold text-gartify-orange">
-            {formatPrice(b.totalPrice)}
-          </span>
+          {/* Fila 3: notas (solo si las hay) */}
+          {b.notes && (
+            <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-1.5 text-xs text-muted-foreground mt-2">
+              <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" />
+              <span>{b.notes}</span>
+            </div>
+          )}
         </div>
       </div>
     </article>

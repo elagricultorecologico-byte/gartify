@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import {
   Plus, Calendar, Euro, Star,
-  TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard,
+  TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard, Tv,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
@@ -86,7 +86,7 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
 
       <div className="flex items-center justify-between mb-8">
         <div>
-          <div className="flex items-center gap-3 mb-1">
+          <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl font-bold text-gartify-blue">{garage.name}</h1>
             {garage.plan === "STARTER" && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 border border-gray-200 text-gray-600 text-xs font-bold px-3 py-1">
@@ -168,12 +168,21 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
         ))}
       </div>
 
-      {/* Indicador de actualización automática */}
-      <div className="flex justify-end mb-3">
+      {/* Indicador de actualización automática + acceso modo TV */}
+      <div className="flex items-center justify-end gap-3 mb-3">
         <AutoRefresh />
+        <span className="text-muted-foreground/30 select-none">|</span>
+        <Link
+          href="/cuenta/taller/tv"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-gartify-blue transition-colors"
+          aria-label="Abrir modo TV"
+        >
+          <Tv className="h-3.5 w-3.5" aria-hidden="true" />
+          Modo TV
+        </Link>
       </div>
 
-      <GarageBookingList bookings={garage.bookings} />
+      <GarageBookingList bookings={garage.bookings} garageId={garage.id} />
     </div>
   );
 }

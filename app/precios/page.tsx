@@ -24,6 +24,8 @@ import {
   Tag,
   Bell,
   Search,
+  Tv,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -79,7 +81,7 @@ const CARACTERISTICAS: FilaCaracteristica[] = [
   },
   {
     texto: "Servicios publicados",
-    starter: "Hasta 5",
+    starter: "Hasta 4",
     pro: "Ilimitados",
     premium: "Ilimitados",
   },
@@ -97,6 +99,18 @@ const CARACTERISTICAS: FilaCaracteristica[] = [
   },
   {
     texto: "Panel de estadísticas",
+    starter: false,
+    pro: true,
+    premium: true,
+  },
+  {
+    texto: "Modo TV — pantalla de citas en tiempo real",
+    starter: false,
+    pro: true,
+    premium: true,
+  },
+  {
+    texto: "Gestión de reservas por WhatsApp",
     starter: false,
     pro: true,
     premium: true,
@@ -289,7 +303,7 @@ export default function PreciosPage() {
               <ul className="mb-8 flex-1 space-y-3">
                 {[
                   { icono: Check, texto: "Perfil verificado en el directorio" },
-                  { icono: Check, texto: "Hasta 5 servicios publicados" },
+                  { icono: Check, texto: "Hasta 4 servicios publicados" },
                   { icono: Check, texto: "Gestión de reservas online" },
                   { icono: Check, texto: "Reseñas y valoraciones" },
                   { icono: Check, texto: "Soporte por email" },
@@ -351,12 +365,14 @@ export default function PreciosPage() {
               {/* Características adicionales */}
               <ul className="mb-8 flex-1 space-y-3">
                 {[
-                  { icono: Check,     texto: "Todo lo del plan Starter" },
-                  { icono: Wrench,    texto: "Servicios ilimitados" },
-                  { icono: Tag,       texto: "Ofertas especiales de horario" },
-                  { icono: Search,    texto: "Posición destacada en búsqueda" },
-                  { icono: Bell,      texto: "Notificaciones automáticas al cliente" },
-                  { icono: BarChart3, texto: "Panel de estadísticas" },
+                  { icono: Check,          texto: "Todo lo del plan Starter" },
+                  { icono: Wrench,         texto: "Servicios ilimitados" },
+                  { icono: Tag,            texto: "Ofertas especiales de horario" },
+                  { icono: Search,         texto: "Posición destacada en búsqueda" },
+                  { icono: Bell,           texto: "Notificaciones automáticas al cliente" },
+                  { icono: BarChart3,      texto: "Panel de estadísticas" },
+                  { icono: Tv,             texto: "Modo TV — pantalla de citas en tiempo real" },
+                  { icono: MessageCircle,  texto: "Gestión de reservas por WhatsApp" },
                 ].map(({ icono: Icono, texto }) => (
                   <li key={texto} className="flex items-center gap-3 text-sm text-gartify-dark">
                     <Icono className="h-4 w-4 shrink-0 text-gartify-orange" />

@@ -40,6 +40,7 @@ export const VEHICLE_ICONS: Record<string, string> = {
 
 export const BOOKING_STATUS_LABELS: Record<string, string> = {
   PENDING:   "Pendiente",
+  PROPOSED:  "Propuesta de hora",
   CONFIRMED: "Confirmada",
   COMPLETED: "Completada",
   CANCELLED: "Cancelada",
@@ -47,6 +48,7 @@ export const BOOKING_STATUS_LABELS: Record<string, string> = {
 
 export const BOOKING_STATUS_COLORS: Record<string, string> = {
   PENDING:   "bg-yellow-500/10 text-yellow-500",
+  PROPOSED:  "bg-purple-500/10 text-purple-500",
   CONFIRMED: "bg-blue-500/10 text-blue-400",
   COMPLETED: "bg-green-500/10 text-green-500",
   CANCELLED: "bg-red-500/10 text-red-400",

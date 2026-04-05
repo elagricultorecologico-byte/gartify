@@ -26,6 +26,46 @@ export interface NuevaReservaParams {
   bookingId:           string;
 }
 
+export interface PropostaHoraParams {
+  clientPhone:  string;
+  clientName:   string;
+  garageName:   string;
+  serviceName:  string;
+  proposedDate: Date;
+  bookingId:    string;
+}
+
+export async function sendPropostaHoraWhatsApp(params: PropostaHoraParams) {
+  const client = getClient();
+  if (!client) return;
+
+  const { clientPhone, clientName, garageName, serviceName, proposedDate, bookingId } = params;
+  const baseUrl     = process.env.NEXTAUTH_URL ?? "https://gartify.es";
+  const tokenOk     = Buffer.from(`${bookingId}:ok`).toString("base64url");
+  const tokenReject = Buffer.from(`${bookingId}:no`).toString("base64url");
+  const to          = `whatsapp:${clientPhone.replace(/\s/g, "")}`;
+
+  const body = [
+    `🔄 *Propuesta de nuevo horario*`,
+    ``,
+    `Hola ${clientName}, el taller *${garageName}* te propone un nuevo horario para tu reserva de *${serviceName}*:`,
+    ``,
+    `📅 Nueva fecha propuesta: ${formatDateTime(proposedDate)}`,
+    ``,
+    `✅ Aceptar: ${baseUrl}/api/booking-action?t=${tokenOk}`,
+    `❌ Rechazar: ${baseUrl}/api/booking-action?t=${tokenReject}`,
+    ``,
+    `Si tienes dudas, contacta directamente con el taller.`,
+  ].join("\n");
+
+  try {
+    const msg = await client.messages.create({ from, to, body });
+    console.log("[WhatsApp] PropostaHora sent OK — SID:", msg.sid);
+  } catch (err) {
+    console.error("[WhatsApp] Error sending PropostaHora:", err);
+  }
+}
+
 export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   const client = getClient();
   if (!client) return;

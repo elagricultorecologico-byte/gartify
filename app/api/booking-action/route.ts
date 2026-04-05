@@ -26,16 +26,25 @@ export async function GET(req: Request) {
   const booking = await db.booking.findUnique({ where: { id: bookingId } });
   if (!booking) return html("❌ Reserva no encontrada", 404);
 
-  if (booking.status !== "PENDING") {
+  const ACTIONABLE = ["PENDING", "PROPOSED"];
+  if (!ACTIONABLE.includes(booking.status)) {
     return html(`ℹ️ Esta reserva ya está en estado <strong>${booking.status}</strong>. No es necesaria ninguna acción.`, 200);
   }
 
-  const newStatus = action === "ok" ? "CONFIRMED" : "CANCELLED";
+  // PENDING: taller confirma/rechaza → PROPOSED: cliente acepta/rechaza propuesta
+  const newStatus = action === "ok"
+    ? (booking.status === "PROPOSED" ? "CONFIRMED" : "CONFIRMED")
+    : "CANCELLED";
   await db.booking.update({ where: { id: bookingId }, data: { status: newStatus } });
 
+  const isProposed = booking.status === "PROPOSED";
   const msg = newStatus === "CONFIRMED"
-    ? "✅ Reserva <strong>confirmada</strong> correctamente. El cliente recibirá una notificación."
-    : "❌ Reserva <strong>rechazada</strong>. El cliente recibirá una notificación.";
+    ? (isProposed
+        ? "✅ Propuesta de horario <strong>aceptada</strong>. Tu cita ha sido confirmada."
+        : "✅ Reserva <strong>confirmada</strong> correctamente. El cliente recibirá una notificación.")
+    : (isProposed
+        ? "❌ Propuesta de horario <strong>rechazada</strong>. El taller recibirá una notificación."
+        : "❌ Reserva <strong>rechazada</strong>. El cliente recibirá una notificación.");
 
   return html(msg, 200);
 }

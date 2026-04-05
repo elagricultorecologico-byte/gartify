@@ -10,7 +10,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   const { status } = await req.json();
 
-  const VALID_STATUSES = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"];
+  const VALID_STATUSES = ["PENDING", "PROPOSED", "CONFIRMED", "COMPLETED", "CANCELLED"];
   if (!VALID_STATUSES.includes(status)) {
     return NextResponse.json({ error: "Estado no válido" }, { status: 400 });
   }
