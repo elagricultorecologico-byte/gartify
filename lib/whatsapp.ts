@@ -4,7 +4,7 @@ import { formatDateTime } from "@/lib/utils";
 const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const from          = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
-const CONTENT_SID = "HX37ed2b05561756c3f145930cee20702b";
+const CONTENT_SID   = "HX37ed2b05561756c3f145930cee20702b";
 
 function toE164(phone: string): string {
   const digits = phone.replace(/\D/g, "");
@@ -92,7 +92,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   console.log("[WhatsApp] Sending to:", to, "from:", from);
 
   try {
-    const msg = await client.messages.create({
+    const msgParams = {
       from,
       to,
       contentSid: CONTENT_SID,
@@ -106,7 +106,9 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
         "7": tokenConfirm,
         "8": tokenReject,
       }),
-    });
+    };
+
+    const msg = await client.messages.create(msgParams);
     console.log("[WhatsApp] Sent OK — SID:", msg.sid, "status:", msg.status);
   } catch (err) {
     console.error("[WhatsApp] Error sending message:", err);
