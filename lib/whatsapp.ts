@@ -4,8 +4,7 @@ import { formatDateTime } from "@/lib/utils";
 const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const from          = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
-// Content SID para producción con botones nativos de WhatsApp
-// const CONTENT_SID = "HX37ed2b05561756c3f145930cee20702b";
+const CONTENT_SID = "HX37ed2b05561756c3f145930cee20702b";
 
 function toE164(phone: string): string {
   const digits = phone.replace(/\D/g, "");
@@ -92,22 +91,22 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
 
   console.log("[WhatsApp] Sending to:", to, "from:", from);
 
-  const body = [
-    `🔧 *Nueva reserva en Gartify*`,
-    ``,
-    `👤 Cliente: ${customerName}`,
-    `🛠️ Servicio: ${serviceName}`,
-    `📝 ${descripcion}`,
-    `📅 Fecha: ${formatDateTime(date)}`,
-    `🚗 Vehículo: ${vehiculoInfo}`,
-    ``,
-    `✅ Confirmar: ${baseUrl}/api/booking-action?t=${tokenConfirm}`,
-    `🔄 Otro horario: ${reagendarUrl}`,
-    `❌ Rechazar: ${baseUrl}/api/booking-action?t=${tokenReject}`,
-  ].join("\n");
-
   try {
-    const msg = await client.messages.create({ from, to, body });
+    const msg = await client.messages.create({
+      from,
+      to,
+      contentSid: CONTENT_SID,
+      contentVariables: JSON.stringify({
+        "1": customerName,
+        "2": serviceName,
+        "3": descripcion,
+        "4": formatDateTime(date),
+        "5": vehiculoInfo,
+        "6": reagendarUrl,
+        "7": tokenConfirm,
+        "8": tokenReject,
+      }),
+    });
     console.log("[WhatsApp] Sent OK — SID:", msg.sid, "status:", msg.status);
   } catch (err) {
     console.error("[WhatsApp] Error sending message:", err);
