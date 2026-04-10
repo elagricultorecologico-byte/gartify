@@ -92,6 +92,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   const to = `whatsapp:${toE164(garagePhone)}`;
 
   console.log("[WhatsApp] Sending to:", to, "from:", from);
+  console.log("[WhatsApp] bookingId:", bookingId, "tokenConfirm:", tokenConfirm, "tokenReschedule:", tokenReschedule);
 
   try {
     const useTemplate = process.env.TWILIO_USE_TEMPLATE === "true";
