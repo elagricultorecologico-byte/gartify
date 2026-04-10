@@ -54,8 +54,9 @@ function html(message: string, status: number) {
     `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gartify</title>
     <style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f0f4ff}
     .card{background:#fff;border-radius:16px;padding:2rem 2.5rem;box-shadow:0 4px 24px rgba(0,0,0,.08);text-align:center;max-width:400px}
-    p{font-size:1.1rem;color:#1e3a8a;margin:0}.logo{font-weight:800;font-size:1.3rem;color:#1E40AF;margin-bottom:1rem}</style>
-    </head><body><div class="card"><div class="logo">🔧 Gartify</div><p>${message}</p></div></body></html>`,
+    p{font-size:1.1rem;color:#1e3a8a;margin:0 0 1.5rem}.logo{font-weight:800;font-size:1.3rem;color:#1E40AF;margin-bottom:1rem}
+    a.btn{display:inline-block;margin-top:.5rem;padding:.65rem 1.5rem;background:#1E40AF;color:#fff;border-radius:8px;text-decoration:none;font-size:.95rem;font-weight:600}</style>
+    </head><body><div class="card"><div class="logo">🔧 Gartify</div><p>${message}</p><a class="btn" href="/cuenta/taller">Mis reservas</a></div></body></html>`,
     { status, headers: { "Content-Type": "text/html; charset=utf-8" } }
   );
 }
