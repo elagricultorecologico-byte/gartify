@@ -5,7 +5,7 @@ const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const from               = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+16623986756";
 const MESSAGING_SERVICE  = process.env.TWILIO_MESSAGING_SERVICE_SID ?? "";
-const CONTENT_SID   = "HXd30d9e1fa2ed5135467445e79886d7ad";
+const CONTENT_SID   = "HX0a5c8a34722e04709fc9513b293d7d12";
 
 function toE164(phone: string): string {
   const digits = phone.replace(/\D/g, "");
