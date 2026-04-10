@@ -3,7 +3,8 @@ import { formatDateTime } from "@/lib/utils";
 
 const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
-const from          = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
+const from               = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
+const MESSAGING_SERVICE  = process.env.TWILIO_MESSAGING_SERVICE_SID ?? "";
 const CONTENT_SID   = "HXb6715fd336d7d011222c33d2b6aa48be";
 
 function toE164(phone: string): string {
@@ -93,39 +94,39 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
 
   try {
     const useTemplate = process.env.TWILIO_USE_TEMPLATE === "true";
-  const msgParams = useTemplate
-    ? {
-        from,
-        to,
-        body: [
-          `🔧 *Nueva reserva en Gartify*`,
-          ``,
-          `👤 Cliente: ${customerName}`,
-          `🛠️ Servicio: ${serviceName}`,
-          `📝 ${descripcion}`,
-          `📅 Fecha: ${formatDateTime(date)}`,
-          `🚗 Vehículo: ${vehiculoInfo}`,
-          ``,
-          `✅ Confirmar: ${baseUrl}/api/booking-action?t=${tokenConfirm}`,
-          `🔄 Otro horario: ${reagendarUrl}`,
-          `❌ Rechazar: ${baseUrl}/api/booking-action?t=${tokenReject}`,
-        ].join("\n"),
-      }
-    : {
-        from,
-        to,
-        contentSid: CONTENT_SID,
-        contentVariables: JSON.stringify({
-          "1": customerName,
-          "2": serviceName,
-          "3": descripcion,
-          "4": formatDateTime(date),
-          "5": vehiculoInfo,
-          "6": reagendarUrl,
-          "7": tokenConfirm,
-          "8": tokenReject,
-        }),
-      };
+    const msgParams = useTemplate
+      ? {
+          messagingServiceSid: MESSAGING_SERVICE,
+          to,
+          contentSid: CONTENT_SID,
+          contentVariables: JSON.stringify({
+            "1": customerName,
+            "2": serviceName,
+            "3": descripcion,
+            "4": formatDateTime(date),
+            "5": vehiculoInfo,
+            "6": reagendarUrl,
+            "7": tokenConfirm,
+            "8": tokenReject,
+          }),
+        }
+      : {
+          from,
+          to,
+          body: [
+            `🔧 *Nueva reserva en Gartify*`,
+            ``,
+            `👤 Cliente: ${customerName}`,
+            `🛠️ Servicio: ${serviceName}`,
+            `📝 ${descripcion}`,
+            `📅 Fecha: ${formatDateTime(date)}`,
+            `🚗 Vehículo: ${vehiculoInfo}`,
+            ``,
+            `✅ Confirmar: ${baseUrl}/api/booking-action?t=${tokenConfirm}`,
+            `🔄 Otro horario: ${reagendarUrl}`,
+            `❌ Rechazar: ${baseUrl}/api/booking-action?t=${tokenReject}`,
+          ].join("\n"),
+        };
 
     const msg = await client.messages.create(msgParams);
     console.log("[WhatsApp] Sent OK — SID:", msg.sid, "status:", msg.status, useTemplate ? "(template)" : "(text)");
