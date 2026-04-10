@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Wrench, ChevronRight, ShieldCheck, Bell, BarChart3, Users, Settings, Euro, CheckCircle, Cog } from "lucide-react";
+import { Wrench, ChevronRight, ShieldCheck, Bell, BarChart3, Users, Settings, Star, Euro, CheckCircle, Cog } from "lucide-react";
 import { PricingSection } from "@/components/para-talleres/PricingSection";
 import { ALL_SERVICES } from "@/lib/constants";
 
