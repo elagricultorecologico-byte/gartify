@@ -106,8 +106,8 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
             "3": formatDateTime(date),
             "4": vehiculoInfo,
             "5": notes || "—",
-            "6": tokenConfirm,
-            "7": tokenReschedule,
+            "7": tokenConfirm,
+            "8": tokenReschedule,
           }),
         }
       : {
