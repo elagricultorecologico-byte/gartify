@@ -5,8 +5,6 @@ const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const from          = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
 const CONTENT_SID   = "HXb6715fd336d7d011222c33d2b6aa48be";
-// El template solo funciona una vez aprobado por Meta (TWILIO_USE_TEMPLATE=true para activarlo)
-const USE_TEMPLATE  = process.env.TWILIO_USE_TEMPLATE === "true";
 
 function toE164(phone: string): string {
   const digits = phone.replace(/\D/g, "");
@@ -94,7 +92,8 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   console.log("[WhatsApp] Sending to:", to, "from:", from);
 
   try {
-    const msgParams = USE_TEMPLATE
+    const useTemplate = process.env.TWILIO_USE_TEMPLATE === "true";
+  const msgParams = useTemplate
     ? {
         from,
         to,
@@ -129,7 +128,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
       };
 
     const msg = await client.messages.create(msgParams);
-    console.log("[WhatsApp] Sent OK — SID:", msg.sid, "status:", msg.status);
+    console.log("[WhatsApp] Sent OK — SID:", msg.sid, "status:", msg.status, useTemplate ? "(template)" : "(text)");
   } catch (err) {
     console.error("[WhatsApp] Error sending message:", err);
   }
