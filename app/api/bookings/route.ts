@@ -91,6 +91,7 @@ export async function POST(req: Request) {
         date:                booking.date,
         vehicleModel:        booking.vehicleModel ?? undefined,
         vehiclePlate:        booking.vehiclePlate ?? undefined,
+        notes:               booking.notes ?? undefined,
         bookingId:           booking.id,
       }).catch(console.error);
     }

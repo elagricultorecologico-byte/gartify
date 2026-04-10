@@ -3,7 +3,7 @@ import { formatDateTime } from "@/lib/utils";
 
 const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
-const from               = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+14155238886";
+const from               = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+16623986756";
 const MESSAGING_SERVICE  = process.env.TWILIO_MESSAGING_SERVICE_SID ?? "";
 const CONTENT_SID   = "HXb6715fd336d7d011222c33d2b6aa48be";
 
@@ -30,6 +30,7 @@ export interface NuevaReservaParams {
   date:                Date;
   vehicleModel?:       string;
   vehiclePlate?:       string;
+  notes?:              string;
   bookingId:           string;
 }
 
@@ -77,7 +78,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   const client = getClient();
   if (!client) return;
 
-  const { garagePhone, customerName, serviceName, serviceDescription, date, vehicleModel, vehiclePlate, bookingId } = params;
+  const { garagePhone, customerName, serviceName, serviceDescription, date, vehicleModel, vehiclePlate, notes, bookingId } = params;
 
   const baseUrl         = process.env.NEXTAUTH_URL ?? "https://gartify.es";
   const tokenConfirm    = Buffer.from(`${bookingId}:ok`).toString("base64url");
@@ -102,9 +103,9 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
           contentVariables: JSON.stringify({
             "1": customerName,
             "2": serviceName,
-            "3": descripcion,
-            "4": formatDateTime(date),
-            "5": vehiculoInfo,
+            "3": formatDateTime(date),
+            "4": vehiculoInfo,
+            "5": notes || "—",
             "6": reagendarUrl,
             "7": tokenConfirm,
             "8": tokenReject,
