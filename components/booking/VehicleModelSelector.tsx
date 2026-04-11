@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { ChevronDown, Search, X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 
 type OpcionSelector = { value: string; label: string; img?: string };
 type RespuestaAPI = { options: OpcionSelector[]; error?: string };
@@ -141,29 +141,38 @@ export function VehicleModelSelector({ onChange }: Props) {
 
   return (
     <div className="space-y-2">
-      {/* ── Selector de Marca (dropdown custom con logos) ── */}
+      {/* ── Selector de Marca (combobox con logo y filtro por texto) ── */}
       <div className="relative" ref={dropdownRef}>
-        <button
-          type="button"
-          onClick={() => setAbierto((v) => !v)}
-          disabled={cargandoMarcas}
-          className={`${CLASES_SELECT} flex items-center justify-between cursor-pointer`}
-        >
-          <span className="flex items-center gap-2 flex-1 min-w-0">
-            {marcaImg && (
-              <Image src={marcaImg} alt={marcaLabel} width={20} height={20} className="shrink-0 object-contain" unoptimized />
-            )}
-            <span className={marcaId ? "text-foreground" : "text-muted-foreground"}>
-              {cargandoMarcas ? "Cargando..." : marcaLabel || "Marca"}
-            </span>
-          </span>
-          <span className="flex items-center gap-1 shrink-0 ml-2">
+        {/* Trigger combobox */}
+        <div className={`${CLASES_SELECT} flex items-center gap-2 pr-2`}>
+          {/* Logo de la marca seleccionada */}
+          {marcaImg && !abierto && (
+            <Image src={marcaImg} alt={marcaLabel} width={20} height={20} className="shrink-0 object-contain" unoptimized />
+          )}
+          {/* Input que actúa como trigger y buscador a la vez */}
+          <input
+            ref={searchRef}
+            type="text"
+            value={abierto ? busqueda : marcaLabel}
+            placeholder={cargandoMarcas ? "Cargando..." : "Marca"}
+            disabled={cargandoMarcas}
+            onChange={(e) => {
+              setBusqueda(e.target.value);
+              setAbierto(true);
+            }}
+            onFocus={() => {
+              setBusqueda("");
+              setAbierto(true);
+            }}
+            className="flex-1 min-w-0 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+          />
+          {/* Botón limpiar / chevron */}
+          <span className="flex items-center gap-1 shrink-0">
             {marcaId && (
               <span
                 role="button"
                 tabIndex={0}
-                onClick={(e) => { e.stopPropagation(); limpiarMarca(); }}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); limpiarMarca(); } }}
+                onMouseDown={(e) => { e.preventDefault(); limpiarMarca(); }}
                 className="p-0.5 rounded hover:bg-gray-100 text-muted-foreground hover:text-foreground"
                 aria-label="Limpiar marca"
               >
@@ -172,23 +181,11 @@ export function VehicleModelSelector({ onChange }: Props) {
             )}
             <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${abierto ? "rotate-180" : ""}`} />
           </span>
-        </button>
+        </div>
 
+        {/* Dropdown con resultados */}
         {abierto && (
           <div className="absolute z-50 mt-1 w-full bg-white border border-input rounded-md shadow-lg overflow-hidden">
-            {/* Búsqueda */}
-            <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-100">
-              <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <input
-                ref={searchRef}
-                type="text"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-                placeholder="Buscar marca..."
-                className="flex-1 text-sm outline-none bg-transparent placeholder:text-muted-foreground"
-              />
-            </div>
-            {/* Lista */}
             <ul className="max-h-56 overflow-y-auto py-1" role="listbox">
               {marcasFiltradas.length === 0 ? (
                 <li className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</li>
@@ -198,7 +195,7 @@ export function VehicleModelSelector({ onChange }: Props) {
                     key={m.value}
                     role="option"
                     aria-selected={m.value === marcaId}
-                    onClick={() => seleccionarMarca(m)}
+                    onMouseDown={(e) => { e.preventDefault(); seleccionarMarca(m); }}
                     className={`flex items-center gap-2.5 px-3 py-1.5 text-sm cursor-pointer hover:bg-gray-50 ${
                       m.value === marcaId ? "bg-blue-50 text-gartify-blue font-medium" : ""
                     }`}
