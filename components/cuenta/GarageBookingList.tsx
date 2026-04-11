@@ -248,7 +248,7 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
               </div>
             )}
             <span className="ml-auto text-xs font-mono text-muted-foreground shrink-0">
-              {b.code || b.id.slice(-8).toUpperCase()}
+              {b.code ? b.code : b.id.slice(-8).toUpperCase()}
             </span>
           </div>
         </div>
