@@ -243,8 +243,6 @@ model VehicleModel {
   makeId   Int
   make     VehicleMake      @relation(fields: [makeId], references: [id], onDelete: Cascade)
   versions VehicleVersion[]
-
-  @@unique([makeId, name])
 }
 
 model VehicleVersion {
@@ -252,6 +250,4 @@ model VehicleVersion {
   name    String
   modelId Int
   model   VehicleModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
-
-  @@unique([modelId, name])
 }
