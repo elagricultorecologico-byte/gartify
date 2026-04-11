@@ -3,30 +3,11 @@ import { db } from "@/lib/db";
 import { formatDateTime } from "@/lib/utils";
 
 interface Props {
-  params: { token: string };
+  params: { bookingId: string };
 }
 
-export default async function ConfirmarReservaPage({ params }: Props) {
-  const { token } = params;
-
-  let bookingId: string;
-  let action: string = "ok";
-
-  // Detectar si es bookingId directo o token base64url
-  try {
-    const decoded = Buffer.from(token, "base64url").toString("utf-8");
-    const parts = decoded.split(":");
-    if (parts.length === 2 && (parts[1] === "ok" || parts[1] === "no")) {
-      bookingId = parts[0];
-      action = parts[1];
-    } else {
-      bookingId = token; // bookingId directo
-    }
-  } catch {
-    bookingId = token;
-  }
-
-  const isConfirm = action === "ok";
+export default async function ReagendarReservaPage({ params }: Props) {
+  const { bookingId } = params;
 
   const booking = await db.booking.findUnique({
     where: { id: bookingId },
@@ -41,21 +22,12 @@ export default async function ConfirmarReservaPage({ params }: Props) {
   const ACTIONABLE = ["PENDING", "PROPOSED"];
   const alreadyActioned = !ACTIONABLE.includes(booking.status);
 
-  const tokenConfirm = Buffer.from(`${bookingId}:ok`).toString("base64url");
-  const tokenReject  = Buffer.from(`${bookingId}:no`).toString("base64url");
-  const actionToken  = isConfirm ? tokenConfirm : tokenReject;
-
-  const actionLabel = isConfirm ? "Confirmar reserva" : "Rechazar reserva";
-  const actionColor = isConfirm ? "#16a34a" : "#dc2626";
-  const actionHover = isConfirm ? "#15803d" : "#b91c1c";
-  const icon        = isConfirm ? "✅" : "❌";
-
   return (
     <html lang="es">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Gartify — {actionLabel}</title>
+        <title>Gartify — Reagendar reserva</title>
         <style>{`
           body { font-family: sans-serif; display: flex; align-items: center; justify-content: center;
                  min-height: 100vh; margin: 0; background: #f0f4ff; }
@@ -72,8 +44,8 @@ export default async function ConfirmarReservaPage({ params }: Props) {
           .btn { display: block; width: 100%; padding: .75rem; border-radius: 8px; border: none;
                  font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none;
                  margin-bottom: .75rem; box-sizing: border-box; }
-          .btn-action { background: ${actionColor}; color: #fff; }
-          .btn-action:hover { background: ${actionHover}; }
+          .btn-action { background: #d97706; color: #fff; }
+          .btn-action:hover { background: #b45309; }
           .btn-cancel { background: #f1f5f9; color: #475569; }
           .btn-cancel:hover { background: #e2e8f0; }
         `}</style>
@@ -90,14 +62,14 @@ export default async function ConfirmarReservaPage({ params }: Props) {
             </>
           ) : (
             <>
-              <p className="title">{icon} {actionLabel}</p>
+              <p className="title">🔄 Reagendar reserva</p>
               <div className="info">
                 <div className="info-row"><span className="label">Cliente:</span> {booking.user.name ?? "—"}</div>
                 <div className="info-row"><span className="label">Servicio:</span> {booking.service.name}</div>
                 <div className="info-row"><span className="label">Fecha:</span> {formatDateTime(booking.date)}</div>
               </div>
-              <p className="notice">¿Confirmas esta acción?</p>
-              <a className="btn btn-action" href={`/api/booking-action?t=${actionToken}`}>{icon} Sí, {isConfirm ? "confirmar" : "rechazar"}</a>
+              <p className="notice">Para proponer un nuevo horario, ve a tu panel de reservas.</p>
+              <a className="btn btn-action" href="/cuenta/taller">🔄 Ir a Mis reservas para reagendar</a>
               <a className="btn btn-cancel" href="/cuenta/taller">Cancelar — volver a Mis reservas</a>
             </>
           )}

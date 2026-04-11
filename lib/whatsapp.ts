@@ -5,7 +5,7 @@ const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
 const from               = process.env.TWILIO_WHATSAPP_FROM ?? "whatsapp:+16623986756";
 const MESSAGING_SERVICE  = process.env.TWILIO_MESSAGING_SERVICE_SID ?? "";
-const CONTENT_SID   = "HX0a5c8a34722e04709fc9513b293d7d12";
+const CONTENT_SID   = "HX9214ced0c5cd47c8b35835e17a2a8986";
 
 function toE164(phone: string): string {
   const digits = phone.replace(/\D/g, "");
@@ -107,8 +107,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
             "3": formatDateTime(date),
             "4": vehiculoInfo,
             "5": notes || "—",
-            "7": tokenConfirm,
-            "8": tokenReschedule,
+            "6": bookingId,
           }),
         }
       : {
