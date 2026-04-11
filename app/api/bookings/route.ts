@@ -6,6 +6,13 @@ import { sendMail } from "@/lib/mailer";
 import { bookingConfirmationEmail, garageNewBookingEmail } from "@/lib/emails/templates";
 import { sendNuevaReservaWhatsApp } from "@/lib/whatsapp";
 
+function generateBookingCode(): string {
+  const now = new Date();
+  const date = now.toISOString().slice(0, 10).replace(/-/g, ""); // "20260411"
+  const rand = Math.floor(1000 + Math.random() * 9000);          // 1000–9999
+  return `GAR-${date}-${rand}`;
+}
+
 const TIPOS_VEHICULO_VALIDOS = [
   "COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION",
 ] as const;
@@ -33,6 +40,7 @@ export async function POST(req: Request) {
 
     const booking = await db.booking.create({
       data: {
+        code:         generateBookingCode(),
         userId:       session.user.id,
         garageId:     data.garageId,
         serviceId:    data.serviceId,

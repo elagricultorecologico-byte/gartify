@@ -1,52 +1,61 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import { ChevronDown, Search, X } from "lucide-react";
 
-type OpcionSelector = { value: string; label: string };
-
+type OpcionSelector = { value: string; label: string; img?: string };
 type RespuestaAPI = { options: OpcionSelector[]; error?: string };
 
 interface Props {
-  /** Valor actual del campo (string legible ya compuesto o vacío) */
   value: string;
-  /** Callback que recibe el string legible al completar la selección */
   onChange: (value: string) => void;
 }
 
-// Clases Tailwind que replican el estilo de los <Input> del BookingWizard
 const CLASES_SELECT =
   "flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm " +
   "shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 " +
   "focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
-const PLACEHOLDER_CARGANDO = "Cargando...";
-
-/**
- * Selector encadenado de vehículo: Marca → Modelo → Motor/versión.
- * Los datos se obtienen desde el proxy /api/vehicle-selector que scrapea distri-auto.es.
- * Al completar la selección llama a onChange con un string legible tipo:
- * "Renault 5 (122_) 1.4 Alpine Turbo (122B) 79KW"
- */
 export function VehicleModelSelector({ onChange }: Props) {
-  // Listas de opciones para cada nivel
   const [marcas, setMarcas] = useState<OpcionSelector[]>([]);
   const [modelos, setModelos] = useState<OpcionSelector[]>([]);
   const [vehiculos, setVehiculos] = useState<OpcionSelector[]>([]);
 
-  // Valores seleccionados (IDs numéricos como strings)
   const [marcaId, setMarcaId] = useState("");
   const [modeloId, setModeloId] = useState("");
 
-  // Labels seleccionados para componer el string final
   const [marcaLabel, setMarcaLabel] = useState("");
+  const [marcaImg, setMarcaImg] = useState("");
   const [modeloLabel, setModeloLabel] = useState("");
 
-  // Estados de carga por nivel
   const [cargandoMarcas, setCargandoMarcas] = useState(false);
   const [cargandoModelos, setCargandoModelos] = useState(false);
   const [cargandoVehiculos, setCargandoVehiculos] = useState(false);
 
-  // Carga las marcas al montar el componente
+  // Dropdown de marca
+  const [abierto, setAbierto] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  // Cerrar al hacer clic fuera
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setAbierto(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Foco en búsqueda al abrir
+  useEffect(() => {
+    if (abierto) setTimeout(() => searchRef.current?.focus(), 50);
+  }, [abierto]);
+
+  // Carga marcas al montar
   useEffect(() => {
     async function cargarMarcas() {
       setCargandoMarcas(true);
@@ -55,7 +64,6 @@ export function VehicleModelSelector({ onChange }: Props) {
         const data = await res.json() as RespuestaAPI;
         setMarcas(data.options ?? []);
       } catch {
-        // Fallo silencioso: el campo queda vacío y el usuario puede escribir manualmente
         setMarcas([]);
       } finally {
         setCargandoMarcas(false);
@@ -64,68 +72,51 @@ export function VehicleModelSelector({ onChange }: Props) {
     void cargarMarcas();
   }, []);
 
-  // Carga modelos cuando cambia la marca seleccionada
+  // Carga modelos al cambiar marca
   useEffect(() => {
-    if (!marcaId) {
-      setModelos([]);
-      setModeloId("");
-      setModeloLabel("");
-      setVehiculos([]);
-      return;
-    }
-
+    if (!marcaId) { setModelos([]); setModeloId(""); setModeloLabel(""); setVehiculos([]); return; }
     async function cargarModelos() {
       setCargandoModelos(true);
-      setModelos([]);
-      setModeloId("");
-      setModeloLabel("");
-      setVehiculos([]);
+      setModelos([]); setModeloId(""); setModeloLabel(""); setVehiculos([]);
       try {
-        const res = await fetch(
-          `/api/vehicle-selector?step=models&manufacturerId=${marcaId}`
-        );
+        const res = await fetch(`/api/vehicle-selector?step=models&manufacturerId=${marcaId}`);
         const data = await res.json() as RespuestaAPI;
         setModelos(data.options ?? []);
-      } catch {
-        setModelos([]);
-      } finally {
-        setCargandoModelos(false);
-      }
+      } catch { setModelos([]); }
+      finally { setCargandoModelos(false); }
     }
     void cargarModelos();
   }, [marcaId]);
 
-  // Carga vehículos cuando cambia el modelo seleccionado
+  // Carga vehículos al cambiar modelo
   useEffect(() => {
-    if (!marcaId || !modeloId) {
-      setVehiculos([]);
-      return;
-    }
-
+    if (!marcaId || !modeloId) { setVehiculos([]); return; }
     async function cargarVehiculos() {
       setCargandoVehiculos(true);
       setVehiculos([]);
       try {
-        const res = await fetch(
-          `/api/vehicle-selector?step=vehicles&manufacturerId=${marcaId}&modelId=${modeloId}`
-        );
+        const res = await fetch(`/api/vehicle-selector?step=vehicles&manufacturerId=${marcaId}&modelId=${modeloId}`);
         const data = await res.json() as RespuestaAPI;
         setVehiculos(data.options ?? []);
-      } catch {
-        setVehiculos([]);
-      } finally {
-        setCargandoVehiculos(false);
-      }
+      } catch { setVehiculos([]); }
+      finally { setCargandoVehiculos(false); }
     }
     void cargarVehiculos();
   }, [marcaId, modeloId]);
 
-  function handleMarcaChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const id = e.target.value;
-    const label = marcas.find((m) => m.value === id)?.label ?? "";
-    setMarcaId(id);
-    setMarcaLabel(label);
-    // Al cambiar la marca, limpiamos la selección compuesta
+  function seleccionarMarca(m: OpcionSelector) {
+    setMarcaId(m.value);
+    setMarcaLabel(m.label);
+    setMarcaImg(m.img ?? "");
+    setAbierto(false);
+    setBusqueda("");
+    onChange("");
+  }
+
+  function limpiarMarca() {
+    setMarcaId(""); setMarcaLabel(""); setMarcaImg("");
+    setModelos([]); setModeloId(""); setModeloLabel("");
+    setVehiculos([]);
     onChange("");
   }
 
@@ -134,86 +125,123 @@ export function VehicleModelSelector({ onChange }: Props) {
     const label = modelos.find((m) => m.value === id)?.label ?? "";
     setModeloId(id);
     setModeloLabel(label);
-    // Al cambiar el modelo sin haber seleccionado vehículo aún, limpiamos
     onChange("");
   }
 
   function handleVehiculoChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const vehiculoLabel = vehiculos.find((v) => v.value === e.target.value)?.label ?? "";
-    if (!vehiculoLabel) {
-      onChange("");
-      return;
-    }
-    // Compone el string legible final: "Marca Modelo Motor"
+    if (!vehiculoLabel) { onChange(""); return; }
     const valorFinal = `${marcaLabel} ${modeloLabel} ${vehiculoLabel}`.replace(/\s+/g, " ").trim();
     onChange(valorFinal);
   }
 
+  const marcasFiltradas = marcas.filter((m) =>
+    m.label.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   return (
     <div className="space-y-2">
-      {/* Selector de marca */}
-      <select
-        className={CLASES_SELECT}
-        value={marcaId}
-        onChange={handleMarcaChange}
-        disabled={cargandoMarcas}
-        aria-label="Marca del vehículo"
-      >
-        <option value="">
-          {cargandoMarcas ? PLACEHOLDER_CARGANDO : "Selecciona una marca"}
-        </option>
-        {marcas.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
-        ))}
-      </select>
+      {/* ── Selector de Marca (dropdown custom con logos) ── */}
+      <div className="relative" ref={dropdownRef}>
+        <button
+          type="button"
+          onClick={() => setAbierto((v) => !v)}
+          disabled={cargandoMarcas}
+          className={`${CLASES_SELECT} flex items-center justify-between cursor-pointer`}
+        >
+          <span className="flex items-center gap-2 flex-1 min-w-0">
+            {marcaImg && (
+              <Image src={marcaImg} alt={marcaLabel} width={20} height={20} className="shrink-0 object-contain" unoptimized />
+            )}
+            <span className={marcaId ? "text-foreground" : "text-muted-foreground"}>
+              {cargandoMarcas ? "Cargando..." : marcaLabel || "Marca"}
+            </span>
+          </span>
+          <span className="flex items-center gap-1 shrink-0 ml-2">
+            {marcaId && (
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={(e) => { e.stopPropagation(); limpiarMarca(); }}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); limpiarMarca(); } }}
+                className="p-0.5 rounded hover:bg-gray-100 text-muted-foreground hover:text-foreground"
+                aria-label="Limpiar marca"
+              >
+                <X className="h-3 w-3" />
+              </span>
+            )}
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${abierto ? "rotate-180" : ""}`} />
+          </span>
+        </button>
 
-      {/* Selector de modelo */}
+        {abierto && (
+          <div className="absolute z-50 mt-1 w-full bg-white border border-input rounded-md shadow-lg overflow-hidden">
+            {/* Búsqueda */}
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-gray-100">
+              <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <input
+                ref={searchRef}
+                type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar marca..."
+                className="flex-1 text-sm outline-none bg-transparent placeholder:text-muted-foreground"
+              />
+            </div>
+            {/* Lista */}
+            <ul className="max-h-56 overflow-y-auto py-1" role="listbox">
+              {marcasFiltradas.length === 0 ? (
+                <li className="px-3 py-2 text-sm text-muted-foreground">Sin resultados</li>
+              ) : (
+                marcasFiltradas.map((m) => (
+                  <li
+                    key={m.value}
+                    role="option"
+                    aria-selected={m.value === marcaId}
+                    onClick={() => seleccionarMarca(m)}
+                    className={`flex items-center gap-2.5 px-3 py-1.5 text-sm cursor-pointer hover:bg-gray-50 ${
+                      m.value === marcaId ? "bg-blue-50 text-gartify-blue font-medium" : ""
+                    }`}
+                  >
+                    {m.img && (
+                      <Image src={m.img} alt={m.label} width={22} height={22} className="object-contain shrink-0" unoptimized />
+                    )}
+                    {m.label}
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* ── Selector de Modelo ── */}
       <select
         className={CLASES_SELECT}
         value={modeloId}
         onChange={handleModeloChange}
         disabled={!marcaId || cargandoModelos}
-        aria-label="Modelo del vehículo"
       >
         <option value="">
-          {!marcaId
-            ? "Primero elige una marca"
-            : cargandoModelos
-            ? PLACEHOLDER_CARGANDO
-            : modelos.length === 0
-            ? "Sin modelos disponibles"
-            : "Selecciona un modelo"}
+          {!marcaId ? "Modelo" : cargandoModelos ? "Cargando..." : modelos.length === 0 ? "Sin modelos" : "Modelo"}
         </option>
         {modelos.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
+          <option key={m.value} value={m.value}>{m.label}</option>
         ))}
       </select>
 
-      {/* Selector de versión / motor */}
+      {/* ── Selector de Vehículo ── */}
       <select
         className={CLASES_SELECT}
         defaultValue=""
         onChange={handleVehiculoChange}
         disabled={!modeloId || cargandoVehiculos}
-        aria-label="Versión y motor del vehículo"
       >
         <option value="">
-          {!modeloId
-            ? "Primero elige un modelo"
-            : cargandoVehiculos
-            ? PLACEHOLDER_CARGANDO
-            : vehiculos.length === 0
-            ? "Sin versiones disponibles"
-            : "Selecciona la versión"}
+          {!modeloId ? "Vehículo" : cargandoVehiculos ? "Cargando..." : vehiculos.length === 0 ? "Sin versiones" : "Vehículo"}
         </option>
         {vehiculos.map((v) => (
-          <option key={v.value} value={v.value}>
-            {v.label}
-          </option>
+          <option key={v.value} value={v.value}>{v.label}</option>
         ))}
       </select>
     </div>

@@ -7,6 +7,7 @@ import { formatPrice, formatDateTime, SERVICE_LABELS } from "@/lib/utils";
 
 export type GarageBookingItem = {
   id: string;
+  code: string;
   status: string;
   date: Date | string;
   totalPrice: number;
@@ -238,13 +239,18 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
             </span>
           </div>
 
-          {/* Fila 3: notas (solo si las hay) */}
-          {b.notes && (
-            <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-1.5 text-xs text-muted-foreground mt-2">
-              <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" />
-              <span>{b.notes}</span>
-            </div>
-          )}
+          {/* Fila 3: notas + código */}
+          <div className="flex items-center justify-between mt-2 gap-2 flex-wrap">
+            {b.notes && (
+              <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-1.5 text-xs text-muted-foreground flex-1">
+                <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" />
+                <span>{b.notes}</span>
+              </div>
+            )}
+            <span className="ml-auto text-xs font-mono text-muted-foreground shrink-0">
+              {b.code || b.id.slice(-8).toUpperCase()}
+            </span>
+          </div>
         </div>
       </div>
     </article>

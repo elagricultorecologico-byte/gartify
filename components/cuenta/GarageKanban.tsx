@@ -111,9 +111,14 @@ function KanbanCard({ b, isActive, garageId }: { b: GarageBookingItem; isActive:
 
       {/* Precio + acción */}
       <div className="flex items-center justify-between gap-2 pt-1 border-t border-gray-100">
-        <span className="font-bold text-gartify-orange text-sm">
-          {formatPrice(b.totalPrice)}
-        </span>
+        <div className="flex flex-col gap-0.5">
+          <span className="font-bold text-gartify-orange text-sm">
+            {formatPrice(b.totalPrice)}
+          </span>
+          <span className="text-xs font-mono text-muted-foreground">
+            {b.code || b.id.slice(-8).toUpperCase()}
+          </span>
+        </div>
         <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
       </div>
     </article>

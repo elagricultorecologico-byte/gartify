@@ -53,6 +53,7 @@ export default async function BookingConfirmationPage({
     where: { id: params.id },
     select: {
       id: true,
+      code: true,
       date: true,
       status: true,
       totalPrice: true,
@@ -242,6 +243,15 @@ export default async function BookingConfirmationPage({
               </div>
             </>
           )}
+
+          {/* Código de reserva */}
+          <div className="h-px bg-gray-100" role="separator" />
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>Ref. reserva</span>
+            <span className="font-mono font-semibold text-gartify-blue tracking-wide">
+              {booking.code || booking.id.slice(-8).toUpperCase()}
+            </span>
+          </div>
 
           {/* Total */}
           <div className="h-px bg-gray-100" role="separator" />

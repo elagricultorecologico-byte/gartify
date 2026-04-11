@@ -14,14 +14,13 @@ const HEADERS_NAVEGADOR: HeadersInit = {
 
 const BASE_URL = "https://www.distri-auto.es";
 
-type OpcionSelector = { value: string; label: string };
+type OpcionSelector = { value: string; label: string; img?: string };
 
 /**
  * Extrae las opciones de un <select> del HTML devuelto por distri-auto.es.
- * Usa regex porque la respuesta es HTML parcial, no un documento completo.
+ * Para manufacturers también extrae el atributo data-img (logo de la marca).
  */
-function extraerOpciones(html: string, idSelect: string): OpcionSelector[] {
-  // Captura el contenido interno del select identificado
+function extraerOpciones(html: string, idSelect: string, conImg = false): OpcionSelector[] {
   const regexSelect = new RegExp(
     `<select[^>]*id="${idSelect}"[^>]*>([\\s\\S]*?)<\\/select>`,
     "i"
@@ -31,17 +30,23 @@ function extraerOpciones(html: string, idSelect: string): OpcionSelector[] {
 
   const contenidoSelect = matchSelect[1];
 
-  // Extrae cada <option value="ID">Etiqueta</option>
-  const regexOpcion = /<option value="(\d+)"[^>]*>([^<]+)<\/option>/g;
+  const regexOpcion = conImg
+    ? /<option value="(\d+)"[^>]*data-img="([^"]*)"[^>]*>([^<]+)<\/option>/g
+    : /<option value="(\d+)"[^>]*>([^<]+)<\/option>/g;
+
   const opciones: OpcionSelector[] = [];
   let match: RegExpExecArray | null;
 
   while ((match = regexOpcion.exec(contenidoSelect)) !== null) {
-    const value = match[1].trim();
-    const label = match[2].trim();
-    // Omite la opción vacía/placeholder que tienen value "0" o similar sin texto real
-    if (value && label) {
-      opciones.push({ value, label });
+    if (conImg) {
+      const value = match[1].trim();
+      const img   = match[2].trim();
+      const label = match[3].trim();
+      if (value && label) opciones.push({ value, label, img });
+    } else {
+      const value = match[1].trim();
+      const label = match[2].trim();
+      if (value && label) opciones.push({ value, label });
     }
   }
 
@@ -69,7 +74,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       }
 
       const html = await respuesta.text();
-      const opciones = extraerOpciones(html, "search_vehicle_manufacturer");
+      const opciones = extraerOpciones(html, "search_vehicle_manufacturer", true);
 
       return NextResponse.json({ options: opciones });
     }
