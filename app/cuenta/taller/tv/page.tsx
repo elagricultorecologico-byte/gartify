@@ -193,19 +193,17 @@ export default async function ModoTvPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gartify-dark text-white flex flex-col">
+    <div className="h-screen bg-gartify-dark text-white flex flex-col overflow-hidden">
 
       {/* ── Cabecera ── */}
-      <header className="sticky top-0 z-10 bg-gartify-dark/95 backdrop-blur border-b border-white/10 px-4 lg:px-6 py-3 lg:py-4">
+      <header className="sticky top-0 z-10 bg-gartify-dark/95 backdrop-blur border-b border-white/10 px-4 lg:px-6 py-2 lg:py-4">
 
-        {/* Fila 1: logo + en vivo + reloj + volver */}
+        {/* Fila 1: logo + reloj + volver */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xl" aria-hidden="true">🔧</span>
-            <span className="text-base font-black text-white tracking-tight">Gartify</span>
-            <span className="hidden sm:inline mx-1 text-slate-600">|</span>
-            <span className="hidden sm:inline text-sm font-semibold text-slate-300 truncate">{taller.name}</span>
-            <span className="flex items-center gap-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest">
+            <span aria-hidden="true">🔧</span>
+            <span className="text-sm font-black text-white tracking-tight">Gartify</span>
+            <span className="flex items-center gap-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest shrink-0">
               <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
               En vivo
             </span>
@@ -214,27 +212,29 @@ export default async function ModoTvPage() {
             <TvReloj />
             <Link
               href="/cuenta/taller"
-              className="rounded-lg bg-white/10 hover:bg-white/20 transition-colors px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white"
+              className="rounded-lg bg-white/10 hover:bg-white/20 transition-colors px-2 py-1 text-xs font-semibold text-slate-300 hover:text-white"
             >
               ← Volver
             </Link>
           </div>
         </div>
 
-        {/* Fila 2: KPIs (siempre visibles) */}
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
-          <div className="flex flex-col items-center px-3 py-1 rounded-lg bg-white/5 border border-white/10 min-w-[72px]">
-            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Hoy</span>
-            <span className="text-xl font-black text-white leading-tight">{citasHoy}</span>
-          </div>
-          <div className="flex flex-col items-center px-3 py-1 rounded-lg bg-green-500/10 border border-green-500/20 min-w-[72px]">
-            <span className="text-[10px] text-green-400 uppercase tracking-widest font-semibold">Listas</span>
-            <span className="text-xl font-black text-green-300 leading-tight">{completadasHoy}</span>
-          </div>
-          <div className="flex flex-col items-center px-3 py-1 rounded-lg bg-white/5 border border-white/10 min-w-[72px]">
-            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Próxima</span>
-            <span className="text-xl font-black text-white leading-tight">{proximaHora ?? "—"}</span>
-            {proximaFecha && <span className="text-[9px] text-slate-400 capitalize leading-tight">{proximaFecha}</span>}
+        {/* Fila 2: nombre taller + KPIs */}
+        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+          <span className="text-xs font-semibold text-slate-400 truncate max-w-[120px] lg:max-w-none">{taller.name}</span>
+          <div className="flex items-center gap-2 ml-auto">
+            <div className="flex flex-col items-center px-2.5 py-0.5 rounded-lg bg-white/5 border border-white/10 min-w-[52px]">
+              <span className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold">Hoy</span>
+              <span className="text-base font-black text-white leading-tight">{citasHoy}</span>
+            </div>
+            <div className="flex flex-col items-center px-2.5 py-0.5 rounded-lg bg-green-500/10 border border-green-500/20 min-w-[52px]">
+              <span className="text-[9px] text-green-400 uppercase tracking-widest font-semibold">Listas</span>
+              <span className="text-base font-black text-green-300 leading-tight">{completadasHoy}</span>
+            </div>
+            <div className="flex flex-col items-center px-2.5 py-0.5 rounded-lg bg-white/5 border border-white/10 min-w-[52px]">
+              <span className="text-[9px] text-slate-500 uppercase tracking-widest font-semibold">Próxima</span>
+              <span className="text-base font-black text-white leading-tight">{proximaHora ?? "—"}</span>
+            </div>
           </div>
         </div>
 

@@ -18,15 +18,15 @@ export function TvColumnasTabs({ tabs }: { tabs: Tab[] }) {
   return (
     <>
       {/* ── Tabs (solo móvil) ── */}
-      <div className="flex lg:hidden border-b border-white/10 px-4 gap-1 pt-1">
+      <div className="flex lg:hidden border-b border-white/10 overflow-x-auto scrollbar-none">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActivo(tab.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-t-lg transition-colors ${
+            className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold whitespace-nowrap shrink-0 border-b-2 transition-colors ${
               activo === tab.key
-                ? "bg-white/10 text-white border-b-2 border-white"
-                : "text-slate-400 hover:text-white"
+                ? "border-white text-white"
+                : "border-transparent text-slate-400 hover:text-white"
             }`}
           >
             <span className={`h-2 w-2 rounded-full ${tab.dot}`} />
@@ -37,14 +37,14 @@ export function TvColumnasTabs({ tabs }: { tabs: Tab[] }) {
       </div>
 
       {/* ── Contenido móvil ── */}
-      <div className="flex flex-col lg:hidden flex-1 px-4 py-4 gap-2 overflow-y-auto">
+      <div className="lg:hidden flex-1 overflow-y-auto px-4 py-4">
         {tabActivo.count === 0 ? (
-          <div className="flex flex-col items-center justify-center flex-1 gap-3 rounded-xl border border-white/5 py-16">
+          <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-white/5 py-16">
             <span className="text-4xl">{tabActivo.empty.icon}</span>
             <p className="text-slate-500 text-sm">{tabActivo.empty.text}</p>
           </div>
         ) : (
-          tabActivo.children
+          <div className="flex flex-col gap-2">{tabActivo.children}</div>
         )}
       </div>
 
