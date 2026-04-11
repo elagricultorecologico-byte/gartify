@@ -37,16 +37,17 @@ function extraerOpciones(html: string, idSelect: string, conImg = false): Opcion
   const opciones: OpcionSelector[] = [];
   let match: RegExpExecArray | null;
 
+  const seen = new Set<string>();
   while ((match = regexOpcion.exec(contenidoSelect)) !== null) {
     if (conImg) {
       const value = match[1].trim();
       const img   = match[2].trim();
       const label = match[3].trim();
-      if (value && label) opciones.push({ value, label, img });
+      if (value && label && !seen.has(value)) { seen.add(value); opciones.push({ value, label, img }); }
     } else {
       const value = match[1].trim();
       const label = match[2].trim();
-      if (value && label) opciones.push({ value, label });
+      if (value && label && !seen.has(value)) { seen.add(value); opciones.push({ value, label }); }
     }
   }
 

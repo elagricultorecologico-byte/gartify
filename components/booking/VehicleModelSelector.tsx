@@ -135,9 +135,9 @@ export function VehicleModelSelector({ onChange }: Props) {
     onChange(valorFinal);
   }
 
-  const marcasFiltradas = marcas.filter((m) =>
-    m.label.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const marcasFiltradas = busqueda
+    ? marcas.filter((m) => m.label.toLowerCase().startsWith(busqueda.toLowerCase()))
+    : marcas;
 
   return (
     <div className="space-y-2">
