@@ -8,6 +8,7 @@ interface Props {
 
 export default async function ReagendarReservaPage({ params }: Props) {
   const { bookingId } = params;
+  const tokenReject = Buffer.from(`${bookingId}:no`).toString("base64url");
 
   const booking = await db.booking.findUnique({
     where: { id: bookingId },
@@ -46,6 +47,8 @@ export default async function ReagendarReservaPage({ params }: Props) {
                  margin-bottom: .75rem; box-sizing: border-box; }
           .btn-action { background: #d97706; color: #fff; }
           .btn-action:hover { background: #b45309; }
+          .btn-reject { background: #dc2626; color: #fff; }
+          .btn-reject:hover { background: #b91c1c; }
           .btn-cancel { background: #f1f5f9; color: #475569; }
           .btn-cancel:hover { background: #e2e8f0; }
         `}</style>
@@ -70,6 +73,7 @@ export default async function ReagendarReservaPage({ params }: Props) {
               </div>
               <p className="notice">Para proponer un nuevo horario, ve a tu panel de reservas.</p>
               <a className="btn btn-action" href="/cuenta/taller">🔄 Ir a Mis reservas para reagendar</a>
+              <a className="btn btn-reject" href={`/api/booking-action?t=${tokenReject}`}>❌ Rechazar reserva</a>
               <a className="btn btn-cancel" href="/cuenta/taller">Cancelar — volver a Mis reservas</a>
             </>
           )}
