@@ -101,6 +101,7 @@ export async function POST(req: Request) {
         vehiclePlate:        booking.vehiclePlate ?? undefined,
         notes:               booking.notes ?? undefined,
         bookingId:           booking.id,
+        bookingCode:         booking.code || undefined,
       }).catch(console.error);
     }
     // ───────────────────────────────────────────────────────────────────────

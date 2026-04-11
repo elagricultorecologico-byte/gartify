@@ -32,6 +32,7 @@ export interface NuevaReservaParams {
   vehiclePlate?:       string;
   notes?:              string;
   bookingId:           string;
+  bookingCode?:        string;
 }
 
 export interface PropostaHoraParams {
@@ -78,7 +79,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   const client = getClient();
   if (!client) return;
 
-  const { garagePhone, customerName, serviceName, serviceDescription, date, vehicleModel, vehiclePlate, notes, bookingId } = params;
+  const { garagePhone, customerName, serviceName, serviceDescription, date, vehicleModel, vehiclePlate, notes, bookingId, bookingCode } = params;
 
   const baseUrl         = process.env.NEXTAUTH_URL ?? "https://gartify.es";
   const tokenConfirm    = Buffer.from(`${bookingId}:ok`).toString("base64url");
@@ -115,7 +116,7 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
             "6": modelo,
             "7": motor,
             "8": notes || "—",
-            "9": bookingId,
+            "9": bookingCode || bookingId,
             "10": bookingId,
             "11": bookingId,
           }),
