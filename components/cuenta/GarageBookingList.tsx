@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Car, Clock, FileText, Hash, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, Tag, Settings } from "lucide-react";
+import { Car, Clock, FileText, Hash, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
 import { formatPrice, formatDateTime, SERVICE_LABELS } from "@/lib/utils";
@@ -175,11 +175,6 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
     .join("")
     .toUpperCase();
 
-  const vehiclePartes = (b.vehicleModel ?? "").trim().split(/\s+/).filter(Boolean);
-  const marca  = vehiclePartes[0] ?? null;
-  const modelo = vehiclePartes[1] ?? null;
-  const motor  = vehiclePartes.slice(2).join(" ") || null;
-
   return (
     <article
       className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all p-4 ${
@@ -227,22 +222,10 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
               <Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
               {b.service.duration} min
             </span>
-            {marca && (
-              <span className="flex items-center gap-1">
-                <Tag className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                {marca}
-              </span>
-            )}
-            {modelo && (
+            {b.vehicleModel && (
               <span className="flex items-center gap-1">
                 <Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                {modelo}
-              </span>
-            )}
-            {motor && (
-              <span className="flex items-center gap-1">
-                <Settings className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                {motor}
+                {b.vehicleModel}
               </span>
             )}
             {b.vehiclePlate && (
@@ -264,8 +247,8 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
                 <span>{b.notes}</span>
               </div>
             )}
-            <span className="ml-auto text-xs font-mono font-semibold text-gartify-gray shrink-0">
-              {b.code ?? b.id.slice(-8).toUpperCase()}
+            <span className="ml-auto text-xs font-mono text-muted-foreground shrink-0">
+              {b.code || b.id.slice(-8).toUpperCase()}
             </span>
           </div>
         </div>
