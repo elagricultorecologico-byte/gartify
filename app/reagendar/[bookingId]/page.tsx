@@ -74,7 +74,6 @@ export default async function ReagendarReservaPage({ params }: Props) {
               <p className="notice">Para proponer un nuevo horario, ve a tu panel de reservas.</p>
               <a className="btn btn-action" href="/cuenta/taller">🔄 Ir a Mis reservas para reagendar</a>
               <a className="btn btn-reject" href={`/api/booking-action?t=${tokenReject}`}>❌ Rechazar reserva</a>
-              <a className="btn btn-cancel" href="/cuenta/taller">Cancelar — volver a Mis reservas</a>
             </>
           )}
         </div>
