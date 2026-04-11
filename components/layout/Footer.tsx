@@ -1,5 +1,14 @@
 "use client";
 import { useState } from "react";
+import { Linkedin, Facebook, Twitter, Youtube, Instagram } from "lucide-react";
+
+const REDES = [
+  { icon: Linkedin,  href: "https://www.linkedin.com/company/gartify", label: "LinkedIn"  },
+  { icon: Facebook,  href: "https://www.facebook.com/gartify",         label: "Facebook"  },
+  { icon: Twitter,   href: "https://twitter.com/gartify",              label: "X/Twitter" },
+  { icon: Youtube,   href: "https://www.youtube.com/@gartify",         label: "YouTube"   },
+  { icon: Instagram, href: "https://www.instagram.com/gartify",        label: "Instagram" },
+];
 
 function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -175,12 +184,22 @@ export function Footer({ className }: { className?: string }) {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10 py-4">
-        <div className="container flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-blue-300">
+        <div className="container flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-blue-300">
           <span>© {new Date().getFullYear()} Gartify · Encuentra tu taller de confianza en España</span>
-          <span className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-gartify-green inline-block" />
-            Todos los derechos reservados
-          </span>
+          <div className="flex items-center gap-2">
+            {REDES.map(({ icon: Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex items-center justify-center h-8 w-8 rounded-lg border border-white/20 text-blue-300 hover:text-white hover:border-gartify-orange hover:bg-gartify-orange/10 transition-all duration-200"
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
