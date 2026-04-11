@@ -7,7 +7,7 @@ import { formatPrice, formatDateTime, SERVICE_LABELS } from "@/lib/utils";
 
 export type GarageBookingItem = {
   id: string;
-  code: string;
+  code?: string;
   status: string;
   date: Date | string;
   totalPrice: number;
