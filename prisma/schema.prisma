@@ -227,3 +227,31 @@ model Review {
   comment   String?
   createdAt DateTime @default(now())
 }
+
+// ─── Catálogo de Vehículos ────────────────────────────────────────────────────
+
+model VehicleMake {
+  id      Int            @id @default(autoincrement())
+  name    String         @unique
+  logoUrl String?
+  models  VehicleModel[]
+}
+
+model VehicleModel {
+  id       Int              @id @default(autoincrement())
+  name     String
+  makeId   Int
+  make     VehicleMake      @relation(fields: [makeId], references: [id], onDelete: Cascade)
+  versions VehicleVersion[]
+
+  @@unique([makeId, name])
+}
+
+model VehicleVersion {
+  id      Int          @id @default(autoincrement())
+  name    String
+  modelId Int
+  model   VehicleModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, name])
+}

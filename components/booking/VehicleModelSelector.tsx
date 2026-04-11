@@ -79,7 +79,7 @@ export function VehicleModelSelector({ onChange }: Props) {
       setCargandoModelos(true);
       setModelos([]); setModeloId(""); setModeloLabel(""); setVehiculos([]);
       try {
-        const res = await fetch(`/api/vehicle-selector?step=models&manufacturerId=${marcaId}`);
+        const res = await fetch(`/api/vehicle-selector?step=models&makeId=${marcaId}`);
         const data = await res.json() as RespuestaAPI;
         setModelos(data.options ?? []);
       } catch { setModelos([]); }
@@ -95,7 +95,7 @@ export function VehicleModelSelector({ onChange }: Props) {
       setCargandoVehiculos(true);
       setVehiculos([]);
       try {
-        const res = await fetch(`/api/vehicle-selector?step=vehicles&manufacturerId=${marcaId}&modelId=${modeloId}`);
+        const res = await fetch(`/api/vehicle-selector?step=versions&modelId=${modeloId}`);
         const data = await res.json() as RespuestaAPI;
         setVehiculos(data.options ?? []);
       } catch { setVehiculos([]); }
