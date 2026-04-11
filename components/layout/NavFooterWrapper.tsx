@@ -6,13 +6,16 @@ import { Footer } from "@/components/layout/Footer";
 
 export function NavFooterWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isTvMode = pathname.includes("/cuenta/taller/tv");
+  const hideChrome =
+    pathname.includes("/cuenta/taller/tv") ||
+    pathname.startsWith("/confirmar/") ||
+    pathname.startsWith("/reagendar/");
 
   return (
     <>
-      {!isTvMode && <Navbar />}
+      {!hideChrome && <Navbar />}
       <main>{children}</main>
-      {!isTvMode && <Footer />}
+      {!hideChrome && <Footer />}
     </>
   );
 }
