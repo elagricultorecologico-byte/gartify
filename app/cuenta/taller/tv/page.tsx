@@ -12,6 +12,7 @@ import { db } from "@/lib/db";
 import { TvReloj } from "@/components/cuenta/TvReloj";
 import { TvAutoRefresh } from "@/components/cuenta/TvAutoRefresh";
 import { TvFullscreen } from "@/components/cuenta/TvFullscreen";
+import { TvColumnasTabs } from "@/components/cuenta/TvColumnasTabs";
 import { SERVICE_LABELS, BOOKING_STATUS_LABELS, formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
@@ -195,158 +196,98 @@ export default async function ModoTvPage() {
     <div className="min-h-screen bg-gartify-dark text-white flex flex-col">
 
       {/* ── Cabecera ── */}
-      <header className="sticky top-0 z-10 bg-gartify-dark/95 backdrop-blur border-b border-white/10 px-6 py-4">
-        <div className="flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-10 bg-gartify-dark/95 backdrop-blur border-b border-white/10 px-4 lg:px-6 py-3 lg:py-4">
 
-          {/* Logo + nombre del taller */}
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="text-2xl" aria-hidden="true">🔧</span>
-            <div className="min-w-0">
-              <span className="text-xl font-black text-white tracking-tight">Gartify</span>
-              <span className="mx-2 text-slate-600">|</span>
-              <span className="text-lg font-semibold text-slate-300 truncate">
-                {taller.name}
-              </span>
-            </div>
-            {/* Badge EN VIVO */}
-            <span className="shrink-0 flex items-center gap-1.5 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold px-3 py-1 uppercase tracking-widest">
-              <span className="h-2 w-2 rounded-full bg-red-400 animate-pulse" aria-hidden="true" />
+        {/* Fila 1: logo + en vivo + reloj + volver */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xl" aria-hidden="true">🔧</span>
+            <span className="text-base font-black text-white tracking-tight">Gartify</span>
+            <span className="hidden sm:inline mx-1 text-slate-600">|</span>
+            <span className="hidden sm:inline text-sm font-semibold text-slate-300 truncate">{taller.name}</span>
+            <span className="flex items-center gap-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse" />
               En vivo
             </span>
           </div>
-
-          {/* ── KPIs ── */}
-          <div className="flex items-center gap-1 flex-1 justify-center flex-wrap">
-
-            <div className="flex flex-col items-center justify-center px-5 py-1.5 rounded-xl bg-white/5 border border-white/10 min-w-[100px]">
-              <span className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Citas hoy</span>
-              <span className="text-2xl font-black text-white leading-tight">{citasHoy}</span>
-              <span className="text-[10px] leading-tight mt-0.5 invisible select-none">—</span>
-            </div>
-
-            <div className="flex flex-col items-center justify-center px-5 py-1.5 rounded-xl bg-green-500/10 border border-green-500/20 min-w-[120px]">
-              <span className="text-xs text-green-400 uppercase tracking-widest font-semibold">Completadas</span>
-              <span className="text-2xl font-black text-green-300 leading-tight">{completadasHoy}</span>
-              <span className="text-[10px] leading-tight mt-0.5 invisible select-none">—</span>
-            </div>
-
-            <div className="flex flex-col items-center justify-center px-5 py-1.5 rounded-xl bg-white/5 border border-white/10 min-w-[100px]">
-              <span className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Próxima</span>
-              <span className="text-2xl font-black text-white leading-tight">
-                {proximaHora ?? "—"}
-              </span>
-              {proximaFecha && (
-                <span className="text-[10px] text-slate-400 capitalize leading-tight mt-0.5">{proximaFecha}</span>
-              )}
-            </div>
-
-          </div>
-
-          {/* Reloj + botón volver */}
-          <div className="flex items-center gap-4 shrink-0">
-            {/* El reloj necesita useEffect → Client Component */}
+          <div className="flex items-center gap-2 shrink-0">
             <TvReloj />
             <Link
               href="/cuenta/taller"
-              className="rounded-lg bg-white/10 hover:bg-white/20 transition-colors px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white"
+              className="rounded-lg bg-white/10 hover:bg-white/20 transition-colors px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white"
             >
-              ← Volver al panel
+              ← Volver
             </Link>
           </div>
-
         </div>
+
+        {/* Fila 2: KPIs (siempre visibles) */}
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          <div className="flex flex-col items-center px-3 py-1 rounded-lg bg-white/5 border border-white/10 min-w-[72px]">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Hoy</span>
+            <span className="text-xl font-black text-white leading-tight">{citasHoy}</span>
+          </div>
+          <div className="flex flex-col items-center px-3 py-1 rounded-lg bg-green-500/10 border border-green-500/20 min-w-[72px]">
+            <span className="text-[10px] text-green-400 uppercase tracking-widest font-semibold">Listas</span>
+            <span className="text-xl font-black text-green-300 leading-tight">{completadasHoy}</span>
+          </div>
+          <div className="flex flex-col items-center px-3 py-1 rounded-lg bg-white/5 border border-white/10 min-w-[72px]">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Próxima</span>
+            <span className="text-xl font-black text-white leading-tight">{proximaHora ?? "—"}</span>
+            {proximaFecha && <span className="text-[9px] text-slate-400 capitalize leading-tight">{proximaFecha}</span>}
+          </div>
+        </div>
+
       </header>
 
-      {/* ── Cuerpo ── */}
-      <main className="flex-1 px-6 py-6 flex gap-6">
-
-        {/* ── Columna PENDIENTES ── */}
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="h-3 w-3 rounded-full bg-yellow-400 shrink-0" aria-hidden="true" />
-            <h2 className="text-lg font-black text-white tracking-tight">Pendientes</h2>
-            <span className="rounded-full bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 text-sm font-bold px-3 py-0.5">
-              {nPendientes}
-            </span>
-            <p className="text-xs text-slate-500 ml-1">Requieren confirmación</p>
-          </div>
-
-          {nPendientes === 0 ? (
-            <div className="flex flex-col items-center justify-center flex-1 gap-3 rounded-xl border border-white/5 bg-white/3 py-16">
-              <span className="text-4xl" aria-hidden="true">✅</span>
-              <p className="text-slate-500 text-sm">Sin pendientes</p>
-            </div>
-          ) : (
+      {/* ── Cuerpo: tabs en móvil, columnas en desktop ── */}
+      <TvColumnasTabs tabs={[
+        {
+          key: "pendientes",
+          label: "Pendientes",
+          count: nPendientes,
+          dot: "bg-yellow-400",
+          empty: { icon: "✅", text: "Sin pendientes" },
+          children: (
             <div className="flex flex-col gap-2">
-              {reservas.filter((r) => r.status === "PENDING").map((reserva) => (
-                <TarjetaReserva key={reserva.id} reserva={reserva} />
+              {reservas.filter((r) => r.status === "PENDING" || r.status === "PROPOSED").map((r) => (
+                <TarjetaReserva key={r.id} reserva={r} />
               ))}
             </div>
-          )}
-        </div>
-
-        {/* Separador vertical */}
-        <div className="w-px bg-white/10 shrink-0" />
-
-        {/* ── Columna CONFIRMADAS ── */}
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="h-3 w-3 rounded-full bg-green-400 shrink-0" aria-hidden="true" />
-            <h2 className="text-lg font-black text-white tracking-tight">Confirmadas</h2>
-            <span className="rounded-full bg-green-500/20 border border-green-500/30 text-green-300 text-sm font-bold px-3 py-0.5">
-              {nConfirmadas}
-            </span>
-            <p className="text-xs text-slate-500 ml-1">Citas aceptadas</p>
-          </div>
-
-          {nConfirmadas === 0 ? (
-            <div className="flex flex-col items-center justify-center flex-1 gap-3 rounded-xl border border-white/5 bg-white/3 py-16">
-              <span className="text-4xl" aria-hidden="true">📅</span>
-              <p className="text-slate-500 text-sm">Sin confirmadas</p>
-            </div>
-          ) : (
+          ),
+        },
+        {
+          key: "confirmadas",
+          label: "Confirmadas",
+          count: nConfirmadas,
+          dot: "bg-green-400",
+          empty: { icon: "📅", text: "Sin confirmadas" },
+          children: (
             <div className="flex flex-col gap-2">
-              {reservas.filter((r) => r.status === "CONFIRMED").map((reserva) => (
-                <TarjetaReserva key={reserva.id} reserva={reserva} />
+              {reservas.filter((r) => r.status === "CONFIRMED").map((r) => (
+                <TarjetaReserva key={r.id} reserva={r} />
               ))}
             </div>
-          )}
-        </div>
-
-        {/* Separador vertical */}
-        <div className="w-px bg-white/10 shrink-0" />
-
-        {/* ── Columna COMPLETADAS (hoy) ── */}
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="h-3 w-3 rounded-full bg-slate-400 shrink-0" aria-hidden="true" />
-            <h2 className="text-lg font-black text-white tracking-tight">Completadas</h2>
-            <span className="rounded-full bg-slate-500/20 border border-slate-500/30 text-slate-300 text-sm font-bold px-3 py-0.5">
-              {nCompletadas}
-            </span>
-            <p className="text-xs text-slate-500 ml-1">Realizadas hoy</p>
-          </div>
-
-          {nCompletadas === 0 ? (
-            <div className="flex flex-col items-center justify-center flex-1 gap-3 rounded-xl border border-white/5 bg-white/3 py-16">
-              <span className="text-4xl" aria-hidden="true">🏁</span>
-              <p className="text-slate-500 text-sm">Sin completadas hoy</p>
-            </div>
-          ) : (
+          ),
+        },
+        {
+          key: "completadas",
+          label: "Completadas",
+          count: nCompletadas,
+          dot: "bg-slate-400",
+          empty: { icon: "🏁", text: "Sin completadas hoy" },
+          children: (
             <div className="flex flex-col gap-2">
-              {reservas.filter((r) => r.status === "COMPLETED").map((reserva) => (
-                <TarjetaReserva key={reserva.id} reserva={reserva} />
+              {reservas.filter((r) => r.status === "COMPLETED").map((r) => (
+                <TarjetaReserva key={r.id} reserva={r} />
               ))}
             </div>
-          )}
-        </div>
+          ),
+        },
+      ]} />
 
-      </main>
 
-
-      {/* Auto-refresh silencioso cada 30 segundos — Client Component */}
       <TvAutoRefresh />
-      {/* Pantalla completa automática al entrar en modo TV */}
       <TvFullscreen />
     </div>
   );
