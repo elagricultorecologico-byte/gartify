@@ -45,10 +45,10 @@ export default async function ReagendarReservaPage({ params }: Props) {
           .btn { display: block; width: 100%; padding: .75rem; border-radius: 8px; border: none;
                  font-size: 1rem; font-weight: 700; cursor: pointer; text-decoration: none;
                  margin-bottom: .75rem; box-sizing: border-box; }
-          .btn-action { background: #d97706; color: #fff; }
-          .btn-action:hover { background: #b45309; }
-          .btn-reject { background: #dc2626; color: #fff; }
-          .btn-reject:hover { background: #b91c1c; }
+          .btn-action { background: #1E40AF; color: #fff; }
+          .btn-action:hover { background: #1e3a8a; }
+          .btn-reject { background: #fff; color: #dc2626; border: 2px solid #dc2626; }
+          .btn-reject:hover { background: #fef2f2; }
           .btn-cancel { background: #f1f5f9; color: #475569; }
           .btn-cancel:hover { background: #e2e8f0; }
         `}</style>
