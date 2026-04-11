@@ -147,7 +147,7 @@ export function VehicleModelSelector({ onChange }: Props) {
           {/* Logo de la marca seleccionada */}
           {marcaImg && !abierto && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={marcaImg} alt={marcaLabel} width={28} height={28} className="shrink-0 object-contain" />
+            <img src={marcaImg} alt={marcaLabel} width={32} height={32} className="shrink-0 object-contain" />
           )}
           {/* Input que actúa como trigger y buscador a la vez */}
           <input
