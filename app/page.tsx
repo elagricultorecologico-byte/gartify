@@ -12,6 +12,17 @@ import { POPULAR_SERVICES } from "@/lib/constants";
 
 // ─── Datos ────────────────────────────────────────────────────────────────────
 
+const CADENAS = [
+  { nombre: "Grupo Rodi",  descripcion: "Neumáticos y mecánica" },
+  { nombre: "Norauto",     descripcion: "Multimarca completa"    },
+  { nombre: "Carglass",    descripcion: "Especialistas en cristales" },
+  { nombre: "Euromaster",  descripcion: "Multimarca Michelin"    },
+  { nombre: "Midas",       descripcion: "Multimarca"             },
+  { nombre: "Feu Vert",    descripcion: "Cadena consolidada"     },
+  { nombre: "Aurgi",       descripcion: "Presencia nacional"     },
+  { nombre: "Autotaller",  descripcion: "Red AD Parts"           },
+];
+
 const STATS = [
   { value: "+500",    label: "talleres verificados", icon: Shield },
   { value: "+2.000",  label: "reseñas reales",       icon: Star },
@@ -320,6 +331,47 @@ export default function HomePage() {
               </Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          4. CADENAS DE REFERENCIA
+      ══════════════════════════════════════════════════ */}
+      <section className="py-14 bg-white border-t border-slate-100">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
+          <div className="text-center mb-10">
+            <SectionLabel>Talleres de referencia</SectionLabel>
+            <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark mb-3">
+              ¿Rodi, Norauto, Carglass…?{" "}
+              <span className="text-gartify-blue">Compara con los mejores</span>
+            </h2>
+            <p className="text-gartify-gray max-w-2xl mx-auto text-sm leading-relaxed">
+              Las grandes cadenas nacionales, junto a talleres independientes verificados de tu zona.
+              Precio transparente, reseñas reales y reserva en segundos — sin llamadas.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-3">
+            {CADENAS.map(({ nombre, descripcion }) => (
+              <Link
+                key={nombre}
+                href={`/talleres?q=${encodeURIComponent(nombre)}`}
+                className="group flex flex-col items-start gap-0.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-gartify-blue/5 hover:border-gartify-blue/30 transition-all duration-200 px-5 py-3.5 min-w-[140px]"
+              >
+                <span className="font-bold text-sm text-gartify-dark group-hover:text-gartify-blue transition-colors">
+                  {nombre}
+                </span>
+                <span className="text-xs text-gartify-gray">{descripcion}</span>
+              </Link>
+            ))}
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground mt-8">
+            ¿Tu taller no aparece?{" "}
+            <Link href="/registro" className="text-gartify-blue font-semibold hover:underline">
+              Regístralo gratis
+            </Link>
+          </p>
         </div>
       </section>
 
