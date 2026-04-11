@@ -33,12 +33,13 @@ export async function GET(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "Error al consultar la matrícula" }, { status: 502 });
     }
 
-    const data = await res.json() as {
-      MARCA?: string;
-      MODELO?: string;
-      TPMOTOR?: string;
-      MATRICULA?: string;
-    };
+    type VehicleRecord = { MARCA?: string; MODELO?: string; TPMOTOR?: string; MATRICULA?: string };
+    const raw = await res.json() as VehicleRecord | VehicleRecord[];
+    const data: VehicleRecord = Array.isArray(raw) ? (raw[0] ?? {}) : raw;
+
+    if (!data.MARCA && !data.MODELO) {
+      return NextResponse.json({ error: "Matrícula no encontrada" }, { status: 404 });
+    }
 
     return NextResponse.json({
       marca:     data.MARCA    ?? "",
