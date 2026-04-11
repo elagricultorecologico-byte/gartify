@@ -94,6 +94,12 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   console.log("[WhatsApp] Sending to:", to, "from:", from);
   console.log("[WhatsApp] bookingId:", bookingId, "tokenConfirm:", tokenConfirm, "tokenReschedule:", tokenReschedule);
 
+  // Desglosar vehicleModel en "Marca Modelo Motor" (viene como string concatenado)
+  const partes  = (vehicleModel ?? "").trim().split(/\s+/);
+  const marca   = partes[0] || "—";
+  const modelo  = partes[1] || "—";
+  const motor   = partes.slice(2).join(" ") || "—";
+
   try {
     const useTemplate = process.env.TWILIO_USE_TEMPLATE === "true";
     const msgParams = useTemplate
@@ -105,9 +111,12 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
             "1": customerName,
             "2": serviceName,
             "3": formatDateTime(date),
-            "4": vehiculoInfo,
-            "5": notes || "—",
-            "6": bookingId,
+            "4": vehiclePlate || "—",
+            "5": marca,
+            "6": modelo,
+            "7": motor,
+            "8": notes || "—",
+            "9": bookingId,
           }),
         }
       : {
@@ -120,12 +129,16 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
             `🛠️ Servicio: ${serviceName}`,
             `📝 ${descripcion}`,
             `📅 Fecha: ${formatDateTime(date)}`,
-            `🚗 Vehículo: ${vehiculoInfo}`,
+            `🚗 Matrícula: ${vehiclePlate || "—"}`,
+            `🏷️ Marca: ${marca}`,
+            `🚘 Modelo: ${modelo}`,
+            `⚙️ Motor: ${motor}`,
+            notes ? `📋 Nota: ${notes}` : null,
             ``,
             `✅ Confirmar: ${baseUrl}/api/booking-action?t=${tokenConfirm}`,
             `🔄 Otro horario: ${reagendarUrl}`,
             `❌ Rechazar: ${baseUrl}/api/booking-action?t=${tokenReject}`,
-          ].join("\n"),
+          ].filter(Boolean).join("\n"),
         };
 
     const msg = await client.messages.create(msgParams);
