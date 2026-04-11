@@ -188,9 +188,6 @@ export default async function ModoTvPage() {
   const proximaHora = proximaReserva
     ? new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(proximaReserva.date))
     : null;
-  const proximaFecha = proximaReserva
-    ? new Intl.DateTimeFormat("es-ES", { weekday: "short", day: "numeric", month: "short" }).format(new Date(proximaReserva.date))
-    : null;
 
   return (
     <div className="h-screen bg-gartify-dark text-white flex flex-col overflow-hidden">
