@@ -67,88 +67,113 @@ export function ProponerHoraPicker({ garageId, excludeBookingId, onSelect, onCan
   const pmSlots = slots.filter((s) => parseInt(s.split("T")[1].split(":")[0]) >= 12);
 
   return (
-    <div className="mt-1.5 bg-white border border-gray-200 shadow-sm rounded-xl p-3 flex flex-col gap-3 min-w-[280px]">
+    <>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 z-40 bg-black/40"
+        onClick={onCancel}
+        aria-hidden="true"
+      />
 
-      {/* Selector de fecha */}
-      <div>
-        <label className="text-xs text-muted-foreground font-semibold mb-1 block">Fecha</label>
-        <input
-          type="date"
-          min={today}
-          value={selectedDate}
-          onChange={(e) => handleDateChange(e.target.value)}
-          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 w-full outline-none focus:ring-2 focus:ring-gartify-blue/30"
-        />
-      </div>
+      {/* Panel — ocupa ancho completo en móvil, panel fijo en desktop */}
+      <div className="fixed inset-x-0 bottom-0 z-50 sm:inset-auto sm:right-4 sm:bottom-4 sm:w-80">
+        <div className="bg-white rounded-t-2xl sm:rounded-xl border border-gray-200 shadow-xl p-4 flex flex-col gap-4">
 
-      {/* Slots */}
-      {selectedDate && (
-        <div>
-          <label className="text-xs text-muted-foreground font-semibold mb-1.5 block">Hora</label>
-          {loadingSlots ? (
-            <p className="text-xs text-muted-foreground">Cargando horarios...</p>
-          ) : dayOpen === false ? (
-            <p className="text-xs text-muted-foreground">El taller está cerrado ese día.</p>
-          ) : slots.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Sin huecos disponibles.</p>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {[
-                { label: "Mañana", group: amSlots },
-                { label: "Tarde",  group: pmSlots },
-              ].filter(({ group }) => group.length > 0).map(({ label, group }) => (
-                <div key={label}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {group.map((slot) => {
-                      const blocked = blockedSlots.has(slot);
-                      const selected = slot === selectedSlot;
-                      return (
-                        <button
-                          key={slot}
-                          type="button"
-                          disabled={blocked}
-                          onClick={() => setSelectedSlot(slot)}
-                          className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${
-                            selected
-                              ? "bg-gartify-blue text-white"
-                              : blocked
-                              ? "bg-gray-100 text-gray-300 cursor-not-allowed line-through"
-                              : "bg-gray-100 text-gartify-gray hover:bg-gartify-blue/10 hover:text-gartify-blue"
-                          }`}
-                        >
-                          {formatSlot(slot)}
-                        </button>
-                      );
-                    })}
-                  </div>
+          {/* Cabecera */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-bold text-gartify-blue">Proponer nueva hora</p>
+            <button
+              type="button"
+              onClick={onCancel}
+              className="text-muted-foreground hover:text-foreground text-lg leading-none px-1"
+              aria-label="Cerrar"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Selector de fecha */}
+          <div>
+            <label className="text-xs text-muted-foreground font-semibold mb-1 block">Fecha</label>
+            <input
+              type="date"
+              min={today}
+              value={selectedDate}
+              onChange={(e) => handleDateChange(e.target.value)}
+              className="text-sm border border-gray-200 rounded-lg px-3 py-2 w-full outline-none focus:ring-2 focus:ring-gartify-blue/30"
+            />
+          </div>
+
+          {/* Slots */}
+          {selectedDate && (
+            <div>
+              <label className="text-xs text-muted-foreground font-semibold mb-1.5 block">Hora</label>
+              {loadingSlots ? (
+                <p className="text-xs text-muted-foreground">Cargando horarios...</p>
+              ) : dayOpen === false ? (
+                <p className="text-xs text-muted-foreground">El taller está cerrado ese día.</p>
+              ) : slots.length === 0 ? (
+                <p className="text-xs text-muted-foreground">Sin huecos disponibles.</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {[
+                    { label: "Mañana", group: amSlots },
+                    { label: "Tarde",  group: pmSlots },
+                  ].filter(({ group }) => group.length > 0).map(({ label, group }) => (
+                    <div key={label}>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">{label}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {group.map((slot) => {
+                          const blocked  = blockedSlots.has(slot);
+                          const selected = slot === selectedSlot;
+                          return (
+                            <button
+                              key={slot}
+                              type="button"
+                              disabled={blocked}
+                              onClick={() => setSelectedSlot(slot)}
+                              className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                                selected
+                                  ? "bg-gartify-blue text-white"
+                                  : blocked
+                                  ? "bg-gray-100 text-gray-300 cursor-not-allowed line-through"
+                                  : "bg-gray-100 text-gartify-gray hover:bg-gartify-blue/10 hover:text-gartify-blue"
+                              }`}
+                            >
+                              {formatSlot(slot)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           )}
+
+          {error && <p className="text-xs text-red-500">{error}</p>}
+
+          {/* Acciones */}
+          <div className="flex gap-2 pt-1 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 text-sm text-muted-foreground hover:text-foreground border border-gray-200 rounded-lg py-2 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              disabled={!selectedSlot || loading}
+              onClick={() => onSelect(selectedSlot)}
+              className="flex-1 text-sm font-semibold text-white bg-gartify-blue rounded-lg py-2 hover:bg-gartify-blue/90 disabled:opacity-50 transition-colors"
+            >
+              {loading ? "Enviando..." : "Proponer"}
+            </button>
+          </div>
         </div>
-      )}
-
-      {error && <p className="text-xs text-red-500">{error}</p>}
-
-      {/* Acciones */}
-      <div className="flex items-center justify-end gap-2 pt-1 border-t border-gray-100">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
-        >
-          Cancelar
-        </button>
-        <button
-          type="button"
-          disabled={!selectedSlot || loading}
-          onClick={() => onSelect(selectedSlot)}
-          className="text-xs font-semibold text-white bg-gartify-blue rounded-lg px-3 py-1.5 hover:bg-gartify-blue/90 disabled:opacity-50 transition-colors"
-        >
-          {loading ? "Enviando..." : "Proponer"}
-        </button>
       </div>
-    </div>
+    </>
   );
 }
