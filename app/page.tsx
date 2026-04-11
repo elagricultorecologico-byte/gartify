@@ -351,7 +351,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
             {CADENAS.map(({ nombre, descripcion, logo }) => (
               <Link
                 key={nombre}
