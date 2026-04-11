@@ -7,7 +7,7 @@ import { BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS } from "@/lib/utils";
 import { ProponerHoraPicker } from "@/components/cuenta/ProponerHoraPicker";
 
 const TRANSITIONS: Record<string, string[]> = {
-  PENDING:   ["PROPOSED", "CONFIRMED", "CANCELLED"],
+  PENDING:   ["CONFIRMED", "CANCELLED"],
   PROPOSED:  ["CONFIRMED", "CANCELLED"], // taller puede confirmar si cliente llamó por teléfono
   CONFIRMED: ["COMPLETED", "CANCELLED"],
   COMPLETED: [],
@@ -77,12 +77,12 @@ export function BookingStatusUpdater({ bookingId, currentStatus, garageId }: { b
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={status}>{BOOKING_STATUS_LABELS[status]}</SelectItem>
-          {next.map((s) => (
-            <SelectItem key={s} value={s}>{BOOKING_STATUS_LABELS[s]}</SelectItem>
-          ))}
           {canPropose && (
             <SelectItem value="__PROPOSE__">🕐 Proponer nueva hora</SelectItem>
           )}
+          {next.map((s) => (
+            <SelectItem key={s} value={s}>{BOOKING_STATUS_LABELS[s]}</SelectItem>
+          ))}
         </SelectContent>
       </Select>
 

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Car, Wrench, ChevronRight, Star } from "lucide-react";
 import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
 import { CancelBookingButton } from "@/components/cuenta/CancelBookingButton";
+import { AcceptProposedBooking } from "@/components/cuenta/AcceptProposedBooking";
 import {
   formatPrice, formatDateTime,
   BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS, SERVICE_LABELS,
@@ -47,9 +48,9 @@ export default async function CuentaPage() {
 
   type BookingItem = (typeof bookings)[number];
 
-  // Pendientes/confirmadas: ascendente (próxima primero)
+  // Pendientes/propuestas/confirmadas: ascendente (próxima primero)
   const pending = bookings.filter(
-    (b) => b.status === "PENDING" || b.status === "CONFIRMED"
+    (b) => b.status === "PENDING" || b.status === "PROPOSED" || b.status === "CONFIRMED"
   );
   // Historial: descendente (más reciente primero)
   const past = bookings
@@ -128,7 +129,7 @@ export default async function CuentaPage() {
       .map((w) => w[0])
       .join("")
       .toUpperCase();
-    const isPast = b.status !== "PENDING" && b.status !== "CONFIRMED";
+    const isPast = b.status !== "PENDING" && b.status !== "PROPOSED" && b.status !== "CONFIRMED";
 
     return (
       <article
@@ -192,6 +193,9 @@ export default async function CuentaPage() {
               {formatPrice(b.totalPrice)}
             </span>
             <div className="flex items-center gap-1">
+              {b.status === "PROPOSED" && (
+                <AcceptProposedBooking bookingId={b.id} />
+              )}
               {(b.status === "PENDING" || b.status === "CONFIRMED") && (
                 <CancelBookingButton bookingId={b.id} />
               )}

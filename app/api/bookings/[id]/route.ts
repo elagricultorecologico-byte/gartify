@@ -30,7 +30,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   const isCustomer = booking.userId         === session.user.id;
 
   if (!isOwner && !isCustomer) return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
-  if (isCustomer && status !== "CANCELLED") return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+  if (isCustomer && status === "CONFIRMED" && booking.status !== "PROPOSED") {
+    return NextResponse.json({ error: "Solo puedes confirmar una reserva propuesta" }, { status: 403 });
+  }
+  if (isCustomer && status !== "CANCELLED" && status !== "CONFIRMED") {
+    return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+  }
 
   const updated = await db.booking.update({ where: { id: params.id }, data: { status } });
 
