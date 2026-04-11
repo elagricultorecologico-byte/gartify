@@ -30,7 +30,7 @@ export function SearchBar({ className }: { className?: string }) {
     >
       {/* Selector de servicio */}
       <Select onValueChange={setServicio}>
-        <SelectTrigger className="sm:w-48 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
+        <SelectTrigger className="w-full sm:w-48 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
         <SelectContent>
@@ -41,19 +41,19 @@ export function SearchBar({ className }: { className?: string }) {
       </Select>
 
       {/* Campo de ciudad */}
-      <div className="relative flex-1 min-w-[160px] sm:flex sm:items-center">
+      <div className="relative flex-1 w-full">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
           placeholder="Localidad o CP"
           value={ciudad}
           onChange={(e) => setCiudad(e.target.value)}
-          className="pl-9 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 rounded-none w-full focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-semibold placeholder:text-gray-500 placeholder:text-sm"
+          className="pl-9 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 rounded-xl sm:rounded-none w-full focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-semibold placeholder:text-gray-500 placeholder:text-sm"
         />
       </div>
 
       {/* Selector de tipo de vehículo */}
       <Select onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
-        <SelectTrigger className="sm:w-44 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
+        <SelectTrigger className="w-full sm:w-44 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
           <SelectValue placeholder="Tipo de vehículo" />
         </SelectTrigger>
         <SelectContent>
@@ -72,7 +72,7 @@ export function SearchBar({ className }: { className?: string }) {
       {/* Botón buscar */}
       <button
         type="submit"
-        className="flex items-center justify-center gap-2 h-12 px-6 shrink-0 bg-gartify-orange hover:bg-gartify-orange/90 transition-colors text-white font-semibold text-sm rounded-none sm:rounded-none"
+        className="w-full sm:w-auto flex items-center justify-center gap-2 h-12 px-6 shrink-0 bg-gartify-orange hover:bg-gartify-orange/90 transition-colors text-white font-semibold text-sm rounded-xl sm:rounded-none"
         aria-label="Buscar talleres"
       >
         <Search className="h-4 w-4" />
