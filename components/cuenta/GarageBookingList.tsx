@@ -73,39 +73,44 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
 
   return (
     <div className="space-y-4">
-      {/* Barra única: búsqueda + orden + filtros */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <div className="relative w-48 shrink-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input
-            placeholder="Nombre, matrícula…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
-          />
-        </div>
-        <button
-          onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors shrink-0"
-          aria-label="Ordenar por fecha"
-        >
-          {orden === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
-          Fecha
-        </button>
-        <div className="h-4 w-px bg-gray-200 shrink-0" />
-        {STATUS_TABS.map((tab) => (
+      {/* Barra de filtros: 2 filas */}
+      <div className="space-y-2">
+        {/* Fila 1: búsqueda + orden */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
+              placeholder="Nombre, matrícula…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+            />
+          </div>
           <button
-            key={tab.value}
-            onClick={() => setStatusFilter(tab.value)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
-              statusFilter === tab.value
-                ? "bg-gartify-blue text-white"
-                : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
-            }`}
+            onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors shrink-0"
+            aria-label="Ordenar por fecha"
           >
-            {tab.label}
+            {orden === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
+            <span className="hidden sm:inline ml-1">Fecha</span>
           </button>
-        ))}
+        </div>
+        {/* Fila 2: tabs de estado con scroll horizontal en móvil */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+          {STATUS_TABS.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setStatusFilter(tab.value)}
+              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
+                statusFilter === tab.value
+                  ? "bg-gartify-blue text-white"
+                  : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Resultados */}
@@ -208,12 +213,19 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
             <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
           </div>
 
-          {/* Fila 2: servicio + fecha + duración + vehículo */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100">
+          {/* Fila 2a: servicio + precio */}
+          <div className="flex items-center justify-between mt-1.5 gap-2">
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
               <Wrench className="h-3 w-3" aria-hidden="true" />
               {SERVICE_LABELS[b.service.type] ?? b.service.name}
             </span>
+            <span className="font-bold text-gartify-orange text-sm shrink-0">
+              {formatPrice(b.totalPrice)}
+            </span>
+          </div>
+
+          {/* Fila 2b: fecha + duración + vehículo */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
               {formatDateTime(b.date instanceof Date ? b.date : new Date(b.date))}
@@ -234,9 +246,6 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
                 {b.vehiclePlate}
               </span>
             )}
-            <span className="ml-auto font-bold text-gartify-orange text-sm">
-              {formatPrice(b.totalPrice)}
-            </span>
           </div>
 
           {/* Fila 3: notas + código */}
