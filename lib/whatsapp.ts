@@ -85,7 +85,6 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
   const tokenReject     = Buffer.from(`${bookingId}:no`).toString("base64url");
   const tokenReschedule = Buffer.from(`${bookingId}:reschedule`).toString("base64url");
 
-  const vehiculoInfo    = [vehicleModel, vehiclePlate].filter(Boolean).join(" · ") || "—";
   const descripcion     = serviceDescription || serviceName;
   const reagendarUrl    = `${baseUrl}/reserva/${bookingId}/reagendar?t=${tokenReschedule}`;
 
