@@ -509,17 +509,28 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
             {/* Matrícula + botón buscar */}
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-gartify-gray">Matrícula</Label>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="1234 ABC"
-                  className="uppercase placeholder:normal-case flex-1"
-                  value={vehiclePlate}
-                  onChange={(e) => {
-                    setVehiclePlate(e.target.value.toUpperCase());
-                    limpiarBusquedaMatricula();
-                  }}
-                  onKeyDown={(e) => { if (e.key === "Enter") void buscarMatricula(); }}
-                />
+              <div className="flex gap-2 items-center">
+                {/* Placa estilo europeo */}
+                <div className="flex rounded-md border-2 border-gray-300 overflow-hidden shadow-sm flex-1">
+                  {/* Franja azul EU */}
+                  <div className="flex flex-col items-center justify-center bg-blue-700 px-1.5 py-1 shrink-0 min-w-[32px]">
+                    <span className="text-[10px] leading-none">🇪🇸</span>
+                    <span className="text-white text-[9px] font-bold leading-none mt-0.5">E</span>
+                  </div>
+                  {/* Input */}
+                  <input
+                    type="text"
+                    placeholder="1234 ABC"
+                    maxLength={10}
+                    value={vehiclePlate}
+                    onChange={(e) => {
+                      setVehiclePlate(e.target.value.toUpperCase());
+                      limpiarBusquedaMatricula();
+                    }}
+                    onKeyDown={(e) => { if (e.key === "Enter") void buscarMatricula(); }}
+                    className="flex-1 bg-white px-3 py-2 text-sm font-mono font-bold uppercase tracking-widest text-gray-800 outline-none placeholder:text-gray-300 placeholder:font-normal placeholder:tracking-normal"
+                  />
+                </div>
                 <Button
                   type="button"
                   variant="outline"
