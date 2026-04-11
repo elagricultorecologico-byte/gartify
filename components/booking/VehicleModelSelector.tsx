@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { ChevronDown, X } from "lucide-react";
 
 type OpcionSelector = { value: string; label: string; img?: string };
@@ -147,7 +146,8 @@ export function VehicleModelSelector({ onChange }: Props) {
         <div className={`${CLASES_SELECT} flex items-center gap-2 pr-2`}>
           {/* Logo de la marca seleccionada */}
           {marcaImg && !abierto && (
-            <Image src={marcaImg} alt={marcaLabel} width={28} height={28} className="shrink-0 object-contain" unoptimized />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={marcaImg} alt={marcaLabel} width={28} height={28} className="shrink-0 object-contain" />
           )}
           {/* Input que actúa como trigger y buscador a la vez */}
           <input
@@ -201,7 +201,8 @@ export function VehicleModelSelector({ onChange }: Props) {
                     }`}
                   >
                     {m.img && (
-                      <Image src={m.img} alt={m.label} width={32} height={32} className="object-contain shrink-0" unoptimized />
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={m.img} alt={m.label} width={32} height={32} className="object-contain shrink-0" />
                     )}
                     {m.label}
                   </li>
