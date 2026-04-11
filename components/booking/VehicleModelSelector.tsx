@@ -147,7 +147,7 @@ export function VehicleModelSelector({ onChange }: Props) {
         <div className={`${CLASES_SELECT} flex items-center gap-2 pr-2`}>
           {/* Logo de la marca seleccionada */}
           {marcaImg && !abierto && (
-            <Image src={marcaImg} alt={marcaLabel} width={20} height={20} className="shrink-0 object-contain" unoptimized />
+            <Image src={marcaImg} alt={marcaLabel} width={28} height={28} className="shrink-0 object-contain" unoptimized />
           )}
           {/* Input que actúa como trigger y buscador a la vez */}
           <input
@@ -201,7 +201,7 @@ export function VehicleModelSelector({ onChange }: Props) {
                     }`}
                   >
                     {m.img && (
-                      <Image src={m.img} alt={m.label} width={22} height={22} className="object-contain shrink-0" unoptimized />
+                      <Image src={m.img} alt={m.label} width={32} height={32} className="object-contain shrink-0" unoptimized />
                     )}
                     {m.label}
                   </li>
