@@ -13,6 +13,7 @@ import {
   formatPrice, SERVICE_LABELS,
   VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType,
 } from "@/lib/utils";
+import { VehicleModelSelector } from "@/components/booking/VehicleModelSelector";
 
 type Service = {
   id: string;
@@ -481,14 +482,11 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
                   onChange={(e) => setVehiclePlate(e.target.value.toUpperCase())}
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gartify-gray">Marca y modelo</Label>
-                <Input
-                  placeholder="Seat Ibiza 2019"
-                  value={vehicleModel}
-                  onChange={(e) => setVehicleModel(e.target.value)}
-                />
-              </div>
+            </div>
+            {/* Selector encadenado Marca → Modelo → Versión (ocupa ancho completo) */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-gartify-gray">Marca y modelo</Label>
+              <VehicleModelSelector value={vehicleModel} onChange={setVehicleModel} />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-gartify-gray">
