@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Clock, CheckCircle, AlertCircle, Loader2,
-  CalendarDays, Car, Banknote,
+  CalendarDays, Car, Banknote, Search, X,
 } from "lucide-react";
 import {
   formatPrice, SERVICE_LABELS,
@@ -71,6 +71,39 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [plateSearching, setPlateSearching] = useState(false);
+  const [plateResult, setPlateResult] = useState<{ marca: string; modelo: string; motor: string } | null>(null);
+  const [plateError, setPlateError] = useState("");
+
+  async function buscarMatricula() {
+    const plate = vehiclePlate.trim();
+    if (!plate) return;
+    setPlateSearching(true);
+    setPlateError("");
+    setPlateResult(null);
+    try {
+      const res = await fetch(`/api/vehicle-by-plate?plate=${encodeURIComponent(plate)}`);
+      const data = await res.json() as { marca?: string; modelo?: string; motor?: string; error?: string };
+      if (!res.ok) {
+        setPlateError(data.error ?? "Matrícula no encontrada");
+      } else {
+        const resultado = { marca: data.marca ?? "", modelo: data.modelo ?? "", motor: data.motor ?? "" };
+        setPlateResult(resultado);
+        const modeloFinal = `${resultado.marca} ${resultado.modelo} ${resultado.motor}`.replace(/\s+/g, " ").trim();
+        setVehicleModel(modeloFinal);
+      }
+    } catch {
+      setPlateError("Error de conexión. Inténtalo de nuevo.");
+    } finally {
+      setPlateSearching(false);
+    }
+  }
+
+  function limpiarBusquedaMatricula() {
+    setPlateResult(null);
+    setPlateError("");
+    setVehicleModel("");
+  }
 
   const today = new Date().toISOString().split("T")[0];
   const slots = generateSlots(selectedDate, openTime, closeTime);
@@ -472,22 +505,77 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
               <p className="text-sm font-bold text-gartify-blue">Datos del vehículo</p>
               <span className="text-xs text-gartify-gray ml-auto">(opcional)</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gartify-gray">Matrícula</Label>
+
+            {/* Matrícula + botón buscar */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-gartify-gray">Matrícula</Label>
+              <div className="flex gap-2">
                 <Input
                   placeholder="1234 ABC"
-                  className="uppercase placeholder:normal-case"
+                  className="uppercase placeholder:normal-case flex-1"
                   value={vehiclePlate}
-                  onChange={(e) => setVehiclePlate(e.target.value.toUpperCase())}
+                  onChange={(e) => {
+                    setVehiclePlate(e.target.value.toUpperCase());
+                    limpiarBusquedaMatricula();
+                  }}
+                  onKeyDown={(e) => { if (e.key === "Enter") void buscarMatricula(); }}
                 />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0 gap-1.5 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5"
+                  disabled={!vehiclePlate.trim() || plateSearching}
+                  onClick={() => void buscarMatricula()}
+                >
+                  {plateSearching
+                    ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    : <Search className="h-3.5 w-3.5" />
+                  }
+                  Buscar
+                </Button>
               </div>
             </div>
-            {/* Selector encadenado Marca → Modelo → Versión (ocupa ancho completo) */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gartify-gray">Marca y modelo</Label>
-              <VehicleModelSelector value={vehicleModel} onChange={setVehicleModel} />
-            </div>
+
+            {/* Resultado de búsqueda por matrícula */}
+            {plateResult && (
+              <div className="flex items-start gap-2 rounded-lg bg-green-50 border border-green-200 px-3 py-2.5">
+                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-green-800">Vehículo encontrado</p>
+                  <p className="text-xs text-green-700 mt-0.5">
+                    {plateResult.marca} {plateResult.modelo} · {plateResult.motor}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={limpiarBusquedaMatricula}
+                  className="shrink-0 text-green-600 hover:text-green-800"
+                  aria-label="Limpiar resultado"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+
+            {plateError && (
+              <p className="text-xs text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                {plateError}
+              </p>
+            )}
+
+            {/* Selector encadenado solo si no se encontró vehículo por matrícula */}
+            {!plateResult && (
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-gartify-gray">
+                  Marca y modelo
+                  <span className="font-normal text-gray-400 ml-1">— o selecciona manualmente</span>
+                </Label>
+                <VehicleModelSelector value={vehicleModel} onChange={setVehicleModel} />
+              </div>
+            )}
+
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-gartify-gray">
                 Notas adicionales
