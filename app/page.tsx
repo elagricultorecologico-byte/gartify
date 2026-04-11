@@ -307,7 +307,7 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+          <div className="grid grid-cols-4 gap-3 max-w-4xl mx-auto">
             {POPULAR_SERVICES.map(({ type, label, icon: Icon, color }) => (
               <Link
                 key={type}
