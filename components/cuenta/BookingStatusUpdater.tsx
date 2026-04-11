@@ -7,8 +7,8 @@ import { BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS } from "@/lib/utils";
 import { ProponerHoraPicker } from "@/components/cuenta/ProponerHoraPicker";
 
 const TRANSITIONS: Record<string, string[]> = {
-  PENDING:   ["CONFIRMED", "CANCELLED"],
-  PROPOSED:  [], // el cliente decide — taller no puede cambiar estado
+  PENDING:   ["PROPOSED", "CONFIRMED", "CANCELLED"],
+  PROPOSED:  ["CONFIRMED", "CANCELLED"], // taller puede confirmar si cliente llamó por teléfono
   CONFIRMED: ["COMPLETED", "CANCELLED"],
   COMPLETED: [],
   CANCELLED: [],

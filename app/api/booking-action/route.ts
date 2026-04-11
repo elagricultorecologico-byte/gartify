@@ -31,17 +31,18 @@ export async function GET(req: Request) {
     return html(`ℹ️ Esta reserva ya está en estado <strong>${booking.status}</strong>. No es necesaria ninguna acción.`, 200);
   }
 
-  // PENDING: taller confirma/rechaza → PROPOSED: cliente acepta/rechaza propuesta
+  // PENDING + ok  → PROPOSED  (taller acepta, pendiente de confirmación del cliente)
+  // PROPOSED + ok → CONFIRMED (cliente confirma la propuesta del taller)
   const newStatus = action === "ok"
-    ? (booking.status === "PROPOSED" ? "CONFIRMED" : "CONFIRMED")
+    ? (booking.status === "PROPOSED" ? "CONFIRMED" : "PROPOSED")
     : "CANCELLED";
   await db.booking.update({ where: { id: bookingId }, data: { status: newStatus } });
 
   const isProposed = booking.status === "PROPOSED";
-  const msg = newStatus === "CONFIRMED"
+  const msg = action === "ok"
     ? (isProposed
-        ? "✅ Propuesta de horario <strong>aceptada</strong>. Tu cita ha sido confirmada."
-        : "✅ Reserva <strong>confirmada</strong> correctamente. El cliente recibirá una notificación.")
+        ? "✅ Cita <strong>confirmada</strong>. ¡Nos vemos en el taller!"
+        : "✅ Reserva <strong>aceptada</strong>. El cliente recibirá una notificación para confirmar la cita.")
     : (isProposed
         ? "❌ Propuesta de horario <strong>rechazada</strong>. El taller recibirá una notificación."
         : "❌ Reserva <strong>rechazada</strong>. El cliente recibirá una notificación.");
