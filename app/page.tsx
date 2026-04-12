@@ -314,10 +314,12 @@ export default function HomePage() {
                 href={`/talleres?servicio=${type}`}
                 className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all duration-200 hover:bg-gartify-blue/5 hover:border-gartify-blue/30"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
-                  <Icon className={`h-4 w-4 ${color}`} />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white shadow-sm">
+                  <Icon className={`h-5 w-5 ${color}`} />
                 </div>
-                <span className="text-sm font-semibold text-gartify-dark leading-tight">{label}</span>
+                <div className="flex flex-col">
+                  <span className="font-bold text-sm text-gartify-dark leading-tight">{label}</span>
+                </div>
               </Link>
             ))}
           </div>
