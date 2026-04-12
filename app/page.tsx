@@ -312,13 +312,12 @@ export default function HomePage() {
               <Link
                 key={type}
                 href={`/talleres?servicio=${type}`}
-                className="group flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center transition-all duration-200 hover:bg-gartify-blue/5 hover:border-gartify-blue/30"
+                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all duration-200 hover:bg-gartify-blue/5 hover:border-gartify-blue/30"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 shadow-sm group-hover:scale-110 transition-transform duration-200">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
                   <Icon className={`h-4 w-4 ${color}`} />
                 </div>
-                <span className="text-xs font-semibold text-gartify-dark leading-tight">{label}</span>
-                <ChevronRight className="h-3 w-3 text-gartify-gray opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                <span className="text-sm font-semibold text-gartify-dark leading-tight">{label}</span>
               </Link>
             ))}
           </div>
