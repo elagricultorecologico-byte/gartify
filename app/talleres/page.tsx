@@ -114,7 +114,7 @@ export default async function TalleresPage({
   const paginatedGarages = garages.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   return (
-    <div className="container max-w-6xl py-8">
+    <div className="container max-w-6xl py-8 px-0 sm:px-8">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gartify-blue mb-1">
