@@ -298,7 +298,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════
           3. SERVICIOS POPULARES
       ══════════════════════════════════════════════════ */}
-      <section className="py-16 bg-slate-50">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="text-center mb-10">
             <SectionLabel>Servicios más reservados</SectionLabel>
