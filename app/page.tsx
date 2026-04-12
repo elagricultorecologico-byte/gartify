@@ -16,7 +16,7 @@ const CADENAS = [
   { nombre: "Grupo Rodi",  descripcion: "Neumáticos y mecánica",      logo: "https://www.google.com/s2/favicons?domain=rodi.es&sz=64"          },
   { nombre: "Norauto",     descripcion: "Multimarca completa",         logo: "https://www.google.com/s2/favicons?domain=norauto.es&sz=64"        },
   { nombre: "Carglass",    descripcion: "Especialistas en cristales",  logo: "https://www.google.com/s2/favicons?domain=carglass.es&sz=64"       },
-  { nombre: "Euromaster",  descripcion: "Multimarca Michelin",         logo: "https://www.google.com/s2/favicons?domain=euromaster.es&sz=64"     },
+  { nombre: "Euromaster",  descripcion: "Multimarca Michelin",         logo: "https://www.google.com/s2/favicons?domain=euromaster.com&sz=64"    },
   { nombre: "Midas",       descripcion: "Multimarca",                  logo: "https://www.google.com/s2/favicons?domain=midas.es&sz=64"          },
   { nombre: "Feu Vert",    descripcion: "Cadena consolidada",          logo: "https://www.google.com/s2/favicons?domain=feuvert.es&sz=64"        },
   { nombre: "Aurgi",       descripcion: "Presencia nacional",          logo: "https://www.google.com/s2/favicons?domain=aurgi.com&sz=64"         },
