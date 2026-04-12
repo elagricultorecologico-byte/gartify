@@ -122,7 +122,21 @@ const ROLE_DATA = [
   },
 ];
 
-// ─── Componente auxiliar ──────────────────────────────────────────────────────
+// ─── Componentes auxiliares ───────────────────────────────────────────────────
+
+function SectionDivider() {
+  return (
+    <div className="flex items-center justify-center gap-3 py-2">
+      <span className="h-px flex-1 max-w-xs bg-gradient-to-r from-transparent to-slate-200" />
+      <span className="flex gap-1">
+        <span className="h-1.5 w-1.5 rounded-full bg-gartify-orange/40" />
+        <span className="h-1.5 w-1.5 rounded-full bg-gartify-orange" />
+        <span className="h-1.5 w-1.5 rounded-full bg-gartify-orange/40" />
+      </span>
+      <span className="h-px flex-1 max-w-xs bg-gradient-to-l from-transparent to-slate-200" />
+    </div>
+  );
+}
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -142,18 +156,18 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════
           1. HERO
       ══════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-gartify-hero to-gartify-mid py-20 md:py-28">
-        <div className="absolute inset-0 pointer-events-none">
+      <section className="relative overflow-hidden bg-gradient-to-b from-gartify-hero to-gartify-mid py-8 md:py-14">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -left-20 -top-10 h-72 w-72 rounded-full bg-gartify-orange/20 blur-3xl" />
           <div className="absolute -right-16 top-1/3 h-96 w-96 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute left-1/2 top-1/4 h-80 w-80 -translate-x-1/2 rounded-full bg-gartify-mid/30 blur-3xl" />
         </div>
 
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
 
             {/* ── Columna izquierda: texto + buscador ── */}
-            <div>
+            <div className="pt-8">
               <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white mb-6">
                 <span className="h-2 w-2 rounded-full bg-gartify-orange animate-pulse" />
                 +500 talleres verificados en España
@@ -188,8 +202,9 @@ export default function HomePage() {
             </div>
 
             {/* ── Columna derecha: imagen ── */}
-            <div className="hidden md:flex justify-center items-center py-8 px-6">
-              <div className="relative w-full max-w-lg">
+            <div className="hidden md:flex justify-center items-center pt-2 pb-8 px-6">
+              <div className="relative w-full max-w-sm">
+
 
                 {/* Acento naranja rotado detrás (abajo-derecha) */}
                 <div className="absolute -bottom-5 -right-5 h-full w-full rounded-2xl bg-gartify-orange/40 rotate-3" />
@@ -295,6 +310,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ══════════════════════════════════════════════════
           3. SERVICIOS POPULARES
       ══════════════════════════════════════════════════ */}
@@ -335,10 +352,12 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ══════════════════════════════════════════════════
           4. CADENAS DE REFERENCIA
       ══════════════════════════════════════════════════ */}
-      <section className="py-14 bg-white border-t border-slate-100">
+      <section className="py-14 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
           <div className="text-center mb-10">
             <SectionLabel>Talleres de referencia</SectionLabel>
@@ -380,51 +399,54 @@ export default function HomePage() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* ══════════════════════════════════════════════════
           5. SOCIAL PROOF
       ══════════════════════════════════════════════════ */}
-      <section className="py-16 bg-blue-800">
+      <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-14">
-            {STATS.map(({ value, label, icon: Icon }) => (
-              <div key={label} className="flex flex-col items-center text-center rounded-xl bg-white/5 border border-white/10 p-5">
-                <Icon className="h-5 w-5 text-gartify-orange mb-2" />
-                <span className="text-2xl md:text-3xl font-bold text-white">{value}</span>
-                <span className="text-xs text-slate-400 mt-0.5">{label}</span>
-              </div>
-            ))}
-          </div>
 
           {/* Título */}
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
+            <SectionLabel>Opiniones</SectionLabel>
+            <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark">
               Lo que dicen conductores y talleres
             </h2>
-            <p className="text-slate-400 text-sm mt-2">Opiniones reales de usuarios de Gartify</p>
+            <p className="text-gartify-gray text-sm mt-2">Opiniones reales de usuarios de Gartify</p>
           </div>
 
           {/* Testimonios */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {TESTIMONIALS.map(({ name, role, initials, color, rating, text }) => (
-              <div key={name} className="flex flex-col bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/8 transition-colors">
+              <div key={name} className="flex flex-col bg-slate-50 border border-slate-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
                 <Quote className="h-6 w-6 text-gartify-orange mb-3 shrink-0" aria-hidden="true" />
-                <p className="text-sm text-slate-300 leading-relaxed flex-1">{text}</p>
+                <p className="text-sm text-gartify-gray leading-relaxed flex-1">{text}</p>
                 <div className="flex mt-4 mb-3">
                   {Array.from({ length: rating }).map((_, i) => (
                     <Star key={i} className="h-3.5 w-3.5 fill-gartify-orange text-gartify-orange" aria-hidden="true" />
                   ))}
                 </div>
-                <div className="flex items-center gap-2.5 border-t border-white/10 pt-3">
+                <div className="flex items-center gap-2.5 border-t border-slate-200 pt-3">
                   <div className={`h-8 w-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
                     {initials}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white leading-tight">{name}</p>
-                    <p className="text-xs text-slate-400">{role}</p>
+                    <p className="text-sm font-semibold text-gartify-dark leading-tight">{name}</p>
+                    <p className="text-xs text-gartify-gray">{role}</p>
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14">
+            {STATS.map(({ value, label, icon: Icon }) => (
+              <div key={label} className="flex flex-col items-center text-center rounded-xl bg-slate-50 border border-slate-200 p-5">
+                <Icon className="h-5 w-5 text-gartify-orange mb-2" />
+                <span className="text-2xl md:text-3xl font-bold text-gartify-dark">{value}</span>
+                <span className="text-xs text-gartify-gray mt-0.5">{label}</span>
               </div>
             ))}
           </div>

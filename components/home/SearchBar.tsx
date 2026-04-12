@@ -30,30 +30,38 @@ export function SearchBar({ className }: { className?: string }) {
     >
       {/* Selector de servicio */}
       <Select onValueChange={setServicio}>
-        <SelectTrigger className="w-full sm:w-48 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
+        <SelectTrigger className="w-full sm:w-40 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
         <SelectContent>
-          {SEARCHABLE_SERVICES.map((s) => (
-            <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>
-          ))}
+          {SEARCHABLE_SERVICES.map((s) => {
+            const Icon = s.icon;
+            return (
+              <SelectItem key={s.type} value={s.type}>
+                <span className="flex items-center gap-2">
+                  <Icon className={`h-4 w-4 shrink-0 ${s.color}`} />
+                  {s.label}
+                </span>
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
 
       {/* Campo de ciudad */}
-      <div className="relative flex-1 w-full">
+      <div className="relative flex-1 min-w-0 sm:min-w-[140px] w-full">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         <Input
           placeholder="Localidad o CP"
           value={ciudad}
           onChange={(e) => setCiudad(e.target.value)}
-          className="pl-9 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 rounded-xl sm:rounded-none w-full focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-semibold placeholder:text-gray-500 placeholder:text-sm"
+          className="pl-9 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 rounded-xl sm:rounded-none w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm"
         />
       </div>
 
       {/* Selector de tipo de vehículo */}
       <Select onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
-        <SelectTrigger className="w-full sm:w-44 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
+        <SelectTrigger className="w-full sm:w-40 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
           <SelectValue placeholder="Tipo de vehículo" />
         </SelectTrigger>
         <SelectContent>
