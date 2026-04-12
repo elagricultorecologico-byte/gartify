@@ -18,12 +18,12 @@ export function TvColumnasTabs({ tabs }: { tabs: Tab[] }) {
   return (
     <>
       {/* ── Tabs (solo móvil) ── */}
-      <div className="flex lg:hidden border-b border-white/10 overflow-x-auto scrollbar-none">
+      <div className="flex lg:hidden border-b border-white/10">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActivo(tab.key)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold whitespace-nowrap shrink-0 border-b-2 transition-colors ${
+            className={`flex flex-1 items-center justify-center gap-1.5 px-2 py-2.5 text-xs font-bold border-b-2 transition-colors ${
               activo === tab.key
                 ? "border-white text-white"
                 : "border-transparent text-slate-400 hover:text-white"

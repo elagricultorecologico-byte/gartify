@@ -1,9 +1,9 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Car, Clock, FileText, Hash, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
+import { Car, Clock, FileText, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
-import { formatPrice, formatDateTime, SERVICE_LABELS } from "@/lib/utils";
+import { formatPrice, formatDateTime, SERVICE_LABELS, BOOKING_STATUS_LABELS } from "@/lib/utils";
 
 export type GarageBookingItem = {
   id: string;
@@ -27,6 +27,15 @@ const STATUS_TABS = [
   { value: "CANCELLED", label: "Canceladas" },
 ] as const;
 
+const COUNT_COLOR: Record<string, string> = {
+  ALL:       "bg-gray-200 text-gray-700",
+  PENDING:   "bg-yellow-100 text-yellow-700",
+  PROPOSED:  "bg-purple-100 text-purple-700",
+  CONFIRMED: "bg-green-100 text-green-700",
+  COMPLETED: "bg-slate-100 text-slate-600",
+  CANCELLED: "bg-red-100 text-red-600",
+};
+
 const POR_PAGINA = 10;
 
 export function GarageBookingList({ bookings, garageId }: { bookings: GarageBookingItem[]; garageId: string }) {
@@ -34,6 +43,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
   const [statusFilter, setStatusFilter] = useState<string>("PENDING");
   const [orden, setOrden] = useState<"asc" | "desc">("asc");
   const [pagina, setPagina] = useState(1);
+  const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -72,44 +82,69 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
   }
 
   return (
-    <div className="space-y-4">
-      {/* Barra de filtros: 2 filas */}
-      <div className="space-y-2">
-        {/* Fila 1: búsqueda + orden */}
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              placeholder="Nombre, matrícula…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
-            />
+    <div className="space-y-3">
+      {/* Panel de filtros colapsable (estilo GarageFilters) */}
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        {/* Cabecera — toggle en móvil */}
+        <button
+          type="button"
+          className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
+          onClick={() => setFiltrosAbiertos((v) => !v)}
+          aria-expanded={filtrosAbiertos}
+        >
+          <div className="flex items-center gap-2 text-gartify-blue">
+            <SlidersHorizontal className="h-4 w-4 shrink-0" />
+            <span className="text-sm font-semibold">Filtros</span>
+            {statusFilter !== "ALL" && (
+              <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">1</span>
+            )}
           </div>
-          <button
-            onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors shrink-0"
-            aria-label="Ordenar por fecha"
-          >
-            {orden === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
-            <span className="hidden sm:inline ml-1">Fecha</span>
-          </button>
-        </div>
-        {/* Fila 2: tabs de estado con scroll horizontal en móvil */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-          {STATUS_TABS.map((tab) => (
+          <ChevronDown className={`h-4 w-4 text-gartify-gray transition-transform lg:hidden ${filtrosAbiertos ? "rotate-180" : ""}`} />
+        </button>
+
+        {/* Contenido colapsable */}
+        <div className={`${!filtrosAbiertos ? "hidden lg:block" : ""} px-4 py-3 space-y-3`}>
+          {/* Búsqueda + orden */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                placeholder="Nombre, matrícula…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+              />
+            </div>
             <button
-              key={tab.value}
-              onClick={() => setStatusFilter(tab.value)}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
-                statusFilter === tab.value
-                  ? "bg-gartify-blue text-white"
-                  : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
-              }`}
+              onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
+              className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors shrink-0"
+              aria-label="Ordenar por fecha"
             >
-              {tab.label}
+              {orden === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
+              <span className="hidden sm:inline ml-1">Fecha</span>
             </button>
-          ))}
+          </div>
+          {/* Tabs de estado — grid 3x2 en móvil, fila en desktop */}
+          <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5">
+            {STATUS_TABS.map((tab) => {
+              const count = bookings.filter((b) => tab.value === "ALL" || b.status === tab.value).length;
+              const active = statusFilter === tab.value;
+              return (
+                <button
+                  key={tab.value}
+                  onClick={() => setStatusFilter(tab.value)}
+                  className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                    active ? "bg-gartify-blue text-white" : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
+                  }`}
+                >
+                  {tab.label}
+                  <span className={`text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -171,94 +206,124 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
   );
 }
 
+// Colores de la banda de estado superior — distintos de BOOKING_STATUS_COLORS
+// para destacar más como cabecera visual de la card
+const STATUS_BAND: Record<string, string> = {
+  PENDING:   "bg-yellow-50  text-yellow-700  border-yellow-200",
+  PROPOSED:  "bg-purple-50  text-purple-700  border-purple-200",
+  CONFIRMED: "bg-green-50   text-green-700   border-green-200",
+  COMPLETED: "bg-slate-50   text-slate-500   border-slate-200",
+  CANCELLED: "bg-red-50     text-red-500     border-red-200",
+};
+
 function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }) {
-  const isPast = b.status !== "PENDING" && b.status !== "CONFIRMED";
-  const initials = (b.user.name ?? "C")
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+  const isPast = b.status === "COMPLETED" || b.status === "CANCELLED";
+  const bandClasses = STATUS_BAND[b.status] ?? "bg-gray-50 text-gray-500 border-gray-200";
+  const codigoReserva = b.code ?? b.id.slice(-8).toUpperCase();
+  const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
   return (
     <article
-      className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all p-4 ${
-        isPast ? "opacity-75 border-gray-100" : "border-gray-200 hover:border-gartify-orange/40"
+      className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all overflow-hidden ${
+        isPast
+          ? "opacity-75 border-gray-100"
+          : "border-gray-200 hover:border-gartify-blue/30"
       }`}
     >
-      <div className="flex items-start gap-3">
-        {/* Avatar */}
-        <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${
-          isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"
-        }`}>
-          {initials}
-        </div>
+      {/* ── BANDA DE ESTADO — solo móvil ─────────────────────────────────── */}
+      <div className={`sm:hidden flex items-center justify-between gap-2 px-4 py-2 border-b ${bandClasses}`}>
+        <span className="text-xs font-bold uppercase tracking-wide">
+          {BOOKING_STATUS_LABELS[b.status] ?? b.status}
+        </span>
+        <span className="flex items-center gap-1 text-xs opacity-75">
+          <Clock className="h-3 w-3" aria-hidden="true" />
+          {fechaFormateada}
+        </span>
+      </div>
 
-        {/* Contenido */}
-        <div className="flex-1 min-w-0">
-          {/* Fila 1: nombre + estado */}
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-bold text-gartify-blue text-sm">{b.user.name ?? "Cliente"}</span>
-              {b.user.phone && (
-                <a
-                  href={`tel:${b.user.phone}`}
-                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gartify-blue transition-colors"
-                >
-                  <Phone className="h-3 w-3" aria-hidden="true" />
-                  {b.user.phone}
-                </a>
+      {/* ── CUERPO MÓVIL ─────────────────────────────────────────────────── */}
+      <div className="sm:hidden flex flex-col gap-2.5 px-4 py-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="font-bold text-gartify-blue text-base leading-tight">{b.user.name ?? "Cliente"}</span>
+          {b.user.phone && (
+            <a href={`tel:${b.user.phone}`} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-gartify-blue transition-colors w-fit">
+              <Phone className="h-3 w-3" aria-hidden="true" />{b.user.phone}
+            </a>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
+            <Wrench className="h-3 w-3" aria-hidden="true" />{SERVICE_LABELS[b.service.type] ?? b.service.name}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 text-gartify-gray text-xs px-2.5 py-0.5 font-medium">
+            <Clock className="h-3 w-3" aria-hidden="true" />{b.service.duration} min
+          </span>
+        </div>
+        {(b.vehicleModel || b.vehiclePlate) && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Car className="h-3.5 w-3.5 text-gartify-mid shrink-0" aria-hidden="true" />
+            {b.vehicleModel && <span>{b.vehicleModel}</span>}
+            {b.vehicleModel && b.vehiclePlate && <span className="text-gray-300">·</span>}
+            {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue">{b.vehiclePlate}</span>}
+          </div>
+        )}
+        {b.notes && (
+          <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-2 text-xs text-muted-foreground">
+            <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" /><span>{b.notes}</span>
+          </div>
+        )}
+        <div className="flex flex-col items-center pt-2 border-t border-gray-100">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">Total</span>
+          <span className="text-2xl font-extrabold text-gartify-orange leading-none">{formatPrice(b.totalPrice)}</span>
+        </div>
+        <div className="flex justify-center">
+          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
+        </div>
+        <div className="flex justify-center pt-1">
+          <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
+        </div>
+      </div>
+
+      {/* ── CUERPO DESKTOP — layout horizontal original ───────────────────── */}
+      <div className="hidden sm:block px-4 py-3 relative">
+        <div className="absolute top-3 right-4">
+          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
+        </div>
+        <div className="flex items-start gap-3">
+          <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
+            {(b.user.name ?? "C").split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="pr-44">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-gartify-blue text-sm">{b.user.name ?? "Cliente"}</span>
+                {b.user.phone && (
+                  <a href={`tel:${b.user.phone}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gartify-blue transition-colors">
+                    <Phone className="h-3 w-3" aria-hidden="true" />{b.user.phone}
+                  </a>
+                )}
+              </div>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
+                  <Wrench className="h-3 w-3" aria-hidden="true" />{SERVICE_LABELS[b.service.type] ?? b.service.name}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{fechaFormateada}</span>
+                <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.service.duration} min</span>
+                {b.vehicleModel && <span className="flex items-center gap-1"><Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.vehicleModel}</span>}
+                {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue">{b.vehiclePlate}</span>}
+              </div>
+              {b.notes && (
+                <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-1.5 text-xs text-muted-foreground mt-2">
+                  <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" /><span>{b.notes}</span>
+                </div>
               )}
             </div>
-            <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
-          </div>
-
-          {/* Fila 2a: servicio + precio */}
-          <div className="flex items-center justify-between mt-1.5 gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
-              <Wrench className="h-3 w-3" aria-hidden="true" />
-              {SERVICE_LABELS[b.service.type] ?? b.service.name}
-            </span>
-            <span className="font-bold text-gartify-orange text-sm shrink-0">
-              {formatPrice(b.totalPrice)}
-            </span>
-          </div>
-
-          {/* Fila 2b: fecha + duración + vehículo */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-              {formatDateTime(b.date instanceof Date ? b.date : new Date(b.date))}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-              {b.service.duration} min
-            </span>
-            {b.vehicleModel && (
-              <span className="flex items-center gap-1">
-                <Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                {b.vehicleModel}
-              </span>
-            )}
-            {b.vehiclePlate && (
-              <span className="flex items-center gap-1 font-mono font-semibold tracking-wider text-gartify-blue">
-                <Hash className="h-3 w-3 text-gartify-mid font-normal" aria-hidden="true" />
-                {b.vehiclePlate}
-              </span>
-            )}
-          </div>
-
-          {/* Fila 3: notas + código */}
-          <div className="flex items-center justify-between mt-2 gap-2 flex-wrap">
-            {b.notes && (
-              <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-1.5 text-xs text-muted-foreground flex-1">
-                <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" />
-                <span>{b.notes}</span>
-              </div>
-            )}
-            <span className="ml-auto text-xs font-mono text-muted-foreground shrink-0">
-              {b.code ? b.code : b.id.slice(-8).toUpperCase()}
-            </span>
+            <div className="flex items-center justify-between mt-1">
+              <span className="font-bold text-gartify-orange text-sm">{formatPrice(b.totalPrice)}</span>
+              <span className="text-xs font-mono text-muted-foreground">{codigoReserva}</span>
+            </div>
           </div>
         </div>
       </div>

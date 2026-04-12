@@ -5,11 +5,11 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import {
-  Plus, Calendar, Euro, Star,
-  TrendingUp, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard, Tv,
+  Plus, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard, Tv,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
+import { TallerKpis } from "@/components/cuenta/TallerKpis";
 import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
 import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
 
@@ -74,14 +74,14 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
     .reduce((s, b) => s + b.totalPrice, 0);
 
   const stats = [
-    { icon: Calendar,   label: "Pendientes",  value: pending,                  color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
-    { icon: TrendingUp, label: "Confirmadas", value: confirmed,                color: "text-gartify-mid",    bg: "bg-blue-50",    border: "border-blue-100" },
-    { icon: Euro,       label: "Facturado",   value: formatPrice(revenue),     color: "text-gartify-orange", bg: "bg-orange-50",  border: "border-orange-100" },
-    { icon: Star,       label: "Valoración",  value: garage.rating.toFixed(1), color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
+    { icon: "Calendar"   as const, label: "Pendientes",  value: pending,                  color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
+    { icon: "TrendingUp" as const, label: "Confirmadas", value: confirmed,                color: "text-gartify-mid",    bg: "bg-blue-50",    border: "border-blue-100" },
+    { icon: "Euro"       as const, label: "Facturado",   value: formatPrice(revenue),     color: "text-gartify-orange", bg: "bg-orange-50",  border: "border-orange-100" },
+    { icon: "Star"       as const, label: "Valoración",  value: garage.rating.toFixed(1), color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
   ];
 
   return (
-    <div className="container max-w-5xl py-10">
+    <div className="w-full max-w-5xl mx-auto py-6 px-4 sm:px-8">
       {/* Banner de confirmación de suscripción exitosa */}
       {suscripcionActivada && <BannerExitoSuscripcion plan={garage.plan} />}
 
@@ -117,57 +117,27 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
             </p>
           )}
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
-          <Link href="/cuenta/taller/planes" className="shrink-0">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2 border-gartify-orange/50 text-gartify-orange hover:bg-orange-50 font-semibold"
-            >
-              <CreditCard className="h-4 w-4" aria-hidden="true" />
-              {garage.stripeSubscriptionId ? "Gestionar plan" : "Mejorar plan"}
-            </Button>
-          </Link>
-          <Link href="/cuenta/taller/servicios" className="shrink-0">
-            <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              Servicios
-            </Button>
-          </Link>
-          <Link href="/cuenta/taller/horario" className="shrink-0">
-            <Button variant="outline" size="sm" className="gap-2 border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5">
-              <CalendarClock className="h-4 w-4" aria-hidden="true" />
-              Horario
-            </Button>
-          </Link>
-          <Link href="/cuenta/taller/ofertas" className="shrink-0">
-            <Button variant="outline" size="sm" className="gap-2 border-gartify-orange/40 text-gartify-orange hover:bg-orange-50">
-              <Tag className="h-4 w-4" aria-hidden="true" />
-              Ofertas
-            </Button>
-          </Link>
-          <Link href="/cuenta/taller/recambios" className="shrink-0">
-            <Button variant="outline" size="sm" className="gap-2 border-gartify-orange/40 text-gartify-orange hover:bg-orange-50">
-              <Package className="h-4 w-4" aria-hidden="true" />
-              Recambios
-            </Button>
-          </Link>
+        {/* Botonera: grid táctil en móvil, fila en desktop */}
+        <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
+          {[
+            { href: "/cuenta/taller/planes",    icon: CreditCard,   label: garage.stripeSubscriptionId ? "Mi plan" : "Plan",      color: "text-gartify-orange border-gartify-orange/40 hover:bg-orange-50" },
+            { href: "/cuenta/taller/servicios", icon: Plus,         label: "Servicios",  color: "text-gartify-blue border-gartify-blue/30 hover:bg-gartify-blue/5" },
+            { href: "/cuenta/taller/horario",   icon: CalendarClock,label: "Horario",    color: "text-gartify-blue border-gartify-blue/30 hover:bg-gartify-blue/5" },
+            { href: "/cuenta/taller/ofertas",   icon: Tag,          label: "Ofertas",    color: "text-gartify-orange border-gartify-orange/40 hover:bg-orange-50" },
+            { href: "/cuenta/taller/recambios", icon: Package,      label: "Recambios",  color: "text-gartify-orange border-gartify-orange/40 hover:bg-orange-50" },
+            { href: "/cuenta/taller/perfil",    icon: Wrench,       label: "Perfil",     color: "text-gartify-blue border-gartify-blue/30 hover:bg-gartify-blue/5" },
+          ].map(({ href, icon: Icon, label, color }) => (
+            <Link key={href} href={href}>
+              <button className={`w-full flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-xl border bg-white px-3 py-3 sm:py-2 text-xs font-semibold transition-colors ${color}`}>
+                <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{label}</span>
+              </button>
+            </Link>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {stats.map(({ icon: Icon, label, value, color, bg, border }) => (
-          <div key={label} className={`rounded-xl border ${border} ${bg} p-4 flex items-center gap-3`}>
-            <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0">
-              <Icon className={`h-5 w-5 ${color}`} aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{label}</p>
-              <p className="font-bold text-foreground text-lg leading-tight">{value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      <TallerKpis stats={stats} />
 
       {/* Indicador de actualización automática + acceso modo TV */}
       <div className="flex items-center justify-end gap-3 mb-3">
