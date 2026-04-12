@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Button } from "@/components/ui/button";
 import {
   Plus, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard, Tv,
 } from "lucide-react";
