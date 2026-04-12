@@ -145,32 +145,44 @@ export function GarageFilters() {
     .filter(isActive).length;
   const hasFilters = activeCount > 0 || hasLocation;
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      {/* Cabecera */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+      {/* Cabecera — en móvil actúa como toggle */}
+      <button
+        type="button"
+        className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100 lg:cursor-default"
+        onClick={() => setMobileOpen((v) => !v)}
+        aria-expanded={mobileOpen}
+      >
         <div className="flex items-center gap-2 text-gartify-blue">
           <SlidersHorizontal className="h-4 w-4 shrink-0" />
           <span className="text-sm font-semibold">Filtros</span>
-        </div>
-        {hasFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/talleres")}
-            className="h-7 gap-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 px-2.5"
-          >
-            <X className="h-3.5 w-3.5 shrink-0" />
-            <span className="text-xs font-medium">Limpiar</span>
-            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-100 px-1 text-[10px] font-bold text-red-600 leading-none">
+          {hasFilters && (
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
               {activeCount + (hasLocation ? 1 : 0)}
             </span>
-          </Button>
-        )}
-      </div>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {hasFilters && (
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => { e.stopPropagation(); router.push("/talleres"); }}
+              className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600"
+            >
+              <X className="h-3.5 w-3.5" />
+              Limpiar
+            </span>
+          )}
+          <ChevronDown className={cn("h-4 w-4 text-gartify-gray transition-transform lg:hidden", mobileOpen && "rotate-180")} />
+        </div>
+      </button>
 
-      {/* Secciones */}
-      <div className="px-4 divide-y divide-gray-100">
+      {/* Secciones — ocultas en móvil hasta que se abra el toggle */}
+      <div className={cn("px-4 divide-y divide-gray-100", !mobileOpen && "hidden lg:block")}>
 
         {/* Ubicación */}
         <Section label="Ubicación" icon={<MapPin className="h-3 w-3" />} active={isActive("ciudad")}>

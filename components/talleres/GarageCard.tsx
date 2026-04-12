@@ -94,7 +94,7 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
   const esPremium = plan === "PREMIUM";
 
   return (
-    <div className="bg-white sm:rounded-xl border-y sm:border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-orange/40 transition-all overflow-hidden flex flex-col sm:flex-row">
+    <div className="bg-white sm:rounded-xl border border-gray-200 hover:border-gartify-blue/30 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col sm:flex-row">
 
       {/* ── CONTENIDO PRINCIPAL ───────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0">
