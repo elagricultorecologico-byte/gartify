@@ -312,7 +312,7 @@ export default function HomePage() {
               <Link
                 key={type}
                 href={`/talleres?servicio=${type}`}
-                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all duration-200 hover:bg-gartify-blue/5 hover:border-gartify-blue/30"
+                className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-gartify-blue/5 hover:border-gartify-blue/30 transition-all duration-200 px-4 py-3"
               >
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white shadow-sm">
                   <Icon className={`h-5 w-5 ${color}`} />
