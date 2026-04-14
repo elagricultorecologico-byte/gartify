@@ -106,7 +106,7 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
         }
       `}</style>
 
-      <div className="print-page relative font-sans text-gray-900 bg-white min-h-screen p-8 max-w-3xl mx-auto">
+      <div className="print-page relative font-sans text-gray-900 bg-white p-8 max-w-3xl mx-auto">
 
         {/* Sello estilo tampón */}
         <div
