@@ -10,7 +10,8 @@ export function NavFooterWrapper({ children }: { children: React.ReactNode }) {
     pathname.includes("/cuenta/taller/tv") ||
     pathname.startsWith("/confirmar/") ||
     pathname.startsWith("/reagendar/") ||
-    pathname.startsWith("/rechazar/");
+    pathname.startsWith("/rechazar/") ||
+    pathname.endsWith("/pdf");
 
   return (
     <>

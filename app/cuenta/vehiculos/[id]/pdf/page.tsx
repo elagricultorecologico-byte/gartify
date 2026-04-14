@@ -87,9 +87,8 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
       {/* Estilos de impresión: oculta el navbar y ajusta márgenes de página */}
       <style>{`
         @media print {
-          nav,
-          header:not(.print-keep),
-          .no-print {
+          nav, footer, header:not(.print-keep),
+          .no-print, #__next > *:not(.print-root) {
             display: none !important;
           }
           @page {
@@ -102,6 +101,11 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
           .print-page {
             padding: 0 !important;
             max-width: 100% !important;
+          }
+        }
+        @media screen {
+          nav, footer:not(.print-keep) {
+            /* visible en pantalla, ocultos al imprimir */
           }
         }
       `}</style>
