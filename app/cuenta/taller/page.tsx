@@ -80,7 +80,7 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
   ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto py-6 px-4 sm:px-8">
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       {/* Banner de confirmación de suscripción exitosa */}
       {suscripcionActivada && <BannerExitoSuscripcion plan={garage.plan} />}
 
