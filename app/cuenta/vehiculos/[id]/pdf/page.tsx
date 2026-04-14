@@ -86,9 +86,12 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
     <>
       {/* Estilos de impresión: oculta el navbar y ajusta márgenes de página */}
       <style>{`
+        /* Ocultar overlay de errores de Next.js (dev) */
+        nextjs-portal { display: none !important; }
+
         @media print {
           nav, footer, header:not(.print-keep),
-          .no-print, #__next > *:not(.print-root) {
+          .no-print, nextjs-portal {
             display: none !important;
           }
           @page {
