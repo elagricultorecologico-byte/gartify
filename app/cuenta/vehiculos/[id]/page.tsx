@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   Car,
   CalendarCheck,
+  FileDown,
   Fuel,
   Gauge,
   Palette,
@@ -82,14 +83,26 @@ export default async function HistorialVehiculoPage({ params }: Props) {
   return (
     <div className="container max-w-3xl py-10 px-4 sm:px-8">
 
-      {/* Enlace de vuelta */}
-      <Link
-        href="/cuenta/vehiculos"
-        className="inline-flex items-center gap-1.5 text-sm text-gartify-gray hover:text-gartify-blue transition-colors mb-6"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Mis vehículos
-      </Link>
+      {/* Navegación: enlace de vuelta + botón exportar PDF */}
+      <div className="flex items-center justify-between mb-6">
+        <Link
+          href="/cuenta/vehiculos"
+          className="inline-flex items-center gap-1.5 text-sm text-gartify-gray hover:text-gartify-blue transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Mis vehículos
+        </Link>
+
+        <Link
+          href={`/cuenta/vehiculos/${id}/pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-sm text-gartify-blue hover:text-gartify-blue/80 transition-colors border border-gartify-blue/30 rounded-lg px-3 py-1.5 hover:bg-gartify-blue/5"
+        >
+          <FileDown className="h-4 w-4" aria-hidden="true" />
+          Exportar PDF
+        </Link>
+      </div>
 
       {/* Cabecera */}
       <div className="mb-8">
