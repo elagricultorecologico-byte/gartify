@@ -133,6 +133,7 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
           <span style={{ fontSize: "20px", fontWeight: 900, letterSpacing: "0.08em", lineHeight: 1.1 }}>GARTIFY</span>
           <span style={{ fontSize: "8px", fontWeight: 700, letterSpacing: "0.25em", marginTop: "2px" }}>VERIFICADO</span>
           <span style={{ fontSize: "8px", marginTop: "4px", letterSpacing: "0.1em" }}>gartify.es</span>
+          <span style={{ fontSize: "9px", fontWeight: 700, marginTop: "6px", letterSpacing: "0.05em" }}>{fechaGeneracion}</span>
         </div>
 
         {/* Cabecera del documento */}
@@ -246,11 +247,8 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
         </section>
 
         {/* Footer con marca Gartify y fecha de generación */}
-        <footer className="mt-10 pt-4 border-t border-gray-300 text-xs text-gray-400 flex justify-between">
-          <span>Generado por Gartify.es el {fechaGeneracion}</span>
-          <span>
-            {vehiculo.plate} · {vehiculo.brand} {vehiculo.model}
-          </span>
+        <footer className="mt-10 pt-4 border-t border-gray-300 text-xs text-gray-400 flex justify-end">
+          <span>{vehiculo.plate} · {vehiculo.brand} {vehiculo.model}</span>
         </footer>
 
         {/* Dispara window.print() al cargar — Client Component mínimo */}
