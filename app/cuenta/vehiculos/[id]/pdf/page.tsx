@@ -6,6 +6,19 @@ import { PrintTrigger } from "@/components/cuenta/PrintTrigger";
 
 export const dynamic = "force-dynamic";
 
+// ─── Tipos ────────────────────────────────────────────────────────────────────
+
+type RegistroItem = {
+  id: string;
+  date: Date;
+  mileage: number | null;
+  workDone: string;
+  nextReviewDate: Date | null;
+  nextMileage: number | null;
+  stampedBy: string | null;
+  garage: { name: string; city: string };
+};
+
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface Props {
@@ -93,7 +106,34 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
         }
       `}</style>
 
-      <div className="print-page font-sans text-gray-900 bg-white min-h-screen p-8 max-w-3xl mx-auto">
+      <div className="print-page relative font-sans text-gray-900 bg-white min-h-screen p-8 max-w-3xl mx-auto">
+
+        {/* Sello estilo tampón */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "120px",
+            right: "32px",
+            width: "130px",
+            height: "130px",
+            border: "4px double #dc2626",
+            borderRadius: "50%",
+            transform: "rotate(-18deg)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0.55,
+            color: "#dc2626",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        >
+          <span style={{ fontSize: "20px", fontWeight: 900, letterSpacing: "0.08em", lineHeight: 1.1 }}>GARTIFY</span>
+          <span style={{ fontSize: "8px", fontWeight: 700, letterSpacing: "0.25em", marginTop: "2px" }}>VERIFICADO</span>
+          <span style={{ fontSize: "8px", marginTop: "4px", letterSpacing: "0.1em" }}>gartify.es</span>
+        </div>
 
         {/* Cabecera del documento */}
         <header className="print-keep flex items-start justify-between border-b-2 border-gray-900 pb-4 mb-6">
@@ -153,7 +193,7 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
               Sin revisiones registradas.
             </p>
           ) : (
-            registros.map((registro, indice) => (
+            (registros as RegistroItem[]).map((registro, indice) => (
               <div
                 key={registro.id}
                 className="mb-6 pb-6 border-b border-gray-200 last:border-0"
