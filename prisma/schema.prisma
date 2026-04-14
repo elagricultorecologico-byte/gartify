@@ -18,6 +18,7 @@ model User {
   reviews     Review[]
   garage      Garage?
   distributor Distributor?
+  vehicles    Vehicle[]
   createdAt   DateTime     @default(now())
 }
 
@@ -50,11 +51,12 @@ model Garage {
   services      GarageService[]
   bookings      Booking[]
   reviews       Review[]
-  schedules     GarageSchedule[]
-  invoices      AdminInvoice[]
-  partOrders    PartOrder[]
-  offers        GarageOffer[]
-  createdAt     DateTime        @default(now())
+  schedules      GarageSchedule[]
+  invoices       AdminInvoice[]
+  partOrders     PartOrder[]
+  offers         GarageOffer[]
+  serviceRecords ServiceRecord[]          // Sellos emitidos por este taller
+  createdAt      DateTime        @default(now())
 }
 
 model GarageOffer {
@@ -97,24 +99,27 @@ model GarageService {
 }
 
 model Booking {
-  id           String    @id @default(cuid())
-  code         String    @unique @default("")
+  id           String        @id @default(cuid())
+  code         String        @unique @default("")
   userId       String
-  user         User      @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
   garageId     String
-  garage       Garage    @relation(fields: [garageId], references: [id])
+  garage       Garage        @relation(fields: [garageId], references: [id])
   serviceId    String
   service      GarageService @relation(fields: [serviceId], references: [id])
   date         DateTime
-  status       String    @default("PENDING")
-  vehicleType  String    @default("COCHE")
+  status       String        @default("PENDING")
+  vehicleType  String        @default("COCHE")
   vehiclePlate String?
   vehicleModel String?
   notes        String?
   totalPrice   Float
-  review       Review?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  vehicleId    String?
+  vehicle      Vehicle?      @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  review         Review?
+  serviceRecord  ServiceRecord?          // Sello de revisión vinculado a esta reserva
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model AdminInvoice {
@@ -228,6 +233,26 @@ model Review {
   createdAt DateTime @default(now())
 }
 
+// ─── Vehículos del Cliente ────────────────────────────────────────────────────
+
+model Vehicle {
+  id             String          @id @default(cuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alias          String?                   // Apodo personalizado, ej: "Mi Seat"
+  plate          String                    // Matrícula, ej: 1234-ABC
+  brand          String                    // Marca, ej: Toyota
+  model          String                    // Modelo, ej: Corolla
+  year           Int?                      // Año de fabricación
+  color          String?                   // Color del vehículo, ej: Blanco
+  fuel           String?                   // Gasolina | Diésel | Híbrido | Eléctrico | GLP
+  mileage        Int?                      // Kilómetros actuales
+  itvDate        DateTime?                 // Próxima ITV
+  bookings       Booking[]
+  serviceRecords ServiceRecord[]           // Historial de revisiones del vehículo
+  createdAt      DateTime        @default(now())
+}
+
 // ─── Catálogo de Vehículos ────────────────────────────────────────────────────
 
 model VehicleMake {
@@ -250,4 +275,31 @@ model VehicleVersion {
   name    String
   modelId Int
   model   VehicleModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+}
+
+// ─── Libro de Revisiones ──────────────────────────────────────────────────────
+
+model ServiceRecord {
+  id           String    @id @default(cuid())
+  // Vínculo al vehículo registrado (opcional — puede no estar registrado)
+  vehicleId    String?
+  vehicle      Vehicle?  @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  // Vínculo a la reserva completada (único: una reserva → un sello)
+  bookingId    String    @unique
+  booking      Booking   @relation(fields: [bookingId], references: [id])
+  // Taller que emite el sello
+  garageId     String
+  garage       Garage    @relation(fields: [garageId], references: [id])
+  // Datos del vehículo en el momento del servicio (desnormalizados para historial)
+  vehiclePlate String?
+  vehicleModel String?
+  // Contenido del sello
+  date         DateTime              // Fecha del servicio
+  mileage      Int?                  // Km en el momento del servicio
+  workDone     String                // Trabajo realizado
+  nextReviewDate DateTime?           // Fecha sugerida de próxima revisión
+  nextMileage  Int?                  // Km sugerido para próxima revisión
+  // Metadatos
+  stampedBy    String?               // Nombre del mecánico o responsable
+  createdAt    DateTime @default(now())
 }

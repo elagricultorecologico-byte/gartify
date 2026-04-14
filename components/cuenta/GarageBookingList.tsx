@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { Car, Clock, FileText, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
+import { SelloReservaButton } from "@/components/cuenta/SelloReservaButton";
 import { formatPrice, formatDateTime, SERVICE_LABELS, BOOKING_STATUS_LABELS } from "@/lib/utils";
 
 export type GarageBookingItem = {
@@ -16,6 +17,7 @@ export type GarageBookingItem = {
   notes: string | null;
   user: { name: string | null; phone: string | null };
   service: { type: string; name: string; duration: number };
+  serviceRecord: { id: string } | null;
 };
 
 const STATUS_TABS = [
@@ -357,6 +359,18 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
         <div className="flex justify-center">
           <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
         </div>
+        {/* Sello de revisión — solo para reservas completadas */}
+        {b.status === "COMPLETED" && (
+          <div className="flex justify-center">
+            <SelloReservaButton
+              bookingId={b.id}
+              serviceName={b.service.name}
+              vehiclePlate={b.vehiclePlate}
+              vehicleModel={b.vehicleModel}
+              hasRecord={!!b.serviceRecord}
+            />
+          </div>
+        )}
         <div className="flex justify-center pt-1">
           <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
         </div>
@@ -402,6 +416,16 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
               <span className="font-bold text-gartify-orange text-sm">{formatPrice(b.totalPrice)}</span>
               <span className="text-xs font-mono text-muted-foreground">{codigoReserva}</span>
             </div>
+            {/* Sello de revisión — solo para reservas completadas */}
+            {b.status === "COMPLETED" && (
+              <SelloReservaButton
+                bookingId={b.id}
+                serviceName={b.service.name}
+                vehiclePlate={b.vehiclePlate}
+                vehicleModel={b.vehicleModel}
+                hasRecord={!!b.serviceRecord}
+              />
+            )}
           </div>
         </div>
       </div>

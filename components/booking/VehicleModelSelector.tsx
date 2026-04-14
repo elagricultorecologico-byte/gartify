@@ -9,6 +9,8 @@ type RespuestaAPI = { options: OpcionSelector[]; error?: string };
 interface Props {
   value: string;
   onChange: (value: string) => void;
+  /** Callback opcional que expone marca y modelo por separado */
+  onDetalle?: (d: { marca: string; modelo: string }) => void;
 }
 
 const CLASES_SELECT =
@@ -16,7 +18,7 @@ const CLASES_SELECT =
   "shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 " +
   "focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50";
 
-export function VehicleModelSelector({ onChange }: Props) {
+export function VehicleModelSelector({ onChange, onDetalle }: Props) {
   const [marcas, setMarcas] = useState<OpcionSelector[]>([]);
   const [modelos, setModelos] = useState<OpcionSelector[]>([]);
   const [vehiculos, setVehiculos] = useState<OpcionSelector[]>([]);
@@ -110,6 +112,7 @@ export function VehicleModelSelector({ onChange }: Props) {
     setAbierto(false);
     setBusqueda("");
     onChange("");
+    onDetalle?.({ marca: m.label, modelo: "" });
   }
 
   function limpiarMarca() {
@@ -125,6 +128,7 @@ export function VehicleModelSelector({ onChange }: Props) {
     setModeloId(id);
     setModeloLabel(label);
     onChange("");
+    onDetalle?.({ marca: marcaLabel, modelo: label });
   }
 
   function handleVehiculoChange(e: React.ChangeEvent<HTMLSelectElement>) {

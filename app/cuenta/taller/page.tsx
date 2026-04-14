@@ -7,7 +7,7 @@ import {
   Plus, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard, Tv,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { GarageBookingList } from "@/components/cuenta/GarageBookingList";
+import { GarageBookingList, type GarageBookingItem } from "@/components/cuenta/GarageBookingList";
 import { TallerKpis } from "@/components/cuenta/TallerKpis";
 import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
 import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
@@ -33,6 +33,9 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
   const user = session.user as { id: string; role?: string };
   if (user.role !== "GARAGE_OWNER") redirect("/cuenta");
 
+  // ── Query 1: datos básicos del garage (sin bookings) ──────────────────────
+  // Separamos la query de bookings para poder tipar serviceRecord manualmente
+  // mientras el cliente Prisma no incluye aún el modelo ServiceRecord.
   const garage = await db.garage.findUnique({
     where: { ownerId: user.id },
     select: {
@@ -46,29 +49,41 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
         where: { isActive: true },
         select: { id: true },
       },
-      bookings: {
-        select: {
-          id: true,
-          code: true,
-          status: true,
-          date: true,
-          totalPrice: true,
-          vehicleModel: true,
-          vehiclePlate: true,
-          notes: true,
-          user: { select: { name: true, phone: true } },
-          service: { select: { type: true, name: true, duration: true } },
-        },
-        orderBy: { date: "asc" },
-      },
     },
   });
 
   if (!garage) redirect("/cuenta/taller/perfil");
 
-  const pending   = garage.bookings.filter((b) => b.status === "PENDING").length;
-  const confirmed = garage.bookings.filter((b) => b.status === "CONFIRMED").length;
-  const revenue   = garage.bookings
+  // ── Query 2: reservas con sello de revisión ───────────────────────────────
+  // Usamos cast a unknown → tipo propio para que TypeScript no infiera el tipo
+  // desde el cliente Prisma desactualizado (que no tiene ServiceRecord aún).
+  // En tiempo de ejecución Prisma devuelve los datos correctos del schema real.
+  // Una vez ejecutado `npm run db:generate` este cast puede eliminarse.
+  const findManyBookings = db.booking.findMany as unknown as (
+    args: unknown
+  ) => Promise<GarageBookingItem[]>;
+
+  const reservasRaw = await findManyBookings({
+    where: { garageId: garage.id },
+    select: {
+      id: true,
+      code: true,
+      status: true,
+      date: true,
+      totalPrice: true,
+      vehicleModel: true,
+      vehiclePlate: true,
+      notes: true,
+      user: { select: { name: true, phone: true } },
+      service: { select: { type: true, name: true, duration: true } },
+      serviceRecord: { select: { id: true } },
+    },
+    orderBy: { date: "asc" },
+  });
+
+  const pending   = reservasRaw.filter((b) => b.status === "PENDING").length;
+  const confirmed = reservasRaw.filter((b) => b.status === "CONFIRMED").length;
+  const revenue   = reservasRaw
     .filter((b) => b.status === "COMPLETED")
     .reduce((s, b) => s + b.totalPrice, 0);
 
@@ -152,7 +167,7 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
         </Link>
       </div>
 
-      <GarageBookingList bookings={garage.bookings} garageId={garage.id} />
+      <GarageBookingList bookings={reservasRaw} garageId={garage.id} />
     </div>
   );
 }

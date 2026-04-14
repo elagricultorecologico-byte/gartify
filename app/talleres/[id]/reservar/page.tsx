@@ -15,12 +15,21 @@ export default async function ReservarPage({
   const session = await auth();
   if (!session?.user) redirect(`/login?callbackUrl=/talleres/${params.id}/reservar`);
 
+  const user = session.user as { id: string; role?: string };
+
   const garage = await db.garage.findUnique({
     where: { id: params.id, isActive: true },
     include: { services: { where: { isActive: true }, orderBy: { price: "asc" } } },
   });
 
   if (!garage) notFound();
+
+  // Obtener los vehículos registrados del usuario para el selector del wizard
+  const userVehicles = await db.vehicle.findMany({
+    where: { userId: user.id },
+    select: { id: true, alias: true, plate: true, brand: true, model: true },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div className="container max-w-2xl py-8">
@@ -36,6 +45,7 @@ export default async function ReservarPage({
         garageName={garage.name}
         services={garage.services}
         preselectedServiceId={searchParams.servicio}
+        userVehicles={userVehicles}
       />
     </div>
   );

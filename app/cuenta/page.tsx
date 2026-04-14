@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
+import { Calendar, Car } from "lucide-react";
 import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
 import { CustomerBookingList } from "@/components/cuenta/CustomerBookingList";
 
@@ -43,7 +43,7 @@ export default async function CuentaPage() {
   return (
     <div className="container max-w-5xl py-10 px-4 sm:px-8">
       {/* Cabecera */}
-      <div className="mb-8 flex items-end justify-between gap-4">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gartify-blue">Mis reservas</h1>
           <p className="text-muted-foreground text-sm mt-1">
@@ -54,7 +54,16 @@ export default async function CuentaPage() {
             . Aquí puedes gestionar tus citas.
           </p>
         </div>
-        <AutoRefresh />
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Acceso directo a mis vehículos */}
+          <Link href="/cuenta/vehiculos">
+            <button className="flex items-center gap-2 rounded-xl border border-gartify-blue/30 bg-white px-3 py-2 text-xs font-semibold text-gartify-blue hover:bg-gartify-blue/5 transition-colors">
+              <Car className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Mis vehículos
+            </button>
+          </Link>
+          <AutoRefresh />
+        </div>
       </div>
 
       {bookings.length === 0 ? (
