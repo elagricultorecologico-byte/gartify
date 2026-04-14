@@ -227,7 +227,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Estado</p>
-                  <div className="grid grid-cols-3 gap-1.5">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {STATUS_TABS.map((tab) => {
                       const count  = bookings.filter((b) => tab.value === "ALL" || b.status === tab.value).length;
                       const active = statusFilter === tab.value;
@@ -235,12 +235,12 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                         <button
                           key={tab.value}
                           onClick={() => setStatusFilter(tab.value)}
-                          className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                          className={`flex items-center justify-between gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
                             active ? "bg-gartify-blue text-white" : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
                           }`}
                         >
-                          {tab.label}
-                          <span className={`text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
+                          <span className="truncate">{tab.label}</span>
+                          <span className={`shrink-0 text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
                             active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
                           }`}>{count}</span>
                         </button>
