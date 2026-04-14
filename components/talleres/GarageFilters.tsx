@@ -234,7 +234,7 @@ export function GarageFilters() {
         </Section>
 
         {/* Tipo de vehículo */}
-        <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={false}>
+        <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={isActive("vehicleType")}>
           <div className="grid grid-cols-2 gap-1.5">
             {VEHICLE_TYPES.map((tipo) => {
               const activo = sp.get("vehicleType") === tipo;
@@ -253,7 +253,7 @@ export function GarageFilters() {
         </Section>
 
         {/* Servicio */}
-        <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={false}>
+        <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={isActive("servicio")}>
           <div className="relative">
             <Wrench className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("servicio") ? "text-gartify-hero" : "text-gartify-gray/70")} />
             <Select defaultValue={sp.get("servicio") ?? "ALL"} onValueChange={(v) => update("servicio", v)}>

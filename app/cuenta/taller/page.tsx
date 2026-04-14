@@ -6,11 +6,9 @@ import { db } from "@/lib/db";
 import {
   Plus, CalendarClock, Package, Tag, Wrench, Zap, Crown, CreditCard, Tv,
 } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
-import { GarageBookingList, type GarageBookingItem } from "@/components/cuenta/GarageBookingList";
-import { TallerKpis } from "@/components/cuenta/TallerKpis";
+import type { GarageBookingItem } from "@/components/cuenta/GarageBookingList";
+import { GarageBookingPoller } from "@/components/cuenta/GarageBookingPoller";
 import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
-import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
 
 export const dynamic = "force-dynamic";
 
@@ -81,19 +79,6 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
     orderBy: { date: "asc" },
   });
 
-  const pending   = reservasRaw.filter((b) => b.status === "PENDING").length;
-  const confirmed = reservasRaw.filter((b) => b.status === "CONFIRMED").length;
-  const revenue   = reservasRaw
-    .filter((b) => b.status === "COMPLETED")
-    .reduce((s, b) => s + b.totalPrice, 0);
-
-  const stats = [
-    { icon: "Calendar"   as const, label: "Pendientes",  value: pending,                  color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
-    { icon: "TrendingUp" as const, label: "Confirmadas", value: confirmed,                color: "text-gartify-mid",    bg: "bg-blue-50",    border: "border-blue-100" },
-    { icon: "Euro"       as const, label: "Facturado",   value: formatPrice(revenue),     color: "text-gartify-orange", bg: "bg-orange-50",  border: "border-orange-100" },
-    { icon: "Star"       as const, label: "Valoración",  value: garage.rating.toFixed(1), color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
-  ];
-
   return (
     <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       {/* Banner de confirmación de suscripción exitosa */}
@@ -151,12 +136,8 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
         </div>
       </div>
 
-      <TallerKpis stats={stats} />
-
-      {/* Indicador de actualización automática + acceso modo TV */}
+      {/* Acceso al modo TV */}
       <div className="flex items-center justify-end gap-3 mb-3">
-        <AutoRefresh />
-        <span className="text-muted-foreground/30 select-none hidden sm:block">|</span>
         <Link
           href="/cuenta/taller/tv"
           className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-gartify-blue transition-colors"
@@ -167,7 +148,7 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
         </Link>
       </div>
 
-      <GarageBookingList bookings={reservasRaw} garageId={garage.id} />
+      <GarageBookingPoller initialBookings={reservasRaw} garageId={garage.id} garageRating={garage.rating} />
     </div>
   );
 }

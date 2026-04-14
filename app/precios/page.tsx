@@ -224,7 +224,7 @@ export default function PreciosPage() {
         <div className="container relative max-w-3xl text-center">
           <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
             <span className="h-2 w-2 animate-pulse rounded-full bg-gartify-orange" />
-            Sin comisiones abusivas
+            Sin comisiones
           </p>
 
           <h1 className="mb-5 text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">

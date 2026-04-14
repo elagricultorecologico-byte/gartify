@@ -10,7 +10,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Precios para talleres — Planes sin comisiones abusivas",
+  title: "Precios para talleres — Planes sin comisiones",
   description:
     "Elige el plan que mejor se adapta a tu taller: alta gratuita, comisión por reserva o tarifa plana premium con acceso a distribuidores.",
   alternates: { canonical: "/precios" },

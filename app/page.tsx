@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -60,14 +61,6 @@ const TESTIMONIALS = [
     text: "Reservé una revisión completa en 2 minutos desde el móvil. El taller me confirmó enseguida y el precio fue exactamente el que vi en la web. Sin sorpresas.",
   },
   {
-    name: "Taller Mecánica Rivas",
-    role: "Taller verificado · Barcelona",
-    initials: "MR",
-    color: "bg-gartify-hero",
-    rating: 5,
-    text: "Desde que estamos en Gartify recibimos entre 15 y 20 reservas nuevas al mes sin hacer nada. Los clientes llegan informados y el proceso es muy limpio.",
-  },
-  {
     name: "Laura Sánchez",
     role: "Conductora · Valencia",
     initials: "LS",
@@ -76,12 +69,20 @@ const TESTIMONIALS = [
     text: "Nunca había sido tan fácil encontrar un taller de confianza. Vi las valoraciones de otros usuarios, comparé precios y reservé. Muy recomendable.",
   },
   {
-    name: "Autoservicio Pérez e Hijos",
-    role: "Taller verificado · Sevilla",
-    initials: "AP",
+    name: "Miguel Ángel Torres",
+    role: "Conductor · Sevilla",
+    initials: "MT",
     color: "bg-purple-500",
     rating: 5,
-    text: "El panel de gestión nos permite ver todas las citas del día de un vistazo. Antes lo llevábamos todo en papel. Ahora no podríamos trabajar sin Gartify.",
+    text: "Llevaba meses aplazando la revisión por no querer llamar a talleres. Con Gartify lo hice en dos minutos desde el sofá. El taller me avisó por WhatsApp.",
+  },
+  {
+    name: "Ana Gómez",
+    role: "Conductora · Barcelona",
+    initials: "AG",
+    color: "bg-gartify-hero",
+    rating: 5,
+    text: "Me encanta poder ver el historial de revisiones de mi coche en la app. Sé exactamente qué se ha hecho y cuándo toca la próxima. Muy completo.",
   },
 ];
 
@@ -224,7 +225,9 @@ export default function HomePage() {
             </p>
 
             <div className="hero-in hero-d4">
-              <SearchBar />
+              <Suspense>
+                <SearchBar />
+              </Suspense>
             </div>
 
             <div className="hero-in hero-d5 mt-6 flex flex-wrap items-center gap-5 text-sm text-white">
@@ -400,7 +403,7 @@ export default function HomePage() {
           <div className="text-center mb-10">
             <SectionLabel>Opiniones</SectionLabel>
             <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark">
-              Lo que dicen conductores y talleres
+              Lo que dicen nuestros conductores
             </h2>
             <p className="text-gartify-gray text-sm mt-2">Opiniones reales de usuarios de Gartify</p>
           </div>

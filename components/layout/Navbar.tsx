@@ -58,9 +58,6 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide uppercase">
-          <Link href="/talleres" className="text-white/80 hover:text-white transition-colors">
-            Buscar taller
-          </Link>
           <Link href="/como-funciona" className="text-white/80 hover:text-white transition-colors">
             Cómo funciona
           </Link>
@@ -178,7 +175,6 @@ export function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-white/10 bg-gartify-blue px-4 py-4 space-y-3">
-          <Link href="/talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Buscar taller</Link>
           <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
           <Link href="/para-talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Para talleres</Link>
           <Link href="/precios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Precios</Link>

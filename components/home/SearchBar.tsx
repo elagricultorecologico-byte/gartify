@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,9 +9,10 @@ import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "
 
 export function SearchBar({ className }: { className?: string }) {
   const router = useRouter();
-  const [servicio, setServicio] = useState("");
-  const [ciudad, setCiudad] = useState("");
-  const [vehicleType, setVehicleType] = useState<VehicleType | "">("");
+  const sp = useSearchParams();
+  const [servicio, setServicio] = useState(sp.get("servicio") ?? "");
+  const [ciudad, setCiudad] = useState(sp.get("ciudad") ?? "");
+  const [vehicleType, setVehicleType] = useState<VehicleType | "">((sp.get("vehicleType") as VehicleType) ?? "");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +30,7 @@ export function SearchBar({ className }: { className?: string }) {
       className={`flex flex-col sm:flex-row sm:items-center gap-2 ${className}`}
     >
       {/* Selector de servicio */}
-      <Select onValueChange={setServicio}>
+      <Select value={servicio || undefined} onValueChange={setServicio}>
         <SelectTrigger className="w-full sm:w-40 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
@@ -60,7 +61,7 @@ export function SearchBar({ className }: { className?: string }) {
       </div>
 
       {/* Selector de tipo de vehículo */}
-      <Select onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
+      <Select value={vehicleType || undefined} onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
         <SelectTrigger className="w-full sm:w-40 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 rounded-xl sm:rounded-none px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
           <SelectValue placeholder="Tipo de vehículo" />
         </SelectTrigger>

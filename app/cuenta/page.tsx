@@ -5,8 +5,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Calendar, Car } from "lucide-react";
-import { AutoRefresh } from "@/components/cuenta/AutoRefresh";
-import { CustomerBookingList } from "@/components/cuenta/CustomerBookingList";
+import { CustomerBookingPoller } from "@/components/cuenta/CustomerBookingPoller";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +61,6 @@ export default async function CuentaPage() {
               Mis vehículos
             </button>
           </Link>
-          <AutoRefresh />
         </div>
       </div>
 
@@ -83,7 +81,7 @@ export default async function CuentaPage() {
           </Link>
         </div>
       ) : (
-        <CustomerBookingList bookings={bookings} />
+        <CustomerBookingPoller initialBookings={bookings} />
       )}
     </div>
   );
