@@ -77,15 +77,18 @@ export function BookingStatusUpdater({ bookingId, currentStatus, garageId }: { b
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={status}>{BOOKING_STATUS_LABELS[status]}</SelectItem>
+          {/* PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
           {canPropose && (
             <SelectItem value="__PROPOSE__">🕐 Proponer nueva hora</SelectItem>
           )}
+          */}
           {next.map((s) => (
             <SelectItem key={s} value={s}>{BOOKING_STATUS_LABELS[s]}</SelectItem>
           ))}
         </SelectContent>
       </Select>
 
+      {/* PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
       {showPropose && (
         <ProponerHoraPicker
           garageId={garageId}
@@ -96,6 +99,7 @@ export function BookingStatusUpdater({ bookingId, currentStatus, garageId }: { b
           error={proposeError}
         />
       )}
+      */}
     </div>
   );
 }
