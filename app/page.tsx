@@ -176,7 +176,7 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════
           1. HERO
       ══════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden min-h-[560px] md:min-h-[640px] flex items-center">
+      <section className="relative overflow-hidden min-h-[560px] md:min-h-[640px] flex items-center bg-gartify-dark">
         {/* Imagen de fondo full-width */}
         <Image
           src="/portada-hero.jpeg"
