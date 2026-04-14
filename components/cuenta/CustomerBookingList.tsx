@@ -49,7 +49,6 @@ const COUNT_COLOR: Record<string, string> = {
   CANCELLED: "bg-red-100 text-red-600",
 };
 
-// Colores de la banda de estado superior de cada card
 const STATUS_BAND: Record<string, string> = {
   PENDING:   "bg-yellow-50  text-yellow-700  border-yellow-200",
   PROPOSED:  "bg-purple-50  text-purple-700  border-purple-200",
@@ -63,13 +62,12 @@ const POR_PAGINA = 10;
 // ── Componente principal ─────────────────────────────────────────────────────
 
 export function CustomerBookingList({ bookings }: { bookings: CustomerBookingItem[] }) {
-  const [search, setSearch]               = useState("");
-  const [statusFilter, setStatusFilter]   = useState<string>("ALL");
-  const [orden, setOrden]                 = useState<"asc" | "desc">("asc");
-  const [pagina, setPagina]               = useState(1);
-  const [filtrosAbiertos, setFiltrosAbiertos] = useState(false);
+  const [search, setSearch]                   = useState("");
+  const [statusFilter, setStatusFilter]       = useState<string>("ALL");
+  const [orden, setOrden]                     = useState<"asc" | "desc">("asc");
+  const [pagina, setPagina]                   = useState(1);
+  const [filtrosMobileAbiertos, setFiltrosMobileAbiertos] = useState(false);
 
-  // Filtrado + ordenación
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const result = bookings.filter((b) => {
@@ -88,28 +86,83 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
     return result;
   }, [bookings, search, statusFilter, orden]);
 
-  // Resetear a página 1 cuando cambia el filtro o la búsqueda
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useMemo(() => { setPagina(1); }, [search, statusFilter]);
 
-  // Número de filtros activos para el badge de la cabecera
   const filtrosActivos = (statusFilter !== "ALL" ? 1 : 0) + (search.trim() !== "" ? 1 : 0);
+  const totalPaginas   = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
+  const paginados      = filtered.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
 
-  const totalPaginas = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
-  const paginados    = filtered.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+  // ── Panel de filtros (reutilizado en sidebar desktop y panel móvil) ─────────
+  const filtrosContenido = (
+    <div className="space-y-4">
+      {/* Buscador */}
+      <div>
+        <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Buscar</p>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            placeholder="Taller, matrícula…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+          />
+        </div>
+      </div>
+
+      {/* Orden por fecha */}
+      <div>
+        <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Ordenar</p>
+        <button
+          onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
+          aria-label="Ordenar por fecha"
+        >
+          {orden === "asc"
+            ? <><ArrowUp className="h-3.5 w-3.5" /> Fecha: más próxima</>
+            : <><ArrowDown className="h-3.5 w-3.5" /> Fecha: más reciente</>
+          }
+        </button>
+      </div>
+
+      {/* Tabs de estado — lista vertical en sidebar */}
+      <div>
+        <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Estado</p>
+        <div className="flex flex-col gap-1">
+          {STATUS_TABS.map((tab) => {
+            const count  = bookings.filter((b) => tab.value === "ALL" || b.status === tab.value).length;
+            const active = statusFilter === tab.value;
+            return (
+              <button
+                key={tab.value}
+                onClick={() => setStatusFilter(tab.value)}
+                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-gartify-blue text-white"
+                    : "text-gartify-gray hover:bg-gray-100"
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`text-xs font-bold rounded-full px-2 py-0.5 leading-none ${
+                  active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="space-y-3">
-      {/* ── Panel de filtros colapsable ─────────────────────────────────── */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        {/* Cabecera — siempre visible, actúa como toggle en móvil */}
-        <button
-          type="button"
-          className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
-          onClick={() => setFiltrosAbiertos((v) => !v)}
-          aria-expanded={filtrosAbiertos}
-        >
-          <div className="flex items-center gap-2 text-gartify-blue">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+
+      {/* ── SIDEBAR DESKTOP ─────────────────────────────────────────────── */}
+      <aside className="hidden lg:block lg:w-64 lg:shrink-0 lg:sticky lg:top-24">
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+          <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
             <SlidersHorizontal className="h-4 w-4 shrink-0" />
             <span className="text-sm font-semibold">Filtros</span>
             {filtrosActivos > 0 && (
@@ -118,121 +171,140 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
               </span>
             )}
           </div>
-          {/* La flecha rota solo en móvil; en desktop el panel está siempre abierto */}
-          <ChevronDown
-            className={`h-4 w-4 text-gartify-gray transition-transform lg:hidden ${
-              filtrosAbiertos ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-
-        {/* Contenido colapsable: oculto en móvil cuando cerrado, siempre visible en lg */}
-        <div className={`${!filtrosAbiertos ? "hidden lg:block" : ""} px-4 py-3 space-y-3`}>
-          {/* Buscador + botón de orden */}
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-              <Input
-                placeholder="Taller, matrícula…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
-              />
-            </div>
-            <button
-              onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-              className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors shrink-0"
-              aria-label="Ordenar por fecha"
-            >
-              {orden === "asc" ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
-              <span className="hidden sm:inline ml-1">Fecha</span>
-            </button>
-          </div>
-
-          {/* Tabs de estado — grid 3x2 en móvil, fila en desktop */}
-          <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5">
-            {STATUS_TABS.map((tab) => {
-              const count  = bookings.filter((b) => tab.value === "ALL" || b.status === tab.value).length;
-              const active = statusFilter === tab.value;
-              return (
-                <button
-                  key={tab.value}
-                  onClick={() => setStatusFilter(tab.value)}
-                  className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-semibold transition-colors ${
-                    active
-                      ? "bg-gartify-blue text-white"
-                      : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
-                  }`}
-                >
-                  {tab.label}
-                  <span
-                    className={`text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
-                      active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          {filtrosContenido}
         </div>
-      </div>
+      </aside>
 
-      {/* ── Resultados ──────────────────────────────────────────────────── */}
-      {filtered.length === 0 ? (
-        <p className="text-center py-10 text-sm text-muted-foreground">
-          No hay citas que coincidan con los filtros.
-        </p>
-      ) : (
-        <>
-          <div className="space-y-3">
-            {paginados.map((b) => (
-              <BookingCard key={b.id} b={b} />
-            ))}
-          </div>
+      {/* ── COLUMNA DERECHA: panel móvil + lista ────────────────────────── */}
+      <div className="flex-1 min-w-0 space-y-3">
 
-          {/* Paginador */}
-          {totalPaginas > 1 && (
-            <div className="flex items-center justify-between pt-2 text-sm text-muted-foreground">
-              <span>
-                {(pagina - 1) * POR_PAGINA + 1}–{Math.min(pagina * POR_PAGINA, filtered.length)} de {filtered.length}
-              </span>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setPagina((p) => Math.max(1, p - 1))}
-                  disabled={pagina === 1}
-                  className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-                  aria-label="Página anterior"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
+        {/* Panel colapsable — solo móvil */}
+        <div className="lg:hidden bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <button
+            type="button"
+            className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
+            onClick={() => setFiltrosMobileAbiertos((v) => !v)}
+            aria-expanded={filtrosMobileAbiertos}
+          >
+            <div className="flex items-center gap-2 text-gartify-blue">
+              <SlidersHorizontal className="h-4 w-4 shrink-0" />
+              <span className="text-sm font-semibold">Filtros</span>
+              {filtrosActivos > 0 && (
+                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+                  {filtrosActivos}
+                </span>
+              )}
+            </div>
+            <ChevronDown className={`h-4 w-4 text-gartify-gray transition-transform ${filtrosMobileAbiertos ? "rotate-180" : ""}`} />
+          </button>
+          {filtrosMobileAbiertos && (
+            <div className="px-4 py-4">
+              {/* En móvil los estados van en grid 3x2 */}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Buscar</p>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      placeholder="Taller, matrícula…"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Ordenar</p>
                   <button
-                    key={n}
-                    onClick={() => setPagina(n)}
-                    className={`min-w-[32px] h-8 rounded text-xs font-semibold transition-colors ${
-                      n === pagina
-                        ? "bg-gartify-blue text-white"
-                        : "hover:bg-gray-100 text-muted-foreground"
-                    }`}
+                    onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
+                    className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
                   >
-                    {n}
+                    {orden === "asc"
+                      ? <><ArrowUp className="h-3.5 w-3.5" /> Fecha: más próxima</>
+                      : <><ArrowDown className="h-3.5 w-3.5" /> Fecha: más reciente</>
+                    }
                   </button>
-                ))}
-                <button
-                  onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
-                  disabled={pagina === totalPaginas}
-                  className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-                  aria-label="Página siguiente"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Estado</p>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {STATUS_TABS.map((tab) => {
+                      const count  = bookings.filter((b) => tab.value === "ALL" || b.status === tab.value).length;
+                      const active = statusFilter === tab.value;
+                      return (
+                        <button
+                          key={tab.value}
+                          onClick={() => setStatusFilter(tab.value)}
+                          className={`flex items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                            active ? "bg-gartify-blue text-white" : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
+                          }`}
+                        >
+                          {tab.label}
+                          <span className={`text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
+                            active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
+                          }`}>{count}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           )}
-        </>
-      )}
+        </div>
+
+        {/* ── Resultados ────────────────────────────────────────────────── */}
+        {filtered.length === 0 ? (
+          <p className="text-center py-10 text-sm text-muted-foreground">
+            No hay citas que coincidan con los filtros.
+          </p>
+        ) : (
+          <>
+            <div className="space-y-3">
+              {paginados.map((b) => (
+                <BookingCard key={b.id} b={b} />
+              ))}
+            </div>
+
+            {totalPaginas > 1 && (
+              <div className="flex items-center justify-between pt-2 text-sm text-muted-foreground">
+                <span>
+                  {(pagina - 1) * POR_PAGINA + 1}–{Math.min(pagina * POR_PAGINA, filtered.length)} de {filtered.length}
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPagina((p) => Math.max(1, p - 1))}
+                    disabled={pagina === 1}
+                    className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                    aria-label="Página anterior"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((n) => (
+                    <button
+                      key={n}
+                      onClick={() => setPagina(n)}
+                      className={`min-w-[32px] h-8 rounded text-xs font-semibold transition-colors ${
+                        n === pagina ? "bg-gartify-blue text-white" : "hover:bg-gray-100 text-muted-foreground"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+                    disabled={pagina === totalPaginas}
+                    className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                    aria-label="Página siguiente"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -240,201 +312,105 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
 // ── BookingCard ──────────────────────────────────────────────────────────────
 
 function BookingCard({ b }: { b: CustomerBookingItem }) {
-  const isPast        = b.status === "COMPLETED" || b.status === "CANCELLED";
-  const bandClasses   = STATUS_BAND[b.status] ?? "bg-gray-50 text-gray-500 border-gray-200";
-  const codigoReserva = b.id.slice(-8).toUpperCase();
+  const isPast          = b.status === "COMPLETED" || b.status === "CANCELLED";
+  const bandClasses     = STATUS_BAND[b.status] ?? "bg-gray-50 text-gray-500 border-gray-200";
+  const codigoReserva   = b.id.slice(-8).toUpperCase();
   const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
-  // Iniciales del taller para el avatar
   const initials = b.garage.name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+    .split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
-  // Botones de acción — reutilizados en móvil y desktop
   const accionesBotones = (
     <>
-      {b.status === "PROPOSED" && (
-        <AcceptProposedBooking bookingId={b.id} />
-      )}
+      {b.status === "PROPOSED" && <AcceptProposedBooking bookingId={b.id} />}
       {(b.status === "PENDING" || b.status === "CONFIRMED") && (
         <CancelBookingButton bookingId={b.id} />
       )}
       {b.status === "COMPLETED" && !b.review && (
         <Link href={`/reserva/${b.id}/resena`}>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 gap-1 text-xs font-semibold"
-          >
+          <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 gap-1 text-xs font-semibold">
             <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" aria-hidden="true" />
             Valorar
           </Button>
         </Link>
       )}
       <Link href={`/reserva/${b.id}`}>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-gartify-blue hover:text-gartify-blue hover:bg-blue-50 gap-1 text-xs font-semibold"
-        >
-          Ver detalle
-          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+        <Button variant="ghost" size="sm" className="text-gartify-blue hover:text-gartify-blue hover:bg-blue-50 gap-1 text-xs font-semibold">
+          Ver detalle <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
         </Button>
       </Link>
     </>
   );
 
   return (
-    <article
-      className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all overflow-hidden ${
-        isPast
-          ? "opacity-75 border-gray-100"
-          : "border-gray-200 hover:border-gartify-blue/30"
-      }`}
-    >
-      {/* ── BANDA DE ESTADO — solo móvil ─────────────────────────────── */}
+    <article className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all overflow-hidden ${
+      isPast ? "opacity-75 border-gray-100" : "border-gray-200 hover:border-gartify-blue/30"
+    }`}>
+      {/* ── BANDA DE ESTADO — solo móvil ──────────────────────────────── */}
       <div className={`sm:hidden flex items-center justify-between gap-2 px-4 py-2 border-b ${bandClasses}`}>
         <span className="text-xs font-bold uppercase tracking-wide">
           {BOOKING_STATUS_LABELS[b.status] ?? b.status}
         </span>
         <span className="flex items-center gap-1 text-xs opacity-75">
-          <Clock className="h-3 w-3" aria-hidden="true" />
-          {fechaFormateada}
+          <Clock className="h-3 w-3" aria-hidden="true" />{fechaFormateada}
         </span>
       </div>
 
-      {/* ── CUERPO MÓVIL ─────────────────────────────────────────────── */}
+      {/* ── CUERPO MÓVIL ──────────────────────────────────────────────── */}
       <div className="sm:hidden flex flex-col gap-2.5 px-4 py-3">
-        {/* Nombre del taller */}
-        <span className="font-bold text-gartify-blue text-base leading-tight">
-          {b.garage.name}
-        </span>
-
-        {/* Chip de servicio */}
+        <span className="font-bold text-gartify-blue text-base leading-tight">{b.garage.name}</span>
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
             <Wrench className="h-3 w-3" aria-hidden="true" />
             {SERVICE_LABELS[b.service.type] ?? b.service.name}
           </span>
         </div>
-
-        {/* Fila de metadatos: fecha, ciudad, vehículo */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Calendar className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-            {fechaFormateada}
-          </span>
-          <span className="flex items-center gap-1">
-            <MapPin className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-            {b.garage.city}
-          </span>
+          <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />{fechaFormateada}</span>
+          <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />{b.garage.city}</span>
           {b.vehicleModel && (
             <span className="flex items-center gap-1">
-              <Car className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />
-              {b.vehicleModel}
-              {b.vehiclePlate && (
-                <span className="font-mono font-semibold tracking-wider text-gartify-blue ml-1">
-                  {b.vehiclePlate}
-                </span>
-              )}
+              <Car className="h-3.5 w-3.5 text-gartify-mid" aria-hidden="true" />{b.vehicleModel}
+              {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue ml-1">{b.vehiclePlate}</span>}
             </span>
           )}
         </div>
-
-        {/* Precio centrado grande */}
         <div className="flex flex-col items-center pt-2 border-t border-gray-100">
-          <span className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">
-            Total
-          </span>
-          <span className="text-2xl font-extrabold text-gartify-orange leading-none">
-            {formatPrice(b.totalPrice)}
-          </span>
+          <span className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">Total</span>
+          <span className="text-2xl font-extrabold text-gartify-orange leading-none">{formatPrice(b.totalPrice)}</span>
         </div>
-
-        {/* Botones de acción centrados */}
-        <div className="flex justify-center flex-wrap gap-1">
-          {accionesBotones}
-        </div>
-
-        {/* Código de reserva centrado al final */}
+        <div className="flex justify-center flex-wrap gap-1">{accionesBotones}</div>
         <div className="flex justify-center pt-1">
-          <span className="text-[11px] font-mono text-muted-foreground">
-            {codigoReserva}
-          </span>
+          <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
         </div>
       </div>
 
-      {/* ── CUERPO DESKTOP ───────────────────────────────────────────── */}
+      {/* ── CUERPO DESKTOP ────────────────────────────────────────────── */}
       <div className="hidden sm:block px-4 py-3 relative">
-        {/* Zona de acciones absolutamente posicionada arriba a la derecha */}
-        <div className="absolute top-3 right-4 flex items-center gap-1">
-          {accionesBotones}
-        </div>
-
+        <div className="absolute top-3 right-4 flex items-center gap-1">{accionesBotones}</div>
         <div className="flex items-start gap-3">
-          {/* Avatar con iniciales del taller */}
-          <div
-            className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${
-              isPast
-                ? "bg-gray-400"
-                : "bg-gradient-to-br from-gartify-hero to-gartify-mid"
-            }`}
-            aria-hidden="true"
-          >
+          <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`} aria-hidden="true">
             {initials}
           </div>
-
           <div className="flex-1 min-w-0">
-            {/* Contenido con padding derecho para no solaparse con los botones */}
             <div className="pr-44">
-              {/* Nombre del taller */}
-              <span className="font-bold text-gartify-blue text-sm">
-                {b.garage.name}
-              </span>
-
-              {/* Chip de servicio */}
+              <span className="font-bold text-gartify-blue text-sm">{b.garage.name}</span>
               <div className="flex items-center gap-2 mt-1.5">
                 <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
                   <Wrench className="h-3 w-3" aria-hidden="true" />
                   {SERVICE_LABELS[b.service.type] ?? b.service.name}
                 </span>
               </div>
-
-              {/* Fila de metadatos: fecha, ciudad, vehículo */}
               <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                  {fechaFormateada}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                  {b.garage.city}
-                </span>
-                {b.vehicleModel && (
-                  <span className="flex items-center gap-1">
-                    <Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />
-                    {b.vehicleModel}
-                  </span>
-                )}
-                {b.vehiclePlate && (
-                  <span className="font-mono font-semibold tracking-wider text-gartify-blue">
-                    {b.vehiclePlate}
-                  </span>
-                )}
+                <span className="flex items-center gap-1"><Calendar className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{fechaFormateada}</span>
+                <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.garage.city}</span>
+                {b.vehicleModel && <span className="flex items-center gap-1"><Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.vehicleModel}</span>}
+                {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue">{b.vehiclePlate}</span>}
               </div>
             </div>
-
-            {/* Fila inferior: precio izquierda, código reserva derecha */}
             <div className="flex items-center justify-between mt-1">
-              <span className="font-bold text-gartify-orange text-sm">
-                {formatPrice(b.totalPrice)}
-              </span>
-              <span className="text-xs font-mono text-muted-foreground">
-                {codigoReserva}
-              </span>
+              <span className="font-bold text-gartify-orange text-sm">{formatPrice(b.totalPrice)}</span>
+              <span className="text-xs font-mono text-muted-foreground">{codigoReserva}</span>
             </div>
           </div>
         </div>

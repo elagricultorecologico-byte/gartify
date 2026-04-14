@@ -41,7 +41,7 @@ export default async function CuentaPage() {
   });
 
   return (
-    <div className="container max-w-3xl py-10">
+    <div className="container max-w-5xl py-10 px-4 sm:px-8">
       {/* Cabecera */}
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
