@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS } from "@/lib/utils";
-import { ProponerHoraPicker } from "@/components/cuenta/ProponerHoraPicker";
+// PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
+// import { ProponerHoraPicker } from "@/components/cuenta/ProponerHoraPicker";
 
 const TRANSITIONS: Record<string, string[]> = {
   PENDING:   ["CONFIRMED", "CANCELLED"],
@@ -14,26 +15,23 @@ const TRANSITIONS: Record<string, string[]> = {
   CANCELLED: [],
 };
 
-// Estados desde los que el taller puede proponer nueva hora
-const CAN_PROPOSE = ["PENDING", "CONFIRMED"];
+// PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
+// const CAN_PROPOSE = ["PENDING", "CONFIRMED"];
 
-export function BookingStatusUpdater({ bookingId, currentStatus, garageId }: { bookingId: string; currentStatus: string; garageId: string }) {
+export function BookingStatusUpdater({ bookingId, currentStatus }: { bookingId: string; currentStatus: string; garageId: string }) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [loading, setLoading] = useState(false);
-  const [showPropose, setShowPropose] = useState(false);
-  const [proposeError, setProposeError] = useState("");
+  // const [showPropose, setShowPropose] = useState(false);
+  // const [proposeError, setProposeError] = useState("");
 
   useEffect(() => { setStatus(currentStatus); }, [currentStatus]);
 
   const next = TRANSITIONS[status] ?? [];
-  const canPropose = CAN_PROPOSE.includes(status);
+  // const canPropose = CAN_PROPOSE.includes(status);
 
   async function handleChange(value: string) {
-    if (value === "__PROPOSE__") {
-      setShowPropose(true);
-      return;
-    }
+    // if (value === "__PROPOSE__") { setShowPropose(true); return; }
     setLoading(true);
     const res = await fetch(`/api/bookings/${bookingId}`, {
       method: "PATCH",
@@ -47,25 +45,24 @@ export function BookingStatusUpdater({ bookingId, currentStatus, garageId }: { b
     }
   }
 
-  async function handlePropose(isoSlot: string) {
-    setLoading(true);
-    setProposeError("");
-    const res = await fetch(`/api/bookings/${bookingId}/proponer`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ proposedDate: isoSlot }),
-    });
-    setLoading(false);
-    if (res.ok) {
-      setShowPropose(false);
-      router.refresh();
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setProposeError(data.error ?? "Error al proponer la hora");
-    }
-  }
+  // PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
+  // async function handlePropose(isoSlot: string) {
+  //   setLoading(true);
+  //   setProposeError("");
+  //   const res = await fetch(`/api/bookings/${bookingId}/proponer`, {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ proposedDate: isoSlot }),
+  //   });
+  //   setLoading(false);
+  //   if (res.ok) { setShowPropose(false); router.refresh(); }
+  //   else {
+  //     const data = await res.json().catch(() => ({}));
+  //     setProposeError(data.error ?? "Error al proponer la hora");
+  //   }
+  // }
 
-  if (next.length === 0 && !canPropose) {
+  if (next.length === 0) {
     return <Badge className={`text-xs ${BOOKING_STATUS_COLORS[status]}`}>{BOOKING_STATUS_LABELS[status]}</Badge>;
   }
 
