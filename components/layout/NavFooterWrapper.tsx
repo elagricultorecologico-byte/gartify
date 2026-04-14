@@ -9,7 +9,8 @@ export function NavFooterWrapper({ children }: { children: React.ReactNode }) {
   const hideChrome =
     pathname.includes("/cuenta/taller/tv") ||
     pathname.startsWith("/confirmar/") ||
-    pathname.startsWith("/reagendar/");
+    pathname.startsWith("/reagendar/") ||
+    pathname.startsWith("/rechazar/");
 
   return (
     <>
