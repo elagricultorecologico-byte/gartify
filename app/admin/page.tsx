@@ -35,8 +35,9 @@ export default async function AdminDashboardPage() {
       orderBy: { createdAt: "desc" },
       select: {
         id: true, status: true, date: true, totalPrice: true,
-        garage: { select: { name: true } },
-        user:   { select: { name: true } },
+        clientName: true, serviceLabel: true,
+        garage:  { select: { name: true } },
+        user:    { select: { name: true } },
         service: { select: { type: true, name: true } },
       },
     }),
@@ -83,7 +84,7 @@ export default async function AdminDashboardPage() {
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gartify-blue truncate">{b.garage.name}</p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {b.user.name} · {SERVICE_LABELS[b.service.type] ?? b.service.name} · {formatDateTime(b.date)}
+                  {b.user?.name ?? b.clientName ?? "—"} · {b.service ? (SERVICE_LABELS[b.service.type] ?? b.service.name) : (b.serviceLabel ?? "—")} · {formatDateTime(b.date)}
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0">
