@@ -71,8 +71,8 @@ export async function POST(req: Request) {
 
     // ── Send emails (non-blocking) ──────────────────────────────────────────
     const emailData = {
-      customerName:  booking.user.name  ?? "Cliente",
-      customerEmail: booking.user.email ?? "",
+      customerName:  booking.user?.name  ?? "Cliente",
+      customerEmail: booking.user?.email ?? "",
       garageName:    booking.garage.name,
       garageAddress: `${booking.garage.address}, ${booking.garage.city}`,
       garagePhone:   booking.garage.phone,
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     };
 
     // 1. Confirmation to customer
-    if (booking.user.email) {
+    if (booking.user?.email) {
       const mail = bookingConfirmationEmail(emailData);
       sendMail({ to: booking.user.email, ...mail }).catch(console.error);
     }
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
     if (booking.garage.phone) {
       sendNuevaReservaWhatsApp({
         garagePhone:         booking.garage.phone,
-        customerName:        booking.user.name ?? "Cliente",
+        customerName:        booking.user?.name ?? "Cliente",
         serviceName:         service.name,
         serviceDescription:  service.description ?? undefined,
         date:                booking.date,

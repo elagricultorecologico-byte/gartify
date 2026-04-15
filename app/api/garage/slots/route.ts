@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   const blocked = new Set<string>();
   for (const b of bookings) {
     const start = new Date(b.date);
-    const slots = Math.ceil(b.service.duration / 30);
+    const slots = Math.ceil((b.service?.duration ?? 30) / 30);
     for (let i = 0; i < slots; i++) {
       const t  = new Date(start.getTime() + i * 30 * 60 * 1000);
       const hh = String(t.getHours()).padStart(2, "0");
