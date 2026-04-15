@@ -42,6 +42,9 @@ model Garage {
   stripePriceId        String?                         // Price ID de Stripe activo
   planExpiresAt        DateTime?                       // Fecha de expiración / próxima renovación
   vehicleTypes         String    @default("[\"COCHE\"]") // JSON array: COCHE|MOTO|FURGONETA|AUTOCARAVANA|CAMPER|CAMION
+  laborRate            Float?                          // Precio mano de obra €/hora
+  anchorPrices         String?                         // JSON: {revisionBasica, preItv, aireAcondicionado}
+  excludedBrands       String?                         // JSON array de marcas excluidas
   isVerified    Boolean         @default(false)
   isActive      Boolean         @default(true)
   courtesyCar   Boolean         @default(false)

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES } from "@/lib/utils";
 
 const TYPES = [
@@ -21,17 +20,15 @@ const TYPES = [
   { value: "OTRO",          label: "Otro" },
 ];
 
-// Por defecto el servicio aplica a todos los tipos de vehículo
 const TODOS_LOS_TIPOS = [...VEHICLE_TYPES] as string[];
 
-export function ServiceForm({ garageId }: { garageId: string }) {
+export function ServiceForm({ garageId, onAdded }: { garageId: string; onAdded?: () => void }) {
   const router = useRouter();
   const [type, setType] = useState("");
   const [vehicleTypes, setVehicleTypes] = useState<string[]>(TODOS_LOS_TIPOS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /** Activa o desactiva un tipo de vehículo en la selección */
   function toggleVehicleType(tipo: string) {
     setVehicleTypes((prev) =>
       prev.includes(tipo)
@@ -42,12 +39,7 @@ export function ServiceForm({ garageId }: { garageId: string }) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    // Validación cliente: al menos un tipo de vehículo seleccionado
-    if (vehicleTypes.length === 0) {
-      setError("Selecciona al menos un tipo de vehículo");
-      return;
-    }
+    if (vehicleTypes.length === 0) { setError("Selecciona al menos un tipo de vehículo"); return; }
 
     setLoading(true);
     setError("");
@@ -71,61 +63,56 @@ export function ServiceForm({ garageId }: { garageId: string }) {
     setLoading(false);
     if (!res.ok) { setError(data.error); return; }
 
-    // Reiniciar formulario al estado inicial
     (e.target as HTMLFormElement).reset();
     setType("");
     setVehicleTypes(TODOS_LOS_TIPOS);
-    router.refresh();
+    if (onAdded) { onAdded(); } else { router.refresh(); }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label>Tipo</Label>
-          <Select onValueChange={setType} required>
-            <SelectTrigger><SelectValue placeholder="Selecciona tipo" /></SelectTrigger>
-            <SelectContent>
-              {TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label>Nombre del servicio</Label>
-          <Input name="name" placeholder="Revisión completa" required />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label>Precio (€)</Label>
-          <Input name="price" type="number" step="0.01" min="0" placeholder="89.00" required />
-        </div>
-        <div className="space-y-1.5">
-          <Label>Duración (min)</Label>
-          <Input name="duration" type="number" min="15" step="15" placeholder="60" required />
-        </div>
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-3">
+      {/* Tipo */}
       <div className="space-y-1.5">
-        <Label>Descripción (opcional)</Label>
-        <Textarea name="description" placeholder="Detalles del servicio..." rows={2} />
+        <Label className="text-xs font-semibold text-gartify-blue">Tipo</Label>
+        <Select onValueChange={setType} required>
+          <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Selecciona tipo" /></SelectTrigger>
+          <SelectContent>
+            {TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Selector de tipos de vehículo */}
-      <div className="space-y-2">
+      {/* Nombre */}
+      <div className="space-y-1.5">
+        <Label className="text-xs font-semibold text-gartify-blue">Nombre del servicio</Label>
+        <Input name="name" placeholder="Revisión completa" required className="h-8 text-sm" />
+      </div>
+
+      {/* Precio + Duración */}
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold text-gartify-blue">Precio (€)</Label>
+          <Input name="price" type="number" step="0.01" min="0" placeholder="89" required className="h-8 text-sm" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs font-semibold text-gartify-blue">Duración (min)</Label>
+          <Input name="duration" type="number" min="15" step="15" placeholder="60" required className="h-8 text-sm" />
+        </div>
+      </div>
+
+      {/* Tipos de vehículo — fila de iconos */}
+      <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label>
-            Tipos de vehículo
-            <span className="ml-1 text-xs font-normal text-muted-foreground">(selecciona los que apliquen)</span>
-          </Label>
+          <Label className="text-xs font-semibold text-gartify-blue">Vehículos</Label>
           <button
             type="button"
             onClick={() => setVehicleTypes(vehicleTypes.length === TODOS_LOS_TIPOS.length ? [] : TODOS_LOS_TIPOS)}
-            className="text-xs text-gartify-blue hover:underline"
+            className="text-[11px] text-gartify-blue hover:underline"
           >
-            {vehicleTypes.length === TODOS_LOS_TIPOS.length ? "Deseleccionar todos" : "Seleccionar todos"}
+            {vehicleTypes.length === TODOS_LOS_TIPOS.length ? "Quitar todos" : "Todos"}
           </button>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex gap-1 flex-wrap">
           {VEHICLE_TYPES.map((tipo) => {
             const activo = vehicleTypes.includes(tipo);
             return (
@@ -134,25 +121,32 @@ export function ServiceForm({ garageId }: { garageId: string }) {
                 type="button"
                 onClick={() => toggleVehicleType(tipo)}
                 aria-pressed={activo}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors
+                title={VEHICLE_LABELS[tipo]}
+                className={`flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-medium transition-colors
                   ${activo
                     ? "bg-gartify-blue/10 border-gartify-blue/40 text-gartify-blue"
                     : "bg-gray-50 border-gray-200 text-muted-foreground hover:border-gray-300"
                   }`}
               >
                 <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
-                {VEHICLE_LABELS[tipo]}
+                <span className="hidden sm:inline">{VEHICLE_LABELS[tipo]}</span>
               </button>
             );
           })}
         </div>
         {vehicleTypes.length === 0 && (
-          <p className="text-xs text-red-400">Selecciona al menos un tipo de vehículo</p>
+          <p className="text-xs text-red-400">Selecciona al menos un tipo</p>
         )}
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
-      <Button type="submit" disabled={loading || !type || vehicleTypes.length === 0}>
+      {error && <p className="text-xs text-red-400">{error}</p>}
+
+      <Button
+        type="submit"
+        size="sm"
+        className="w-full bg-gartify-green hover:bg-green-600 text-white"
+        disabled={loading || !type || vehicleTypes.length === 0}
+      >
         {loading ? "Añadiendo..." : "Añadir servicio"}
       </Button>
     </form>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { LeadForm } from "@/components/para-talleres/LeadForm";
 import { Star, Wrench, CalendarCheck, Banknote, ChevronRight } from "lucide-react";
 
@@ -97,81 +98,66 @@ export default function ParaTalleresPage() {
       {/* ══════════════════════════════════════════════════════════════════════
           1. HERO — fondo azul marino oscuro, texto blanco
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gartify-dark">
-        {/* Fondo decorativo con degradado lateral */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            background:
-              "radial-gradient(ellipse at 80% 50%, #1a5496 0%, transparent 60%)",
-          }}
+      <section className="relative overflow-hidden bg-gartify-dark min-h-[calc(100vh-4rem)]">
+        {/* Imagen de fondo */}
+        <Image
+          src="/para-talleres.png"
+          alt=""
+          fill
+          className="object-cover object-center"
+          priority
           aria-hidden="true"
         />
+        {/* Overlay: transparente a la izquierda (mecánico visible), oscuro a la derecha (texto legible) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-gartify-dark/60 to-gartify-dark/90" aria-hidden="true" />
 
-        <div className="relative container max-w-6xl mx-auto px-4 py-20 md:py-28">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="relative container max-w-6xl mx-auto px-4 flex items-center min-h-[calc(100vh-4rem)]">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
 
-            {/* Columna izquierda — copy de conversión */}
+            {/* Columna izquierda — vacía: el mecánico es el protagonista */}
+            <div className="hidden md:block" aria-hidden="true" />
+
+            {/* Columna derecha — copy de conversión */}
             <div>
-              {/* Logo Gartify inline */}
-              <div className="flex items-center gap-2 mb-8">
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gartify-orange text-white font-black text-sm">
-                  G
-                </span>
-                <span className="text-white font-bold text-lg tracking-tight">Gartify</span>
-              </div>
-
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
+              <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] font-black text-white leading-tight mb-4">
                 Consigue nuevos clientes para tu taller{" "}
                 <span className="text-gartify-orange">sin levantar el teléfono.</span>
               </h1>
 
-              <p className="text-blue-200 text-lg mb-8 leading-relaxed">
-                Gartify te conecta con los conductores de tu zona que buscan taller de confianza.
+              <p className="text-blue-200 mb-6 leading-relaxed">
+                Gartify te conecta con conductores de tu zona que buscan taller de confianza.
                 Sin llamadas, sin intermediarios en tus cobros, sin exclusividad.
               </p>
 
-              <Link
-                href="/registro?tipo=taller"
-                className="inline-flex items-center gap-2 rounded-xl bg-gartify-green px-8 py-4 text-white font-bold text-lg hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gartify-green focus:ring-offset-2 focus:ring-offset-gartify-dark"
-              >
-                Únete a la red de talleres
-                <ChevronRight className="h-5 w-5" aria-hidden="true" />
-              </Link>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  href="/registro?tipo=taller"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gartify-green px-7 py-3.5 text-white font-bold text-base hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gartify-green focus:ring-offset-2 focus:ring-offset-gartify-dark"
+                >
+                  Únete a la red de talleres
+                  <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                </Link>
+                <p className="text-sm text-blue-300">Alta gratuita · Sin permanencia</p>
+              </div>
 
-              <p className="mt-4 text-sm text-blue-300">
-                Cero costes de alta. Sin exclusividad. Sin permanencia.
-              </p>
-            </div>
-
-            {/* Columna derecha — mock visual de panel de reservas */}
-            <div className="hidden md:flex items-center justify-center">
-              <div className="w-full max-w-sm rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-white font-bold text-sm">Panel de reservas</span>
-                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-gartify-green animate-pulse" />
-                </div>
-                {/* Reservas de ejemplo */}
-                {[
-                  { hora: "09:00", servicio: "Cambio de aceite", coche: "Seat León 2019" },
-                  { hora: "10:30", servicio: "Revisión frenos",  coche: "Toyota Yaris 2021" },
-                  { hora: "12:00", servicio: "ITV pre-inspección", coche: "Volkswagen Golf 2020" },
-                ].map(({ hora, servicio, coche }) => (
-                  <div
-                    key={hora}
-                    className="flex items-start gap-3 rounded-lg bg-white/10 p-3 mb-2 last:mb-0"
-                  >
-                    <div className="mt-0.5 h-8 w-8 rounded-md bg-gartify-orange/20 border border-gartify-orange/30 flex items-center justify-center shrink-0">
-                      <Wrench className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
+              {/* Ticker de reservas en directo */}
+              <div className="mt-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-blue-300 uppercase tracking-widest mb-2">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-gartify-green animate-pulse" />
+                  En directo
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  {[
+                    { hora: "09:00", servicio: "Cambio de aceite",   coche: "Seat León" },
+                    { hora: "10:30", servicio: "Revisión frenos",    coche: "Toyota Yaris" },
+                    { hora: "12:00", servicio: "ITV pre-inspección", coche: "VW Golf" },
+                  ].map(({ hora, servicio, coche }) => (
+                    <div key={hora} className="flex items-center gap-2 rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 w-full">
+                      <Wrench className="h-3 w-3 text-gartify-orange shrink-0" aria-hidden="true" />
+                      <span className="text-white text-xs font-semibold w-10 shrink-0">{hora}</span>
+                      <span className="text-blue-300 text-xs">{servicio} · {coche}</span>
                     </div>
-                    <div>
-                      <p className="text-white text-xs font-semibold">{hora} — {servicio}</p>
-                      <p className="text-blue-300 text-xs">{coche}</p>
-                    </div>
-                  </div>
-                ))}
-                <div className="mt-4 text-center text-xs text-blue-400">
-                  +8 reservas más este mes
+                  ))}
                 </div>
               </div>
             </div>

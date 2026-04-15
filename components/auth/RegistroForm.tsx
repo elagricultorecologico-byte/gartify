@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, User, Building2, AlertCircle, Loader2,
-  MapPin, Lock, Mail, ChevronRight, Car,
+  MapPin, Lock, Mail, ChevronRight, Car, Euro, Tag, X,
 } from "lucide-react";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -56,6 +56,20 @@ export function RegistroForm() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [vehicleTypes, setVehicleTypes] = useState<string[]>(["COCHE"]);
+  const [excludedBrands, setExcludedBrands] = useState<string[]>([]);
+  const [brandInput, setBrandInput] = useState("");
+
+  function addBrand(brand: string) {
+    const b = brand.trim();
+    if (b && !excludedBrands.includes(b.toUpperCase())) {
+      setExcludedBrands(prev => [...prev, b.toUpperCase()]);
+    }
+    setBrandInput("");
+  }
+
+  function removeBrand(brand: string) {
+    setExcludedBrands(prev => prev.filter(b => b !== brand));
+  }
 
   function toggleVehicle(type: string) {
     setVehicleTypes(prev =>
@@ -130,12 +144,20 @@ export function RegistroForm() {
     if (vehicleTypes.length === 0) return setError("Selecciona al menos un tipo de vehículo");
 
     setLoading(true);
+    const laborRateRaw = (fd.get("laborRate") as string ?? "").trim();
     const body = {
       ownerName, email, password,
       phone: fd.get("phone"),
       garageName, address, city, postalCode,
       description: fd.get("description"),
       vehicleTypes,
+      ...(laborRateRaw && { laborRate: parseFloat(laborRateRaw) }),
+      anchorPrices: {
+        revisionBasica:    parseFloat((fd.get("anchorRevision") as string) ?? "") || undefined,
+        preItv:            parseFloat((fd.get("anchorPreItv") as string) ?? "") || undefined,
+        aireAcondicionado: parseFloat((fd.get("anchorAire") as string) ?? "") || undefined,
+      },
+      ...(excludedBrands.length > 0 && { excludedBrands }),
     };
 
     const res = await fetch("/api/garage/register", {
@@ -433,6 +455,123 @@ export function RegistroForm() {
                         </button>
                       );
                     })}
+                  </div>
+                </div>
+
+                {/* Precios */}
+                <div className="pt-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+                    <Euro className="h-3.5 w-3.5" aria-hidden="true" />
+                    Precios orientativos{" "}
+                    <span className="font-normal normal-case tracking-normal">(opcional)</span>
+                  </p>
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="laborRate" className="text-xs font-semibold text-gartify-blue">
+                        Mano de obra <span className="font-normal text-gartify-gray">(€/hora)</span>
+                      </Label>
+                      <Input
+                        id="laborRate"
+                        name="laborRate"
+                        type="number"
+                        min="0"
+                        step="1"
+                        placeholder="Ej: 45"
+                      />
+                    </div>
+                    <p className="text-xs text-gartify-gray font-medium">Servicios gancho (precio cerrado):</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="anchorRevision" className="text-[11px] font-semibold text-gartify-blue leading-tight">
+                          Revisión básica
+                        </Label>
+                        <Input
+                          id="anchorRevision"
+                          name="anchorRevision"
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="€"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="anchorPreItv" className="text-[11px] font-semibold text-gartify-blue leading-tight">
+                          Pre-ITV
+                        </Label>
+                        <Input
+                          id="anchorPreItv"
+                          name="anchorPreItv"
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="€"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="anchorAire" className="text-[11px] font-semibold text-gartify-blue leading-tight">
+                          Aire acond.
+                        </Label>
+                        <Input
+                          id="anchorAire"
+                          name="anchorAire"
+                          type="number"
+                          min="0"
+                          step="1"
+                          placeholder="€"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Marcas excluidas */}
+                <div className="pt-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+                    <Tag className="h-3.5 w-3.5" aria-hidden="true" />
+                    Marcas con las que NO trabajas{" "}
+                    <span className="font-normal normal-case tracking-normal">(opcional)</span>
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Input
+                        value={brandInput}
+                        onChange={e => setBrandInput(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") { e.preventDefault(); addBrand(brandInput); }
+                        }}
+                        placeholder="Ej: BMW, Lamborghini…"
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => addBrand(brandInput)}
+                        className="shrink-0"
+                      >
+                        Añadir
+                      </Button>
+                    </div>
+                    {excludedBrands.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {excludedBrands.map(b => (
+                          <span
+                            key={b}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-xs font-medium text-red-700"
+                          >
+                            {b}
+                            <button
+                              type="button"
+                              onClick={() => removeBrand(b)}
+                              className="hover:text-red-900"
+                              aria-label={`Eliminar ${b}`}
+                            >
+                              <X className="h-3 w-3" aria-hidden="true" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
