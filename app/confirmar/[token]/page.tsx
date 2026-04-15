@@ -30,7 +30,9 @@ export default async function ConfirmarReservaPage({ params }: Props) {
 
   const booking = await db.booking.findUnique({
     where: { id: bookingId },
-    include: {
+    select: {
+      id: true, status: true, date: true,
+      clientName: true, serviceLabel: true,
       user:    { select: { name: true } },
       service: { select: { name: true } },
     },
@@ -92,8 +94,8 @@ export default async function ConfirmarReservaPage({ params }: Props) {
             <>
               <p className="title">{icon} {actionLabel}</p>
               <div className="info">
-                <div className="info-row"><span className="label">Cliente:</span> {booking.user.name ?? "—"}</div>
-                <div className="info-row"><span className="label">Servicio:</span> {booking.service.name}</div>
+                <div className="info-row"><span className="label">Cliente:</span> {booking.user?.name ?? booking.clientName ?? "—"}</div>
+                <div className="info-row"><span className="label">Servicio:</span> {booking.service?.name ?? booking.serviceLabel ?? "—"}</div>
                 <div className="info-row"><span className="label">Fecha:</span> {formatDateTime(booking.date)}</div>
               </div>
               <p className="notice">¿Confirmas esta acción?</p>
