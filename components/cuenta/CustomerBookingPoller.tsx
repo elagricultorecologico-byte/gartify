@@ -80,7 +80,7 @@ export function CustomerBookingPoller({ initialBookings }: Props) {
       if (prevStatus !== undefined && prevStatus !== booking.status) {
         setToast({
           taller: booking.garage.name,
-          servicio: booking.service.name,
+          servicio: booking.service?.name ?? booking.serviceLabel ?? "—",
           nuevoEstado: booking.status,
         });
 

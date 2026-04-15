@@ -65,6 +65,7 @@ export default async function BookingConfirmationPage({
       garage: {
         select: { name: true, address: true, city: true, phone: true },
       },
+      serviceLabel: true,
       service: {
         select: { name: true, type: true, duration: true },
       },
@@ -173,9 +174,9 @@ export default async function BookingConfirmationPage({
             <div>
               <p className="font-semibold text-foreground">
                 <span className="inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2 py-0.5 border border-blue-100 mr-2">
-                  {SERVICE_LABELS[booking.service.type] ?? booking.service.type}
+                  {booking.service ? (SERVICE_LABELS[booking.service.type] ?? booking.service.type) : (booking.serviceLabel ?? "—")}
                 </span>
-                {booking.service.name}
+                {booking.service?.name ?? booking.serviceLabel ?? "—"}
               </p>
               <p className="text-muted-foreground text-xs mt-0.5">
                 {formatDateTime(booking.date)}
@@ -183,12 +184,14 @@ export default async function BookingConfirmationPage({
             </div>
           </div>
 
+          {booking.service && (
           <div className="flex items-center gap-3">
             <Clock className="h-4 w-4 text-gartify-mid shrink-0" aria-hidden="true" />
             <span className="text-muted-foreground">
               Duración estimada: {booking.service.duration} min
             </span>
           </div>
+          )}
 
           {/* Vehículo */}
           {(hasVehicleInfo || booking.vehicleType) && (

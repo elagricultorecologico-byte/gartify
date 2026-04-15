@@ -54,7 +54,7 @@ export default async function ResenaPage({ params }: { params: { id: string } })
             <p className="text-xs text-muted-foreground">{booking.garage.city}</p>
           </div>
           <span className="inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100 shrink-0">
-            {SERVICE_LABELS[booking.service.type] ?? booking.service.type}
+            {booking.service ? (SERVICE_LABELS[booking.service.type] ?? booking.service.type) : "—"}
           </span>
         </div>
         <p className="text-xs text-muted-foreground mt-2">{formatDateTime(booking.date)}</p>

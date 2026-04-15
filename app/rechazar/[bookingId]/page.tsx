@@ -65,8 +65,8 @@ export default async function RechazarReservaPage({ params }: Props) {
             <>
               <p className="title">❌ Rechazar reserva</p>
               <div className="info">
-                <div className="info-row"><span className="label">Cliente:</span> {booking.user.name ?? "—"}</div>
-                <div className="info-row"><span className="label">Servicio:</span> {booking.service.name}</div>
+                <div className="info-row"><span className="label">Cliente:</span> {booking.user?.name ?? booking.clientName ?? "—"}</div>
+                <div className="info-row"><span className="label">Servicio:</span> {booking.service?.name ?? booking.serviceLabel ?? "—"}</div>
                 <div className="info-row"><span className="label">Fecha:</span> {formatDateTime(booking.date)}</div>
               </div>
               <p className="notice">¿Confirmas que quieres rechazar esta reserva?</p>

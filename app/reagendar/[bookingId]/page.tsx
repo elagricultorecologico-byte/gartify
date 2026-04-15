@@ -67,8 +67,8 @@ export default async function ReagendarReservaPage({ params }: Props) {
             <>
               <p className="title">🔄 Reagendar reserva</p>
               <div className="info">
-                <div className="info-row"><span className="label">Cliente:</span> {booking.user.name ?? "—"}</div>
-                <div className="info-row"><span className="label">Servicio:</span> {booking.service.name}</div>
+                <div className="info-row"><span className="label">Cliente:</span> {booking.user?.name ?? booking.clientName ?? "—"}</div>
+                <div className="info-row"><span className="label">Servicio:</span> {booking.service?.name ?? booking.serviceLabel ?? "—"}</div>
                 <div className="info-row"><span className="label">Fecha:</span> {formatDateTime(booking.date)}</div>
               </div>
               <p className="notice">Para proponer un nuevo horario, ve a tu panel de reservas.</p>

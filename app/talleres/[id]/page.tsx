@@ -375,7 +375,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                               </span>
                             </div>
                             <span className="inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2 py-0.5 font-medium border border-blue-100 mb-1.5">
-                              {SERVICE_LABELS[review.booking.service.type] ?? review.booking.service.name}
+                              {review.booking.service ? (SERVICE_LABELS[review.booking.service.type] ?? review.booking.service.name) : "—"}
                             </span>
                             {review.comment && (
                               <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
