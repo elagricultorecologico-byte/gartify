@@ -22,8 +22,9 @@ const EsquemaVehiculoParcial = z.object({
     .enum(["Gasolina", "Diésel", "Híbrido", "Eléctrico", "GLP"])
     .nullable()
     .optional(),
-  mileage: z.number().int().min(0).nullable().optional(),
-  itvDate: z.string().datetime().nullable().optional(),
+  mileage:     z.number().int().min(0).nullable().optional(),
+  itvDate:     z.string().datetime().nullable().optional(),
+  itvReminder: z.boolean().optional(),
 });
 
 interface Params {
@@ -67,7 +68,7 @@ export async function PATCH(request: Request, { params }: Params) {
     );
   }
 
-  const { alias, plate, brand, model, year, color, fuel, mileage, itvDate } = resultado.data;
+  const { alias, plate, brand, model, year, color, fuel, mileage, itvDate, itvReminder } = resultado.data;
 
   try {
     const vehiculoActualizado = await db.vehicle.update({
@@ -81,9 +82,10 @@ export async function PATCH(request: Request, { params }: Params) {
         ...(color   !== undefined ? { color }   : {}),
         ...(fuel    !== undefined ? { fuel }    : {}),
         ...(mileage !== undefined ? { mileage } : {}),
-        ...(itvDate !== undefined
+        ...(itvDate     !== undefined
           ? { itvDate: itvDate ? new Date(itvDate) : null }
           : {}),
+        ...(itvReminder !== undefined ? { itvReminder } : {}),
       },
     });
 

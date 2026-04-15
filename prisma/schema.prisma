@@ -102,25 +102,29 @@ model GarageService {
 }
 
 model Booking {
-  id           String        @id @default(cuid())
-  code         String        @unique @default("")
-  userId       String
-  user         User          @relation(fields: [userId], references: [id])
+  id           String         @id @default(cuid())
+  code         String         @unique @default("")
+  source       String         @default("GARTIFY")  // GARTIFY | MANUAL
+  userId       String?
+  user         User?          @relation(fields: [userId], references: [id])
   garageId     String
-  garage       Garage        @relation(fields: [garageId], references: [id])
-  serviceId    String
-  service      GarageService @relation(fields: [serviceId], references: [id])
+  garage       Garage         @relation(fields: [garageId], references: [id])
+  serviceId    String?
+  service      GarageService? @relation(fields: [serviceId], references: [id])
+  serviceLabel String?                              // Descripción libre para reservas manuales
+  clientName   String?                              // Nombre cliente para reservas manuales
+  clientPhone  String?                              // Teléfono cliente para reservas manuales
   date         DateTime
-  status       String        @default("PENDING")
-  vehicleType  String        @default("COCHE")
+  status       String         @default("PENDING")
+  vehicleType  String         @default("COCHE")
   vehiclePlate String?
   vehicleModel String?
   notes        String?
-  totalPrice   Float
+  totalPrice   Float          @default(0)
   vehicleId    String?
-  vehicle      Vehicle?      @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
   review         Review?
-  serviceRecord  ServiceRecord?          // Sello de revisión vinculado a esta reserva
+  serviceRecord  ServiceRecord?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }
@@ -251,6 +255,7 @@ model Vehicle {
   fuel           String?                   // Gasolina | Diésel | Híbrido | Eléctrico | GLP
   mileage        Int?                      // Kilómetros actuales
   itvDate        DateTime?                 // Próxima ITV
+  itvReminder    Boolean   @default(false) // Enviar recordatorio de ITV por email
   bookings       Booking[]
   serviceRecords ServiceRecord[]           // Historial de revisiones del vehículo
   createdAt      DateTime        @default(now())
@@ -302,6 +307,7 @@ model ServiceRecord {
   workDone     String                // Trabajo realizado
   nextReviewDate DateTime?           // Fecha sugerida de próxima revisión
   nextMileage  Int?                  // Km sugerido para próxima revisión
+  price        Float?                // Precio cobrado por el servicio
   // Metadatos
   stampedBy    String?               // Nombre del mecánico o responsable
   createdAt    DateTime @default(now())

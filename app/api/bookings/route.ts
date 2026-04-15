@@ -22,10 +22,11 @@ const schema = z.object({
   serviceId:    z.string(),
   date:         z.string(),
   vehicleType:  z.enum(TIPOS_VEHICULO_VALIDOS).default("COCHE"),
-  vehicleId:    z.string().optional(),
-  vehiclePlate: z.string().optional(),
-  vehicleModel: z.string().optional(),
-  notes:        z.string().optional(),
+  vehicleId:       z.string().optional(),
+  vehiclePlate:    z.string().optional(),
+  vehicleModel:    z.string().optional(),
+  currentMileage:  z.number().int().positive().optional(),
+  notes:           z.string().optional(),
 });
 
 export async function POST(req: Request) {
@@ -59,6 +60,14 @@ export async function POST(req: Request) {
         user:   { select: { name: true, email: true } },
       },
     });
+
+    // ── Actualizar kilometraje del vehículo si se proporcionó ──────────────
+    if (data.vehicleId && data.currentMileage) {
+      db.vehicle.update({
+        where: { id: data.vehicleId },
+        data:  { mileage: data.currentMileage },
+      }).catch(console.error);
+    }
 
     // ── Send emails (non-blocking) ──────────────────────────────────────────
     const emailData = {

@@ -58,6 +58,8 @@ export function RegistroForm() {
   const [vehicleTypes, setVehicleTypes] = useState<string[]>(["COCHE"]);
   const [excludedBrands, setExcludedBrands] = useState<string[]>([]);
   const [brandInput, setBrandInput] = useState("");
+  const [acceptLegal, setAcceptLegal] = useState(false);
+  const [acceptComercial, setAcceptComercial] = useState(false);
 
   function addBrand(brand: string) {
     const b = brand.trim();
@@ -100,6 +102,7 @@ export function RegistroForm() {
     if (!name) return setError("El nombre es obligatorio");
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
+    if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
 
     setLoading(true);
     const body = { name, email, password };
@@ -142,6 +145,7 @@ export function RegistroForm() {
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
 
     if (vehicleTypes.length === 0) return setError("Selecciona al menos un tipo de vehículo");
+    if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
 
     setLoading(true);
     const laborRateRaw = (fd.get("laborRate") as string ?? "").trim();
@@ -287,6 +291,36 @@ export function RegistroForm() {
                       required
                       minLength={6}
                     />
+                  </div>
+
+                  {/* Checks legales */}
+                  <div className="space-y-2 pt-1">
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={acceptLegal}
+                        onChange={(e) => setAcceptLegal(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
+                      />
+                      <span className="text-xs text-gray-600 leading-relaxed">
+                        He leído y acepto los{" "}
+                        <Link href="/terminos" target="_blank" className="text-gartify-blue underline hover:no-underline">Términos y condiciones</Link>
+                        {" "}y la{" "}
+                        <Link href="/privacidad" target="_blank" className="text-gartify-blue underline hover:no-underline">Política de privacidad</Link>
+                        . <span className="text-red-500">*</span>
+                      </span>
+                    </label>
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={acceptComercial}
+                        onChange={(e) => setAcceptComercial(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
+                      />
+                      <span className="text-xs text-gray-600 leading-relaxed">
+                        Acepto recibir comunicaciones comerciales de Gartify. (Opcional)
+                      </span>
+                    </label>
                   </div>
 
                   {error && (
@@ -610,6 +644,36 @@ export function RegistroForm() {
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Checks legales */}
+                <div className="space-y-2 pt-1">
+                  <label className="flex items-start gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptLegal}
+                      onChange={(e) => setAcceptLegal(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
+                    />
+                    <span className="text-xs text-gray-600 leading-relaxed">
+                      He leído y acepto los{" "}
+                      <Link href="/terminos" target="_blank" className="text-gartify-blue underline hover:no-underline">Términos y condiciones</Link>
+                      {" "}y la{" "}
+                      <Link href="/privacidad" target="_blank" className="text-gartify-blue underline hover:no-underline">Política de privacidad</Link>
+                      . <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptComercial}
+                      onChange={(e) => setAcceptComercial(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
+                    />
+                    <span className="text-xs text-gray-600 leading-relaxed">
+                      Acepto recibir comunicaciones comerciales de Gartify. (Opcional)
+                    </span>
+                  </label>
                 </div>
 
                 {error && (

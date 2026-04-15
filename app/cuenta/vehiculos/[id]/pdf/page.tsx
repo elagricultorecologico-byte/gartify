@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatPrice } from "@/lib/utils";
 import { PrintTrigger } from "@/components/cuenta/PrintTrigger";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +15,7 @@ type RegistroItem = {
   workDone: string;
   nextReviewDate: Date | null;
   nextMileage: number | null;
+  price: number | null;
   stampedBy: string | null;
   garage: { name: string; city: string };
 };
@@ -63,6 +64,7 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
           workDone: true,
           nextReviewDate: true,
           nextMileage: true,
+          price: true,
           stampedBy: true,
           garage: { select: { name: true, city: true } },
         },
@@ -229,6 +231,11 @@ export default async function PdfHistorialVehiculoPage({ params }: Props) {
 
                 {/* Detalles opcionales en línea */}
                 <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                  {registro.price !== null && (
+                    <span className="font-semibold text-gray-700">
+                      Importe: {formatPrice(registro.price)}
+                    </span>
+                  )}
                   {registro.mileage !== null && (
                     <span>
                       Km: {registro.mileage.toLocaleString("es-ES")} km

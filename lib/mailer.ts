@@ -1,15 +1,15 @@
 /**
- * Gartify — Email sender via Resend
+ * Gartify — Email sender via SMTP (Hostalia)
  *
- * Setup:
- *   1. npm install resend          (in PowerShell / Windows Terminal)
- *   2. Create .env.local and add:
- *        RESEND_API_KEY=re_xxxxxxxxxxxx
- *        EMAIL_FROM=Gartify <noreply@gartify.es>
- *        NEXT_PUBLIC_BASE_URL=http://localhost:3000
- *
- * Free tier: 3 000 emails/month — https://resend.com
+ * Variables requeridas en .env / .env.local:
+ *   SMTP_HOST=smtp.servidor-correo.net
+ *   SMTP_PORT=587
+ *   SMTP_USER=hola@gartify.es
+ *   SMTP_PASS=<contraseña>
+ *   EMAIL_FROM=Gartify <hola@gartify.es>
  */
+
+import nodemailer from "nodemailer";
 
 export interface MailPayload {
   to:      string | string[];
@@ -17,23 +17,37 @@ export interface MailPayload {
   html:    string;
 }
 
+let transporter: nodemailer.Transporter | null = null;
+
+function getTransporter() {
+  if (transporter) return transporter;
+
+  transporter = nodemailer.createTransport({
+    host:   process.env.SMTP_HOST,
+    port:   Number(process.env.SMTP_PORT ?? 587),
+    secure: false, // STARTTLS
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  return transporter;
+}
+
 export async function sendMail(payload: MailPayload): Promise<void> {
-  // Dev fallback: log to console until resend is installed + configured
-  if (!process.env.RESEND_API_KEY) {
-    console.log("\n[MAIL — no RESEND_API_KEY]");
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log("\n[MAIL — SMTP no configurado]");
     console.log("  To:", payload.to);
     console.log("  Subject:", payload.subject);
     return;
   }
 
+  const from = process.env.EMAIL_FROM ?? "Gartify <hola@gartify.es>";
+
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-require-imports
-    const { Resend } = require("resend") as any;
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const from = process.env.EMAIL_FROM ?? "Gartify <noreply@gartify.es>";
-    const { error } = await resend.emails.send({ from, ...payload });
-    if (error) console.error("Resend error:", error);
-  } catch {
-    console.warn("resend package not installed. Run: npm install resend");
+    await getTransporter().sendMail({ from, ...payload });
+  } catch (err) {
+    console.error("[MAIL] Error al enviar:", err);
   }
 }

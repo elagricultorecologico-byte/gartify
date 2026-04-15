@@ -404,3 +404,64 @@ export function bookingStatusUpdateEmail(d: StatusUpdateEmailData): { subject: s
 
   return { subject: subjectMap[d.newStatus], html };
 }
+
+// ─── ITV Reminder ─────────────────────────────────────────────────────────────
+
+export function itvReminderEmail(data: {
+  userName: string;
+  vehicleName: string;
+  plate: string;
+  itvDate: Date;
+  daysLeft: number;
+}): { subject: string; html: string } {
+  const fechaItv = new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit", month: "long", year: "numeric",
+  }).format(data.itvDate);
+
+  const urgency = data.daysLeft <= 7
+    ? { color: "#dc2626", bg: "#fef2f2", border: "#fecaca", label: "¡Urgente!" }
+    : { color: "#d97706", bg: "#fffbeb", border: "#fde68a", label: "Aviso" };
+
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:48px;margin-bottom:8px;">🚗</div>
+      <h1 style="margin:0;font-size:22px;font-weight:800;color:#1a3664;">
+        Recordatorio de ITV
+      </h1>
+      <p style="margin:8px 0 0;color:#64748b;font-size:15px;">
+        Hola <strong>${data.userName}</strong>, tu vehículo tiene la ITV próximamente.
+      </p>
+    </div>
+
+    <div style="background:${urgency.bg};border:1px solid ${urgency.border};border-radius:10px;padding:20px 24px;margin-bottom:24px;text-align:center;">
+      <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${urgency.color};">${urgency.label}</p>
+      <p style="margin:0;font-size:28px;font-weight:900;color:${urgency.color};">
+        ${data.daysLeft} ${data.daysLeft === 1 ? "día" : "días"}
+      </p>
+      <p style="margin:4px 0 0;font-size:13px;color:${urgency.color};opacity:0.8;">para la fecha límite</p>
+    </div>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      ${detailRow("🚗", "Vehículo", data.vehicleName)}
+      ${detailRow("🔖", "Matrícula", data.plate)}
+      ${detailRow("📅", "Fecha ITV", fechaItv)}
+    </table>
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <a href="${BASE_URL}/talleres?servicio=PRE_ITV"
+         style="display:inline-block;background:#F5A623;color:#ffffff;font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;">
+        Reservar revisión pre-ITV
+      </a>
+    </div>
+
+    <p style="margin:0;font-size:12px;color:#94a3b8;text-align:center;">
+      Puedes gestionar tus vehículos en <a href="${BASE_URL}/cuenta/vehiculos" style="color:#1e7fc2;">Mis vehículos</a>.
+    </p>
+  `);
+
+  const subject = data.daysLeft <= 7
+    ? `⚠️ ITV en ${data.daysLeft} días — ${data.vehicleName} (${data.plate})`
+    : `🔔 Recuerda: ITV en ${data.daysLeft} días — ${data.vehicleName}`;
+
+  return { subject, html };
+}

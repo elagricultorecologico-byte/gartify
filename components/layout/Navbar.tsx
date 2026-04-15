@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, CreditCard, Wrench, Tag, CalendarClock, User, Truck } from "lucide-react";
+import { Menu, X, LogOut, Settings, CreditCard, Wrench, Tag, CalendarClock, User, Truck, Car, CalendarDays } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -57,14 +57,16 @@ export function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide uppercase">
-          <Link href="/como-funciona" className="text-white/80 hover:text-white transition-colors">
-            Cómo funciona
-          </Link>
-          <Link href="/para-talleres" className="text-white/80 hover:text-white transition-colors">
-            Para talleres
-          </Link>
-        </nav>
+        {!session && (
+          <nav className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide uppercase">
+            <Link href="/como-funciona" className="text-white/80 hover:text-white transition-colors">
+              Cómo funciona
+            </Link>
+            <Link href="/para-talleres" className="text-white/80 hover:text-white transition-colors">
+              Para talleres
+            </Link>
+          </nav>
+        )}
 
         {/* Auth */}
         <div className="hidden md:flex items-center gap-2">
@@ -99,6 +101,9 @@ export function Navbar() {
                       <Link href="/cuenta/taller" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <Settings className="h-4 w-4 text-gartify-blue" />Mi portal
                       </Link>
+                      <Link href="/cuenta/taller/agenda" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <CalendarDays className="h-4 w-4 text-gartify-blue" />Agenda
+                      </Link>
                       <Link href="/cuenta/taller/perfil" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <User className="h-4 w-4 text-gartify-blue" />Perfil del taller
                       </Link>
@@ -129,6 +134,9 @@ export function Navbar() {
                       <Link href="/cuenta" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <CalendarClock className="h-4 w-4 text-gartify-blue" />Mis reservas
                       </Link>
+                      <Link href="/cuenta/vehiculos" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <Car className="h-4 w-4 text-gartify-blue" />Mis vehículos
+                      </Link>
                       <Link href="/cuenta/perfil" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <User className="h-4 w-4 text-gartify-blue" />Mi perfil
                       </Link>
@@ -151,12 +159,12 @@ export function Navbar() {
             <>
               <Link href="/login">
                 <Button variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/10">
-                  Iniciar sesión
+                  Entrar
                 </Button>
               </Link>
-              <Link href="/registro">
-                <Button size="sm" className="border border-gartify-orange bg-transparent text-gartify-orange hover:bg-gartify-orange hover:text-white">
-                  Registrarse
+              <Link href="/talleres">
+                <Button size="sm" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold shadow-sm">
+                  Buscar taller
                 </Button>
               </Link>
             </>
@@ -172,8 +180,12 @@ export function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-white/10 bg-gartify-blue px-4 py-4 space-y-3">
-          <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
-          <Link href="/para-talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Para talleres</Link>
+          {!session && (
+            <>
+              <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
+              <Link href="/para-talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Para talleres</Link>
+            </>
+          )}
           {session ? (
             <>
               <div className="flex items-center gap-2 pb-2 border-b border-white/10">
@@ -188,6 +200,7 @@ export function Navbar() {
               {isGarageOwner ? (
                 <>
                   <Link href="/cuenta/taller" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Mi portal</Link>
+                  <Link href="/cuenta/taller/agenda" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Agenda</Link>
                   <Link href="/cuenta/taller/servicios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Servicios</Link>
                   <Link href="/cuenta/taller/perfil" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Perfil del taller</Link>
                   <Link href="/cuenta/taller/planes" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Planes y suscripcion</Link>
@@ -195,17 +208,21 @@ export function Navbar() {
               ) : isDistributor ? (
                 <Link href="/distribuidor/dashboard" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Mi dashboard</Link>
               ) : (
-                <Link href="/cuenta" className="block text-sm text-white" onClick={() => setOpen(false)}>Mis reservas</Link>
+                <>
+                  <Link href="/cuenta" className="block text-sm text-white" onClick={() => setOpen(false)}>Mis reservas</Link>
+                  <Link href="/cuenta/vehiculos" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Mis vehículos</Link>
+                  <Link href="/cuenta/perfil" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Mi perfil</Link>
+                </>
               )}
               <button className="block text-sm text-red-300 pt-1" onClick={() => signOut({ callbackUrl: "/" })}>Cerrar sesión</button>
             </>
           ) : (
-            <div className="flex gap-2 pt-2">
-              <Link href="/login" onClick={() => setOpen(false)}>
-                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">Iniciar sesión</Button>
+            <div className="flex flex-col gap-2 pt-2">
+              <Link href="/talleres" onClick={() => setOpen(false)}>
+                <Button size="sm" className="w-full bg-gartify-orange hover:bg-orange-600 text-white font-bold">Buscar taller</Button>
               </Link>
-              <Link href="/registro" onClick={() => setOpen(false)}>
-                <Button size="sm" className="border border-gartify-orange bg-transparent text-gartify-orange hover:bg-gartify-orange hover:text-white">Registrarse</Button>
+              <Link href="/login" onClick={() => setOpen(false)}>
+                <Button variant="ghost" size="sm" className="w-full text-white hover:bg-white/10">Entrar</Button>
               </Link>
             </div>
           )}

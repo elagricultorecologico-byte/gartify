@@ -86,6 +86,7 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
   // Estados para el selector de vehículos registrados
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
   const [usingOtherVehicle, setUsingOtherVehicle] = useState(false);
+  const [currentMileage, setCurrentMileage] = useState("");
 
   async function buscarMatricula() {
     const plate = vehiclePlate.trim();
@@ -169,6 +170,7 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
         vehiclePlate: vehiclePlate || undefined,
         vehicleModel: vehicleModel || undefined,
         vehicleId: selectedVehicleId || undefined,
+        currentMileage: currentMileage ? parseInt(currentMileage) : undefined,
         notes: notes || undefined,
       }),
     });
@@ -674,6 +676,27 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
                     <VehicleModelSelector value={vehicleModel} onChange={setVehicleModel} />
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Kilometraje actual — solo si hay vehículo registrado seleccionado */}
+            {selectedVehicleId && !usingOtherVehicle && (
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-gartify-gray">
+                  Kilometraje actual
+                  <span className="font-normal text-gray-400 ml-1">(opcional — actualiza tu ficha)</span>
+                </Label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min={0}
+                    placeholder="Ej: 125000"
+                    value={currentMileage}
+                    onChange={(e) => setCurrentMileage(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-blue focus:border-transparent transition"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">km</span>
+                </div>
               </div>
             )}
 

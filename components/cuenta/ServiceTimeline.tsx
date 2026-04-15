@@ -1,5 +1,5 @@
-import { CheckCircle, Wrench, Calendar, Gauge, User } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { CheckCircle, Wrench, Calendar, Gauge, User, Euro } from "lucide-react";
+import { formatDate, formatPrice } from "@/lib/utils";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -10,6 +10,7 @@ export type ServiceRecordItem = {
   workDone: string;
   nextReviewDate: Date | string | null;
   nextMileage: number | null;
+  price: number | null;
   stampedBy: string | null;
   vehiclePlate: string | null;
   vehicleModel: string | null;
@@ -139,12 +140,22 @@ function DetallesRevision({ record }: { record: ServiceRecordItem }) {
     record.mileage !== null ||
     record.nextReviewDate !== null ||
     record.nextMileage !== null ||
+    record.price !== null ||
     record.stampedBy !== null;
 
   if (!tieneDetalles) return null;
 
   return (
     <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 pt-2 border-t border-gray-100">
+      {/* Precio */}
+      {record.price !== null && (
+        <DetalleItem
+          icono={<Euro className="h-3.5 w-3.5 text-gartify-green" aria-hidden="true" />}
+          etiqueta="Importe"
+          valor={formatPrice(record.price)}
+        />
+      )}
+
       {/* Kilometraje en el servicio */}
       {record.mileage !== null && (
         <DetalleItem

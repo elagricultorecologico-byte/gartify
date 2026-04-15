@@ -14,6 +14,7 @@ import {
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ServiceTimeline } from "@/components/cuenta/ServiceTimeline";
+import { ItvReminderToggle } from "@/components/cuenta/ItvReminderToggle";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export default async function HistorialVehiculoPage({ params }: Props) {
       fuel: true,
       mileage: true,
       itvDate: true,
+      itvReminder: true,
       userId: true,
       serviceRecords: {
         select: {
@@ -65,6 +67,7 @@ export default async function HistorialVehiculoPage({ params }: Props) {
           workDone: true,
           nextReviewDate: true,
           nextMileage: true,
+          price: true,
           stampedBy: true,
           vehiclePlate: true,
           vehicleModel: true,
@@ -114,6 +117,16 @@ export default async function HistorialVehiculoPage({ params }: Props) {
 
       {/* Tarjeta de datos del vehículo */}
       <TarjetaVehiculo vehiculo={vehiculo} />
+
+      {/* Toggle recordatorio ITV */}
+      {vehiculo.itvDate && (
+        <div className="mt-4">
+          <ItvReminderToggle
+            vehicleId={vehiculo.id}
+            initialValue={vehiculo.itvReminder}
+          />
+        </div>
+      )}
 
       {/* Libro de revisiones */}
       <section className="mt-10" aria-labelledby="titulo-revisiones">

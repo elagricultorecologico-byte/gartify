@@ -37,11 +37,14 @@ export function LeadForm() {
 
     setEnviando(true);
 
-    // Simulamos el envío del lead (aquí se conectaría a una API route real)
-    await new Promise<void>((resolve) => setTimeout(resolve, 800));
+    const res = await fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(campos),
+    });
 
     setEnviando(false);
-    setEnviado(true);
+    if (res.ok) setEnviado(true);
   }
 
   // ── Estado: confirmación de envío ─────────────────────────────────────────

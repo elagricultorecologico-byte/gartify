@@ -24,6 +24,7 @@ interface ReservaConSello {
   garageId:     string;
   status:       string;
   date:         Date;
+  totalPrice:   number;
   vehicleId:    string | null;
   vehiclePlate: string | null;
   vehicleModel: string | null;
@@ -102,6 +103,7 @@ export async function POST(request: Request) {
       garageId:      true,
       status:        true,
       date:          true,
+      totalPrice:    true,
       vehicleId:     true,
       vehiclePlate:  true,
       vehicleModel:  true,
@@ -157,6 +159,7 @@ export async function POST(request: Request) {
         workDone,
         nextReviewDate: nextReviewDate ? new Date(nextReviewDate) : null,
         nextMileage:    nextMileage ?? null,
+        price:          reserva.totalPrice,
         stampedBy:      stampedBy ?? null,
       },
       select: {

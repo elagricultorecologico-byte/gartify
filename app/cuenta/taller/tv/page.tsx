@@ -24,10 +24,13 @@ type ReservaTv = Prisma.BookingGetPayload<{
     id: true;
     date: true;
     status: true;
+    source: true;
+    serviceLabel: true;
     vehicleModel: true;
     vehiclePlate: true;
     vehicleType: true;
     totalPrice: true;
+    clientName: true;
     user: { select: { name: true } };
     service: { select: { type: true; name: true; duration: true } };
   };
@@ -75,10 +78,12 @@ function TarjetaReserva({ reserva }: { reserva: ReservaTv }) {
   }).format(fechaObj);
 
   const badgeEstado = ESTADO_BADGE_TV[reserva.status] ?? "bg-slate-500/20 text-slate-300";
-  const badgeServicio =
-    SERVICIO_BADGE_COLORES[reserva.service.type] ?? SERVICIO_BADGE_COLORES.CUSTOM;
-  // SERVICE_LABELS es Record<string, string> → acceso directo sin cast
-  const etiquetaServicio = SERVICE_LABELS[reserva.service.type] ?? reserva.service.name;
+  const badgeServicio = reserva.service
+    ? (SERVICIO_BADGE_COLORES[reserva.service.type] ?? SERVICIO_BADGE_COLORES.CUSTOM)
+    : SERVICIO_BADGE_COLORES.CUSTOM;
+  const etiquetaServicio = reserva.service
+    ? (SERVICE_LABELS[reserva.service.type] ?? reserva.service.name)
+    : (reserva.serviceLabel ?? "Cita manual");
 
   return (
     <article className="rounded-xl bg-white/5 border border-white/10 px-4 py-3 flex items-center gap-4">
@@ -94,13 +99,15 @@ function TarjetaReserva({ reserva }: { reserva: ReservaTv }) {
       {/* Cliente + servicio */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-white text-sm truncate">{reserva.user.name ?? "Cliente"}</span>
+          <span className="font-bold text-white text-sm truncate">
+            {reserva.source === "MANUAL" ? (reserva.clientName ?? "Manual") : (reserva.user?.name ?? "Cliente")}
+          </span>
           <span className={`rounded px-2 py-0.5 text-xs font-semibold ${badgeServicio}`}>{etiquetaServicio}</span>
         </div>
         <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 flex-wrap">
           {reserva.vehicleModel && <span>{reserva.vehicleModel}</span>}
           {reserva.vehiclePlate && <span className="font-mono uppercase tracking-wider">{reserva.vehiclePlate}</span>}
-          <span>{reserva.service.duration} min</span>
+          {reserva.service && <span>{reserva.service.duration} min</span>}
         </div>
       </div>
 
@@ -147,6 +154,9 @@ export default async function ModoTvPage() {
           id:           true,
           date:         true,
           status:       true,
+          source:       true,
+          serviceLabel: true,
+          clientName:   true,
           vehicleModel: true,
           vehiclePlate: true,
           vehicleType:  true,

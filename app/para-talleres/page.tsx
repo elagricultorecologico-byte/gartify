@@ -164,6 +164,7 @@ export default function ParaTalleresPage() {
                     { hora: "09:00", servicio: "Cambio de aceite",   coche: "Seat León" },
                     { hora: "10:30", servicio: "Revisión frenos",    coche: "Toyota Yaris" },
                     { hora: "12:00", servicio: "ITV pre-inspección", coche: "VW Golf" },
+                    { hora: "14:00", servicio: "Revisión básica",    coche: "Renault Clio" },
                   ].map(({ hora, servicio, coche }) => (
                     <div key={hora} className="flex items-center gap-2 rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 w-full">
                       <Wrench className="h-3 w-3 text-gartify-orange shrink-0" aria-hidden="true" />
