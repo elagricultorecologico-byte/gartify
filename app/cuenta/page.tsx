@@ -33,6 +33,7 @@ export default async function CuentaPage() {
       vehiclePlate: true,
       createdAt: true,
       garage: { select: { name: true, city: true } },
+      serviceLabel: true,
       service: { select: { type: true, name: true } },
       review: { select: { id: true } },
     },

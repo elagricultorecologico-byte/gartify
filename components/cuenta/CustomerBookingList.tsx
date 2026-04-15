@@ -25,7 +25,8 @@ export type CustomerBookingItem = {
   vehiclePlate: string | null;
   createdAt: Date | string;
   garage: { name: string; city: string };
-  service: { type: string; name: string };
+  service: { type: string; name: string } | null;
+  serviceLabel?: string | null;
   review: { id: string } | null;
 };
 
@@ -362,7 +363,7 @@ function BookingCard({ b }: { b: CustomerBookingItem }) {
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
             <Wrench className="h-3 w-3" aria-hidden="true" />
-            {SERVICE_LABELS[b.service.type] ?? b.service.name}
+            {b.service ? (SERVICE_LABELS[b.service.type] ?? b.service.name) : (b.serviceLabel ?? "—")}
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -398,7 +399,7 @@ function BookingCard({ b }: { b: CustomerBookingItem }) {
               <div className="flex items-center gap-2 mt-1.5">
                 <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
                   <Wrench className="h-3 w-3" aria-hidden="true" />
-                  {SERVICE_LABELS[b.service.type] ?? b.service.name}
+                  {b.service ? (SERVICE_LABELS[b.service.type] ?? b.service.name) : (b.serviceLabel ?? "—")}
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
