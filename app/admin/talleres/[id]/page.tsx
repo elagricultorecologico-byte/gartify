@@ -24,6 +24,7 @@ export default async function AdminGarageDetailPage({ params }: { params: { id: 
         select: {
           id: true, status: true, date: true, totalPrice: true,
           vehicleModel: true, vehiclePlate: true,
+          clientName: true, serviceLabel: true,
           user:    { select: { name: true } },
           service: { select: { type: true, name: true } },
         },
@@ -138,9 +139,9 @@ export default async function AdminGarageDetailPage({ params }: { params: { id: 
           {garage.bookings.map((b) => (
             <div key={b.id} className="flex items-center justify-between px-5 py-3 gap-4 text-sm">
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-foreground truncate">{b.user.name}</p>
+                <p className="font-semibold text-foreground truncate">{b.user?.name ?? b.clientName ?? "—"}</p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {SERVICE_LABELS[b.service.type] ?? b.service.name}
+                  {b.service ? (SERVICE_LABELS[b.service.type] ?? b.service.name) : (b.serviceLabel ?? "—")}
                   {b.vehicleModel ? ` · ${b.vehicleModel}` : ""}
                   {b.vehiclePlate ? ` (${b.vehiclePlate})` : ""}
                 </p>
