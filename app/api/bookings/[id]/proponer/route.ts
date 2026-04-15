@@ -29,7 +29,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   // ── Comprobar solapamiento ──────────────────────────────────────────────────
   // Buscar reservas activas del mismo taller que se solapen con el nuevo slot
-  const duracionMs   = booking.service.duration * 60 * 1000;
+  const duracionMs   = (booking.service?.duration ?? 30) * 60 * 1000;
   const nuevaInicio  = fecha;
   const nuevaFin     = new Date(fecha.getTime() + duracionMs);
 
