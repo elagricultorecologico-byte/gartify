@@ -111,6 +111,19 @@ export default function ParaTalleresPage() {
         {/* Overlay: transparente a la izquierda (mecánico visible), oscuro a la derecha (texto legible) */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-gartify-dark/60 to-gartify-dark/90" aria-hidden="true" />
 
+        {/* Animación de entrada */}
+        <style>{`
+          @keyframes heroSlideIn {
+            from { opacity: 0; transform: translateX(-70px); }
+            to   { opacity: 1; transform: translateX(0); }
+          }
+          .pt-hero-in { animation: heroSlideIn 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+          .pt-d1 { animation-delay: 0ms; }
+          .pt-d2 { animation-delay: 130ms; }
+          .pt-d3 { animation-delay: 260ms; }
+          .pt-d4 { animation-delay: 390ms; }
+        `}</style>
+
         <div className="relative container max-w-6xl mx-auto px-4 flex items-center min-h-[calc(100vh-4rem)]">
           <div className="grid md:grid-cols-2 gap-8 items-center">
 
@@ -119,17 +132,17 @@ export default function ParaTalleresPage() {
 
             {/* Columna derecha — copy de conversión */}
             <div>
-              <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] font-black text-white leading-tight mb-4">
+              <h1 className="pt-hero-in pt-d1 text-3xl md:text-4xl lg:text-[2.75rem] font-black text-white leading-tight mb-4">
                 Consigue nuevos clientes para tu taller{" "}
                 <span className="text-gartify-orange">sin levantar el teléfono.</span>
               </h1>
 
-              <p className="text-blue-200 mb-6 leading-relaxed">
+              <p className="pt-hero-in pt-d2 text-blue-200 mb-6 leading-relaxed">
                 Gartify te conecta con conductores de tu zona que buscan taller de confianza.
                 Sin llamadas, sin intermediarios en tus cobros, sin exclusividad.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="pt-hero-in pt-d3 flex flex-wrap items-center gap-4">
                 <Link
                   href="/registro?tipo=taller"
                   className="inline-flex items-center gap-2 rounded-xl bg-gartify-green px-7 py-3.5 text-white font-bold text-base hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gartify-green focus:ring-offset-2 focus:ring-offset-gartify-dark"
@@ -141,7 +154,7 @@ export default function ParaTalleresPage() {
               </div>
 
               {/* Ticker de reservas en directo */}
-              <div className="mt-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3">
+              <div className="pt-hero-in pt-d4 mt-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3">
                 <span className="flex items-center gap-1.5 text-xs font-bold text-blue-300 uppercase tracking-widest mb-2">
                   <span className="inline-flex h-2 w-2 rounded-full bg-gartify-green animate-pulse" />
                   En directo
