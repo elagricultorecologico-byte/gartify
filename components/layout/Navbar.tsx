@@ -64,9 +64,6 @@ export function Navbar() {
           <Link href="/para-talleres" className="text-white/80 hover:text-white transition-colors">
             Para talleres
           </Link>
-          <Link href="/precios" className="text-white/80 hover:text-white transition-colors">
-            Precios
-          </Link>
         </nav>
 
         {/* Auth */}
@@ -177,7 +174,6 @@ export function Navbar() {
         <div className="md:hidden border-t border-white/10 bg-gartify-blue px-4 py-4 space-y-3">
           <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
           <Link href="/para-talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Para talleres</Link>
-          <Link href="/precios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Precios</Link>
           {session ? (
             <>
               <div className="flex items-center gap-2 pb-2 border-b border-white/10">

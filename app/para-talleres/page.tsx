@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Wrench, ChevronRight, ShieldCheck, Bell, BarChart3, Users, Settings, Star, Euro, CheckCircle, Cog } from "lucide-react";
-import { PricingSection } from "@/components/para-talleres/PricingSection";
-import { ALL_SERVICES } from "@/lib/constants";
+import { LeadForm } from "@/components/para-talleres/LeadForm";
+import { Star, Wrench, CalendarCheck, Banknote, ChevronRight } from "lucide-react";
+
+// ─── Metadata SEO ─────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
-  title: "Para talleres — Publica tus servicios y recibe reservas online",
+  title: "Consigue nuevos clientes para tu taller — Gartify para talleres",
   description:
-    "Únete a Gartify y haz crecer tu taller mecánico. Publica servicios, recibe reservas online 24/7 y gestiona tu agenda. Sin comisiones por reserva.",
+    "Gartify te conecta con conductores de tu zona que buscan un taller de confianza. Cero costes de alta, sin exclusividad, sin permanencia. Empieza hoy.",
   openGraph: {
-    title: "Registra tu taller en Gartify — Sin comisiones por reserva",
+    title: "Consigue nuevos clientes para tu taller — Gartify",
     description:
-      "Publica tus servicios mecánicos, recibe reservas online y llega a más clientes en tu zona. Alta gratuita en 5 minutos.",
+      "Recibe reservas online de conductores de tu zona sin levantar el teléfono. Alta gratuita en 5 minutos.",
     type: "website",
   },
   alternates: { canonical: "/para-talleres" },
 };
+
+// ─── JSON-LD estructurado ─────────────────────────────────────────────────────
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -30,207 +32,390 @@ const jsonLd = {
     },
     {
       "@type": "WebPage",
-      name: "Registra tu taller en Gartify",
+      name: "Consigue nuevos clientes para tu taller — Gartify",
       description:
-        "Plataforma para talleres mecánicos que quieren publicar servicios y recibir reservas online sin comisiones.",
+        "Plataforma para talleres mecánicos que quieren recibir reservas online sin intermediarios en sus cobros.",
       url: "https://gartify.es/para-talleres",
     },
   ],
 };
 
-// ─── Platform benefits ────────────────────────────────────────────────────────
+// ─── Datos de las secciones ───────────────────────────────────────────────────
 
-const BENEFITS = [
-  { icon: Users,      title: "Nuevos clientes cada día",    desc: "Aparezcas en búsquedas de conductores que buscan exactamente lo que ofreces en tu zona." },
-  { icon: Bell,       title: "Reservas online 24/7",        desc: "Los clientes reservan cuando quieren, incluso fuera de horario. Tú recibes la petición por email." },
-  { icon: BarChart3,  title: "Panel de control completo",   desc: "Gestiona tus reservas, actualiza precios, activa o desactiva servicios en cualquier momento." },
-  { icon: ShieldCheck,title: "Verificación y confianza",    desc: "El sello Gartify Verificado aumenta la confianza de los clientes y mejora tu posición en resultados." },
-  { icon: Star,       title: "Reseñas que te diferencian",  desc: "Las valoraciones positivas de clientes reales son tu mejor carta de presentación." },
-  { icon: Euro,       title: "Sin comisiones por reserva",  desc: "Cuota fija mensual, sin sorpresas. Tú cobras el 100% del servicio directamente al cliente." },
+const PAIN_POINTS = [
+  {
+    icon: Wrench,
+    titulo: "Sin tiempo para el marketing",
+    descripcion:
+      "Atiendes a los clientes mientras el taller rueda. Cada llamada para dar presupuestos te quita 20 minutos que necesitas en el foso. Nosotros captamos al cliente por ti.",
+  },
+  {
+    icon: CalendarCheck,
+    titulo: "Huecos sin rentabilizar",
+    descripcion:
+      "Algunos días el taller va lleno y otros están vacíos. Gartify te trae reservas que llenan esos huecos con trabajos rentables, sin que muevas un dedo.",
+  },
+  {
+    icon: Banknote,
+    titulo: "El dinero va directo a tu caja",
+    descripcion:
+      "El pago se hace en tu taller. Gartify no toca tus cobros ni cobra comisión por reserva. Cuota fija mensual, sin sorpresas en tu facturación.",
+  },
 ];
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+const PASOS = [
+  {
+    numero: "01",
+    titulo: "Alta en 5 minutos",
+    descripcion:
+      "Rellenas el formulario con los datos de tu taller. Nosotros configuramos tu perfil en la plataforma y lo dejamos listo para recibir reservas.",
+  },
+  {
+    numero: "02",
+    titulo: "Recibe la alerta de reserva",
+    descripcion:
+      "Cuando un conductor de tu zona reserva un servicio, te llega una notificación al instante en tu móvil y en el panel de control: servicio solicitado y modelo del vehículo.",
+  },
+  {
+    numero: "03",
+    titulo: "Repara y fideliza",
+    descripcion:
+      "El cliente acude a tu taller con toda la información. Tú das un servicio excelente, cobras tu tarifa y consigues un cliente recurrente para toda la vida.",
+  },
+];
+
+// ─── Página ───────────────────────────────────────────────────────────────────
 
 export default function ParaTalleresPage() {
   return (
-    <div>
+    <div className="min-h-screen bg-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ── Hero ── */}
-      <section className="bg-gradient-to-br from-gartify-hero to-gartify-mid py-20 text-center px-4">
-        <div className="container max-w-3xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-gartify-orange/50 bg-gartify-orange/20 px-4 py-1.5 text-sm text-gartify-orange mb-6">
-            <Wrench className="h-3.5 w-3.5" aria-hidden="true" />
-            Para propietarios de talleres
+      {/* ══════════════════════════════════════════════════════════════════════
+          1. HERO — fondo azul marino oscuro, texto blanco
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden bg-gartify-dark">
+        {/* Fondo decorativo con degradado lateral */}
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            background:
+              "radial-gradient(ellipse at 80% 50%, #1a5496 0%, transparent 60%)",
+          }}
+          aria-hidden="true"
+        />
+
+        <div className="relative container max-w-6xl mx-auto px-4 py-20 md:py-28">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+
+            {/* Columna izquierda — copy de conversión */}
+            <div>
+              {/* Logo Gartify inline */}
+              <div className="flex items-center gap-2 mb-8">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gartify-orange text-white font-black text-sm">
+                  G
+                </span>
+                <span className="text-white font-bold text-lg tracking-tight">Gartify</span>
+              </div>
+
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
+                Consigue nuevos clientes para tu taller{" "}
+                <span className="text-gartify-orange">sin levantar el teléfono.</span>
+              </h1>
+
+              <p className="text-blue-200 text-lg mb-8 leading-relaxed">
+                Gartify te conecta con los conductores de tu zona que buscan taller de confianza.
+                Sin llamadas, sin intermediarios en tus cobros, sin exclusividad.
+              </p>
+
+              <Link
+                href="/registro?tipo=taller"
+                className="inline-flex items-center gap-2 rounded-xl bg-gartify-green px-8 py-4 text-white font-bold text-lg hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gartify-green focus:ring-offset-2 focus:ring-offset-gartify-dark"
+              >
+                Únete a la red de talleres
+                <ChevronRight className="h-5 w-5" aria-hidden="true" />
+              </Link>
+
+              <p className="mt-4 text-sm text-blue-300">
+                Cero costes de alta. Sin exclusividad. Sin permanencia.
+              </p>
+            </div>
+
+            {/* Columna derecha — mock visual de panel de reservas */}
+            <div className="hidden md:flex items-center justify-center">
+              <div className="w-full max-w-sm rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-white font-bold text-sm">Panel de reservas</span>
+                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-gartify-green animate-pulse" />
+                </div>
+                {/* Reservas de ejemplo */}
+                {[
+                  { hora: "09:00", servicio: "Cambio de aceite", coche: "Seat León 2019" },
+                  { hora: "10:30", servicio: "Revisión frenos",  coche: "Toyota Yaris 2021" },
+                  { hora: "12:00", servicio: "ITV pre-inspección", coche: "Volkswagen Golf 2020" },
+                ].map(({ hora, servicio, coche }) => (
+                  <div
+                    key={hora}
+                    className="flex items-start gap-3 rounded-lg bg-white/10 p-3 mb-2 last:mb-0"
+                  >
+                    <div className="mt-0.5 h-8 w-8 rounded-md bg-gartify-orange/20 border border-gartify-orange/30 flex items-center justify-center shrink-0">
+                      <Wrench className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <p className="text-white text-xs font-semibold">{hora} — {servicio}</p>
+                      <p className="text-blue-300 text-xs">{coche}</p>
+                    </div>
+                  </div>
+                ))}
+                <div className="mt-4 text-center text-xs text-blue-400">
+                  +8 reservas más este mes
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          2. PAIN POINTS — fondo blanco
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-white py-20 px-4">
+        <div className="container max-w-5xl mx-auto">
+
+          {/* Etiqueta de sección */}
+          <span className="inline-block rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-gartify-gray mb-6">
+            Puntos de dolor
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-            Haz crecer tu taller<br />
-            <span className="text-gartify-orange">con Gartify</span>
-          </h1>
-          <p className="text-lg text-blue-100 max-w-xl mx-auto mb-8">
-            Publica tus servicios, recibe reservas online y gestiona tu agenda. Sin comisiones, sin complicaciones.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/registro?tipo=taller">
-              <Button size="lg" className="bg-gartify-green hover:bg-gartify-green/90 text-white font-bold gap-2 h-12 px-8">
-                <ChevronRight className="h-5 w-5" /> Registrar mi taller gratis
-              </Button>
-            </Link>
-            <Link href="/como-funciona">
-              <Button size="lg" className="bg-gartify-orange hover:bg-gartify-orange/90 text-white font-semibold h-12 px-8">
-                Ver cómo funciona
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
-      {/* ── Benefits ── */}
-      <section className="py-20 px-4">
-        <div className="container max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gartify-blue mb-3">¿Por qué unirte a Gartify?</h2>
-            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-              La plataforma pensada para que los talleres crezcan sin esfuerzo administrativo.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {BENEFITS.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex gap-4">
-                <div className="h-10 w-10 rounded-lg bg-gartify-blue/10 border border-gartify-blue/20 flex items-center justify-center shrink-0">
-                  <Icon className="h-5 w-5 text-gartify-hero" />
-                </div>
-                <div>
-                  <p className="font-bold text-gartify-blue text-sm mb-1">{title}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Services catalog ── */}
-      <section className="bg-blue-50 py-20 px-4">
-        <div className="container max-w-5xl">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white border border-blue-100 px-3 py-1 text-xs font-bold text-gartify-hero uppercase tracking-wide mb-3">
-              <Cog className="h-3.5 w-3.5" aria-hidden="true" /> Catálogo de servicios
-            </span>
-            <h2 className="text-3xl font-bold text-gartify-blue mb-3">Todos los servicios que puedes publicar</h2>
-            <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Añade cualquiera de los siguientes servicios a tu perfil con tu propio precio y duración estimada. Puedes activar o desactivar cada servicio en cualquier momento.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ALL_SERVICES.map(({ icon: Icon, color, bg, border, label, desc, examples }) => (
-              <div key={label} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
-                {/* Card header */}
-                <div className="flex items-center gap-3 p-4 border-b border-gray-100">
-                  <div className={`h-9 w-9 rounded-lg ${bg} border ${border} flex items-center justify-center shrink-0`}>
-                    <Icon className={`h-5 w-5 ${color}`} />
-                  </div>
-                  <span className={`inline-flex items-center rounded-full ${bg} ${color} border ${border} text-xs font-bold px-2.5 py-0.5`}>
-                    {label}
-                  </span>
-                </div>
-
-                {/* Description */}
-                <div className="p-4 flex-1">
-                  <p className="text-xs text-muted-foreground leading-relaxed mb-3">{desc}</p>
-
-                  {/* Examples */}
-                  <div className="space-y-1.5">
-                    {examples.map((ex) => (
-                      <div key={ex} className="flex items-center gap-2 text-xs text-gartify-blue">
-                        <CheckCircle className="h-3.5 w-3.5 text-gartify-green shrink-0" />
-                        {ex}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-xs text-muted-foreground mt-8">
-            ¿No encuentras tu servicio?{" "}
-            <Link href="/contacto" className="text-gartify-orange font-semibold hover:underline">
-              Escríbenos y lo añadimos.
-            </Link>
-          </p>
-        </div>
-      </section>
-
-      {/* ── How to join ── */}
-      <section className="py-20 px-4">
-        <div className="container max-w-4xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gartify-blue mb-3">Empieza en 3 pasos</h2>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-6 mb-12">
-            {[
-              { step: "01", icon: Settings, title: "Crea tu perfil",        desc: "Regístrate, añade los datos de tu taller (nombre, dirección, teléfono) y una descripción de lo que ofreces." },
-              { step: "02", icon: Wrench,   title: "Publica tus servicios", desc: "Añade cada servicio con tu precio real y duración estimada. Puedes añadir tantos como quieras." },
-              { step: "03", icon: Bell,     title: "Recibe reservas",       desc: "Los conductores te encuentran, reservan online y tú recibes la petición por email al instante." },
-            ].map(({ step, icon: Icon, title, desc }) => (
-              <div key={step} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden text-center">
-                <div className="bg-gradient-to-b from-gartify-hero to-gartify-mid px-4 py-5 flex flex-col items-center gap-2">
-                  <span className="text-4xl font-black text-white/20 leading-none">{step}</span>
-                  <div className="h-10 w-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-white" />
-                  </div>
-                </div>
-                <div className="p-5">
-                  <p className="font-bold text-gartify-blue text-sm mb-2">{title}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Link href="/registro?tipo=taller">
-              <Button size="lg" className="bg-gartify-green hover:bg-gartify-green/90 text-white font-bold gap-2 h-12 px-10">
-                <ChevronRight className="h-5 w-5" /> Registrar mi taller ahora — es gratis
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Pricing ── */}
-      <PricingSection />
-
-      {/* ── Final CTA strip ── */}
-      <section className="bg-gradient-to-b from-gartify-mid to-gartify-hero py-14 text-center px-4">
-        <div className="container max-w-2xl">
-          <h2 className="text-2xl font-bold text-white mb-3">
-            ¿Tienes dudas? Estamos aquí para ayudarte.
+          <h2 className="text-3xl md:text-4xl font-black text-gartify-dark mb-12 max-w-2xl leading-tight">
+            Sabemos que tu negocio está en el elevador,{" "}
+            <span className="text-gartify-blue">no en la oficina.</span>
           </h2>
-          <p className="text-blue-100 text-sm mb-7">
-            Contacta con nosotros y te ayudamos a publicar tu taller en menos de 24 horas.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/contacto">
-              <Button size="lg" className="bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold h-11 px-8">
-                Contactar con Gartify
-              </Button>
-            </Link>
-            <Link href="/registro?tipo=taller">
-              <Button size="lg" className="bg-gartify-orange hover:bg-gartify-orange/90 text-white font-bold gap-2 h-11 px-8">
-                Empezar ahora
-              </Button>
-            </Link>
+
+          <div className="grid sm:grid-cols-3 gap-6">
+            {PAIN_POINTS.map(({ icon: Icon, titulo, descripcion }) => (
+              <div
+                key={titulo}
+                className="rounded-2xl border border-gray-100 bg-gray-50 p-6 hover:shadow-md transition-shadow"
+              >
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gartify-blue/10 border border-gartify-blue/20">
+                  <Icon className="h-6 w-6 text-gartify-blue" aria-hidden="true" />
+                </div>
+                <h3 className="font-bold text-gartify-dark mb-2">{titulo}</h3>
+                <p className="text-sm text-gartify-gray leading-relaxed">{descripcion}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════════════════════════════════
+          3. CÓMO FUNCIONA — fondo gris muy claro
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-slate-50 py-20 px-4">
+        <div className="container max-w-6xl mx-auto">
+
+          {/* Etiqueta de sección */}
+          <span className="inline-block rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-bold uppercase tracking-widest text-gartify-gray mb-6">
+            Cómo funciona
+          </span>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+
+            {/* Columna izquierda — pasos */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-black text-gartify-dark mb-10 leading-tight">
+                Empieza a recibir reservas{" "}
+                <span className="text-gartify-orange">en 3 pasos.</span>{" "}
+                <br className="hidden sm:block" />
+                <span className="text-2xl font-bold text-gartify-blue">
+                  Nosotros hacemos el trabajo sucio.
+                </span>
+              </h2>
+
+              <div className="space-y-8">
+                {PASOS.map(({ numero, titulo, descripcion }) => (
+                  <div key={numero} className="flex gap-5">
+                    <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-gartify-dark text-gartify-orange font-black text-xl border-2 border-gartify-orange/30">
+                      {numero}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gartify-dark mb-1">{titulo}</h3>
+                      <p className="text-sm text-gartify-gray leading-relaxed">{descripcion}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Columna derecha — mock visual de notificación en móvil */}
+            <div className="hidden md:flex justify-center">
+              <div className="relative w-64">
+                {/* Cuerpo del "teléfono" */}
+                <div className="rounded-[2rem] bg-gartify-dark border-4 border-gray-700 p-4 shadow-2xl">
+                  <div className="rounded-2xl bg-slate-800 min-h-[360px] p-4 flex flex-col gap-3">
+                    <p className="text-xs text-gray-400 text-center mb-1">Panel Gartify</p>
+
+                    {/* Tarjeta notificación */}
+                    <div className="rounded-xl bg-gartify-green/20 border border-gartify-green/40 p-3">
+                      <p className="text-gartify-green text-xs font-bold mb-1">Nueva reserva</p>
+                      <p className="text-white text-xs">Cambio de aceite</p>
+                      <p className="text-gray-400 text-xs">Seat León · Hoy 09:00</p>
+                    </div>
+
+                    {/* Estadísticas simuladas */}
+                    <div className="mt-2 rounded-xl bg-white/5 border border-white/10 p-3">
+                      <p className="text-gray-400 text-xs mb-2">Este mes</p>
+                      <div className="flex justify-between">
+                        <div className="text-center">
+                          <p className="text-white font-black text-xl">18</p>
+                          <p className="text-gray-400 text-xs">Reservas</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-gartify-orange font-black text-xl">4,8</p>
+                          <p className="text-gray-400 text-xs">Valoración</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-gartify-green font-black text-xl">12</p>
+                          <p className="text-gray-400 text-xs">Nuevos</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Barra de progreso simulada */}
+                    <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <p className="text-gray-400 text-xs mb-2">Ocupación semanal</p>
+                      <div className="flex items-end gap-1 h-10">
+                        {[40, 70, 55, 90, 65, 80, 30].map((h, i) => (
+                          <div
+                            key={i}
+                            className="flex-1 rounded-sm bg-gartify-blue"
+                            style={{ height: `${h}%` }}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex justify-between mt-1">
+                        {["L", "M", "X", "J", "V", "S", "D"].map((d) => (
+                          <span key={d} className="flex-1 text-center text-gray-500 text-xs">{d}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          4. PRUEBA SOCIAL — fondo blanco
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-white py-20 px-4">
+        <div className="container max-w-3xl mx-auto text-center">
+
+          {/* Etiqueta de sección */}
+          <span className="inline-block rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-gartify-gray mb-6">
+            Prueba social
+          </span>
+
+          <h2 className="text-3xl md:text-4xl font-black text-gartify-dark mb-12 leading-tight">
+            Ya generamos negocio para{" "}
+            <span className="text-gartify-blue">más de 500 talleres</span>{" "}
+            en España.
+          </h2>
+
+          {/* Testimonio destacado */}
+          <div className="relative rounded-2xl border border-gray-100 bg-slate-50 p-8 md:p-10 text-left shadow-sm">
+            {/* Comillas decorativas */}
+            <span
+              className="absolute top-4 left-6 text-7xl text-gartify-blue/10 font-black leading-none select-none"
+              aria-hidden="true"
+            >
+              &ldquo;
+            </span>
+
+            {/* Estrellas */}
+            <div className="flex gap-1 mb-4" role="img" aria-label="5 estrellas">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-5 w-5 fill-gartify-orange text-gartify-orange" aria-hidden="true" />
+              ))}
+            </div>
+
+            <blockquote className="text-gartify-dark text-lg md:text-xl font-medium leading-relaxed mb-6">
+              Desde que estamos en Gartify recibimos entre 15 y 20 reservas nuevas al mes sin
+              hacer nada especial. Los clientes llegan informados, el proceso es muy limpio y no
+              hay que andar negociando precios por teléfono.
+            </blockquote>
+
+            <div className="flex items-center gap-3">
+              {/* Avatar con iniciales */}
+              <div className="h-12 w-12 rounded-full bg-gartify-dark flex items-center justify-center shrink-0">
+                <span className="text-white font-bold text-sm">MR</span>
+              </div>
+              <div>
+                <p className="font-bold text-gartify-dark text-sm">Mecánica Rivas</p>
+                <p className="text-gartify-gray text-xs">Taller independiente — Barcelona</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Métrica secundaria */}
+          <div className="mt-10 grid grid-cols-3 gap-4">
+            {[
+              { valor: "+500", etiqueta: "talleres activos" },
+              { valor: "4,9★", etiqueta: "valoración media" },
+              { valor: "18", etiqueta: "reservas/mes por taller" },
+            ].map(({ valor, etiqueta }) => (
+              <div key={etiqueta} className="rounded-xl bg-gray-50 border border-gray-100 py-5 px-3">
+                <p className="text-2xl font-black text-gartify-blue">{valor}</p>
+                <p className="text-xs text-gartify-gray mt-1">{etiqueta}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          5. CIERRE + FORMULARIO DE LEAD — fondo azul marino oscuro
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-gartify-dark py-20 px-4">
+        <div className="container max-w-2xl mx-auto">
+
+          {/* Etiqueta de sección */}
+          <span className="inline-block rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-300 mb-6">
+            Empieza hoy
+          </span>
+
+          <h2 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight">
+            ¿Listo para aumentar{" "}
+            <span className="text-gartify-orange">tu facturación?</span>
+          </h2>
+          <p className="text-blue-200 mb-10 text-lg">
+            Únete a Gartify y empieza a recibir reservas en menos de 45 días,
+            o te ayudamos a encontrar qué mejorar.
+          </p>
+
+          {/* Formulario de captación de lead (Client Component) */}
+          <LeadForm />
+
+          {/* Alternativa directa */}
+          <p className="mt-6 text-center text-sm text-blue-300">
+            ¿Prefieres registrarte directamente?{" "}
+            <Link
+              href="/registro?tipo=taller"
+              className="text-white font-semibold underline underline-offset-2 hover:text-gartify-orange transition-colors"
+            >
+              Crea tu perfil ahora
+            </Link>
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
