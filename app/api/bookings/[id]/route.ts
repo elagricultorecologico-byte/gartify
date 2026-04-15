@@ -41,12 +41,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   // ── Send status-update email to customer ─────────────────────────────────
   const notifyStatuses = ["CONFIRMED", "CANCELLED", "COMPLETED"];
-  if (notifyStatuses.includes(status) && booking.user.email) {
+  if (notifyStatuses.includes(status) && booking.user?.email) {
     const mail = bookingStatusUpdateEmail({
       customerName: booking.user.name  ?? "Cliente",
       garageName:   booking.garage.name,
       garagePhone:  booking.garage.phone,
-      serviceName:  booking.service.name,
+      serviceName:  booking.service?.name ?? booking.serviceLabel ?? "Servicio",
       date:         booking.date,
       newStatus:    status as "CONFIRMED" | "CANCELLED" | "COMPLETED",
       bookingId:    booking.id,
