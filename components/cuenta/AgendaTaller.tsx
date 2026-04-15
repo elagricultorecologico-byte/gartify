@@ -71,7 +71,8 @@ function toLocalISOString(date: Date): string {
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 
-export function AgendaTaller({ garageId: _ }: { garageId: string }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function AgendaTaller({ garageId }: { garageId: string }) {
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [bookings, setBookings] = useState<BookingItem[]>([]);
   const [loading, setLoading] = useState(true);
