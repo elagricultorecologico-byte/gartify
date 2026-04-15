@@ -36,7 +36,6 @@ export async function GET(req: Request) {
       where: {
         itvDate:     { gte: targetDate, lt: targetEnd },
         itvReminder: true,
-        user:        { email: { not: null } },
       },
       select: {
         id: true,
