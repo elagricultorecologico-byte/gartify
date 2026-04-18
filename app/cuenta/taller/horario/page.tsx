@@ -28,7 +28,7 @@ export default async function HorarioPage() {
   if (!garage) redirect("/cuenta/taller/perfil");
 
   return (
-    <div className="container max-w-2xl py-8">
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5">

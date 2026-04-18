@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { GarageProfileForm } from "@/components/cuenta/GarageProfileForm";
@@ -22,14 +21,7 @@ export default async function PerfilTallerPage() {
   if (!garage) redirect("/cuenta/taller");
 
   return (
-    <div className="container max-w-2xl py-8">
-      <Link
-        href="/cuenta/taller"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gartify-blue mb-6 transition-colors"
-      >
-        <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-        Panel del taller
-      </Link>
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       <GarageProfileForm garage={garage} />
     </div>
   );

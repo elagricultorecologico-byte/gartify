@@ -12,6 +12,8 @@ export async function GET() {
   const garage = await db.garage.findUnique({
     where: { ownerId: user.id },
     select: {
+      name: true,
+      plan: true,
       _count: {
         select: {
           services: { where: { isActive: true } },
@@ -22,6 +24,8 @@ export async function GET() {
   });
 
   return NextResponse.json({
+    name:     garage?.name ?? "",
+    plan:     garage?.plan ?? "STARTER",
     services: garage?._count.services ?? 0,
     offers:   garage?._count.offers ?? 0,
   });

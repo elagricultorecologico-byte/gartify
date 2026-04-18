@@ -9,16 +9,37 @@ import { BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS } from "@/lib/utils";
 
 const TRANSITIONS: Record<string, string[]> = {
   PENDING:   ["CONFIRMED", "CANCELLED"],
-  PROPOSED:  ["CONFIRMED", "CANCELLED"], // taller puede confirmar si cliente llamó por teléfono
+  PROPOSED:  ["CONFIRMED", "CANCELLED"],
   CONFIRMED: ["COMPLETED", "CANCELLED"],
   COMPLETED: [],
   CANCELLED: [],
 };
 
+const ACTION_LABEL: Record<string, string> = {
+  CONFIRMED: "Confirmar",
+  COMPLETED: "Completar",
+  CANCELLED: "Cancelar",
+};
+
+const ACTION_STYLE: Record<string, string> = {
+  CONFIRMED: "bg-gartify-blue text-white hover:bg-gartify-blue/90",
+  COMPLETED: "bg-green-600 text-white hover:bg-green-700",
+  CANCELLED: "border border-red-200 text-red-500 hover:bg-red-50",
+};
+
 // PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
 // const CAN_PROPOSE = ["PENDING", "CONFIRMED"];
 
-export function BookingStatusUpdater({ bookingId, currentStatus }: { bookingId: string; currentStatus: string; garageId: string }) {
+export function BookingStatusUpdater({
+  bookingId,
+  currentStatus,
+  variant = "select",
+}: {
+  bookingId: string;
+  currentStatus: string;
+  garageId: string;
+  variant?: "select" | "badge" | "buttons";
+}) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [loading, setLoading] = useState(false);
@@ -62,36 +83,48 @@ export function BookingStatusUpdater({ bookingId, currentStatus }: { bookingId: 
   //   }
   // }
 
+  // Sin transiciones posibles → siempre badge
   if (next.length === 0) {
+    return variant === "buttons"
+      ? null
+      : <Badge className={`text-xs ${BOOKING_STATUS_COLORS[status]}`}>{BOOKING_STATUS_LABELS[status]}</Badge>;
+  }
+
+  // Solo badge
+  if (variant === "badge") {
     return <Badge className={`text-xs ${BOOKING_STATUS_COLORS[status]}`}>{BOOKING_STATUS_LABELS[status]}</Badge>;
   }
 
-  return (
-    <div className="flex flex-col items-end gap-1.5">
-      <Select value={status} onValueChange={handleChange} disabled={loading}>
-        <SelectTrigger className="h-7 w-36 text-xs font-medium bg-white border border-gray-200 shadow-none px-2.5 text-gray-600 hover:border-gray-300 transition-colors">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent className="text-xs font-medium">
-          <SelectItem value={status} className="text-xs">{BOOKING_STATUS_LABELS[status]}</SelectItem>
-          {next.map((s) => (
-            <SelectItem key={s} value={s} className="text-xs">{BOOKING_STATUS_LABELS[s]}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+  // Solo botones de acción (fila inferior en móvil)
+  if (variant === "buttons") {
+    return (
+      <div className="flex gap-2">
+        {next.map((s) => (
+          <button
+            key={s}
+            onClick={() => void handleChange(s)}
+            disabled={loading}
+            className={`flex-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${ACTION_STYLE[s] ?? ""}`}
+          >
+            {ACTION_LABEL[s] ?? BOOKING_STATUS_LABELS[s]}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
-      {/* PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
-      {showPropose && (
-        <ProponerHoraPicker
-          garageId={garageId}
-          excludeBookingId={bookingId}
-          onSelect={handlePropose}
-          onCancel={() => { setShowPropose(false); setProposeError(""); }}
-          loading={loading}
-          error={proposeError}
-        />
-      )}
-      */}
-    </div>
+  // Select (desktop)
+  return (
+    <Select value={status} onValueChange={handleChange} disabled={loading}>
+      <SelectTrigger className="h-7 w-36 text-xs font-medium bg-white border border-gartify-blue/30 shadow-none px-2.5 text-gartify-blue/70 hover:border-gartify-blue/50 transition-colors">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent className="text-xs font-medium text-gartify-blue">
+        <SelectItem value={status} className="text-xs text-gartify-blue/70">{BOOKING_STATUS_LABELS[status]}</SelectItem>
+        {next.map((s) => (
+          <SelectItem key={s} value={s} className="text-xs text-gartify-blue">{BOOKING_STATUS_LABELS[s]}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

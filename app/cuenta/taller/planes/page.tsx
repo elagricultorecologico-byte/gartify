@@ -40,7 +40,7 @@ export default async function PlanesPage() {
   const tieneSuscripcionActiva = !!taller.stripeSubscriptionId;
 
   return (
-    <div className="container max-w-5xl py-10">
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       {/* Cabecera */}
       <div className="mb-8">
         <Link

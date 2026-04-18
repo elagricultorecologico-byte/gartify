@@ -59,6 +59,7 @@ model Garage {
   partOrders     PartOrder[]
   offers         GarageOffer[]
   serviceRecords ServiceRecord[]          // Sellos emitidos por este taller
+  blockedSlots   BlockedSlot[]
   createdAt      DateTime        @default(now())
 }
 
@@ -80,9 +81,11 @@ model GarageSchedule {
   garageId  String
   garage    Garage  @relation(fields: [garageId], references: [id], onDelete: Cascade)
   dayOfWeek Int     // 0=Dom, 1=Lun, 2=Mar, 3=Mié, 4=Jue, 5=Vie, 6=Sáb
-  isOpen    Boolean @default(true)
-  openTime  String  @default("08:00")
-  closeTime String  @default("18:00")
+  isOpen         Boolean @default(true)
+  openTime       String  @default("08:00")
+  closeTime      String  @default("18:00")
+  afternoonStart String? // null = jornada continua
+  afternoonEnd   String?
 
   @@unique([garageId, dayOfWeek])
 }
@@ -311,4 +314,15 @@ model ServiceRecord {
   // Metadatos
   stampedBy    String?               // Nombre del mecánico o responsable
   createdAt    DateTime @default(now())
+}
+
+
+model BlockedSlot {
+  id        String   @id @default(cuid())
+  garageId  String
+  garage    Garage   @relation(fields: [garageId], references: [id], onDelete: Cascade)
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([garageId, date])
 }

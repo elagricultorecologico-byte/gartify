@@ -33,10 +33,12 @@ export async function GET() {
 }
 
 const daySchema = z.object({
-  dayOfWeek: z.number().int().min(0).max(6),
-  isOpen:    z.boolean(),
-  openTime:  z.string().regex(/^\d{2}:\d{2}$/),
-  closeTime: z.string().regex(/^\d{2}:\d{2}$/),
+  dayOfWeek:     z.number().int().min(0).max(6),
+  isOpen:        z.boolean(),
+  openTime:      z.string().regex(/^\d{2}:\d{2}$/),
+  closeTime:     z.string().regex(/^\d{2}:\d{2}$/),
+  afternoonStart: z.string().regex(/^\d{2}:\d{2}$/).nullable().optional(),
+  afternoonEnd:   z.string().regex(/^\d{2}:\d{2}$/).nullable().optional(),
 });
 
 const schema = z.array(daySchema).length(7);
@@ -58,7 +60,13 @@ export async function PUT(req: Request) {
       db.garageSchedule.upsert({
         where:  { garageId_dayOfWeek: { garageId: garage.id, dayOfWeek: day.dayOfWeek } },
         create: { garageId: garage.id, ...day },
-        update: { isOpen: day.isOpen, openTime: day.openTime, closeTime: day.closeTime },
+        update: {
+          isOpen:         day.isOpen,
+          openTime:       day.openTime,
+          closeTime:      day.closeTime,
+          afternoonStart: day.afternoonStart ?? null,
+          afternoonEnd:   day.afternoonEnd   ?? null,
+        },
       })
     )
   );

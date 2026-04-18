@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Tag, Lock } from "lucide-react";
+import { Tag, Lock } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { GarageOfferForm } from "@/components/cuenta/GarageOfferForm";
@@ -43,15 +43,7 @@ export default async function OfertasPage() {
   const planPermitido = taller.plan === "PRO" || taller.plan === "PREMIUM";
 
   return (
-    <div className="container max-w-3xl py-10">
-      <Link
-        href="/cuenta/taller"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gartify-blue mb-6"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Panel del taller
-      </Link>
-
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       <h1 className="text-2xl font-bold text-gartify-blue mb-6">Ofertas de horario</h1>
 
       {!planPermitido ? (

@@ -37,6 +37,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const data = schema.parse(body);
 
+    const bookingDate = new Date(data.date);
+    if (bookingDate <= new Date()) {
+      return NextResponse.json({ error: "No se puede reservar en una fecha u hora pasada" }, { status: 400 });
+    }
+
     const service = await db.garageService.findUnique({ where: { id: data.serviceId } });
     if (!service) return NextResponse.json({ error: "Servicio no encontrado" }, { status: 404 });
 

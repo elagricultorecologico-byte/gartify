@@ -425,7 +425,7 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
                       </div>
                       <div className="grid grid-cols-4 gap-2">
                         {group.map((slot) => {
-                          const isBlocked  = blockedSlots.has(slot);
+                          const isBlocked  = blockedSlots.has(slot) || new Date(slot) <= new Date();
                           const isSelected = selectedSlot === slot;
                           return (
                             <button

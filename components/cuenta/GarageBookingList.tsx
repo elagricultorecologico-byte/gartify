@@ -29,14 +29,7 @@ const STATUS_TABS = [
   { value: "CANCELLED", label: "Canceladas" },
 ] as const;
 
-const COUNT_COLOR: Record<string, string> = {
-  ALL:       "bg-gray-200 text-gray-700",
-  PENDING:   "bg-yellow-100 text-yellow-700",
-  PROPOSED:  "bg-purple-100 text-purple-700",
-  CONFIRMED: "bg-green-100 text-green-700",
-  COMPLETED: "bg-slate-100 text-slate-600",
-  CANCELLED: "bg-red-100 text-red-600",
-};
+const COUNT_COLOR = "bg-gray-100 text-gray-500";
 
 const STATUS_BAND: Record<string, string> = {
   PENDING:   "bg-yellow-50  text-yellow-700  border-yellow-200",
@@ -103,7 +96,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
             placeholder="Nombre, matrícula…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+            className="pl-9 text-sm bg-white border-gray-200 focus-visible:ring-gartify-blue/30 placeholder:text-gartify-gray"
           />
         </div>
       </div>
@@ -138,7 +131,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
               >
                 <span>{tab.label}</span>
                 <span className={`text-xs font-bold rounded-full px-2 py-0.5 leading-none ${
-                  active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
+                  active ? "bg-white/20 text-white" : COUNT_COLOR
                 }`}>
                   {count}
                 </span>
@@ -201,7 +194,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                     placeholder="Nombre, matrícula…"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+                    className="pl-9 text-sm bg-white border-gray-200 focus-visible:ring-gartify-blue/30 placeholder:text-gartify-gray"
                   />
                 </div>
               </div>
@@ -233,7 +226,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                       >
                         <span className="truncate">{tab.label}</span>
                         <span className={`shrink-0 text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
-                          active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
+                          active ? "bg-white/20 text-white" : COUNT_COLOR
                         }`}>{count}</span>
                       </button>
                     );
@@ -309,14 +302,14 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
   const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
   return (
-    <article className={`bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden ${isPast ? "opacity-70" : ""}`}>
+    <article className={`bg-white rounded-xl border border-gartify-blue/20 shadow-sm hover:shadow-md hover:border-gartify-blue/40 transition-shadow overflow-hidden ${isPast ? "opacity-70" : ""}`}>
 
       {/* ── BANDA DE ESTADO — solo móvil ──────────────────────────────── */}
       <div className={`sm:hidden flex items-center justify-between gap-2 px-4 py-2 border-b ${bandClasses}`}>
         <span className="text-xs font-bold uppercase tracking-wide">
           {BOOKING_STATUS_LABELS[b.status] ?? b.status}
         </span>
-        <span className="text-xs opacity-75">{fechaFormateada}</span>
+        <span className="text-[11px] font-mono opacity-60">{codigoReserva}</span>
       </div>
 
       {/* ── CUERPO MÓVIL ──────────────────────────────────────────────── */}
@@ -324,29 +317,29 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
         <div className="flex items-center justify-between gap-2">
           <span className="font-bold text-gartify-blue text-base leading-tight">{b.user.name ?? "Cliente"}</span>
           {b.user.phone && (
-            <a href={`tel:${b.user.phone}`} className="text-xs text-muted-foreground hover:text-gartify-blue transition-colors">
-              {b.user.phone}
+            <a href={`tel:${b.user.phone}`} className="text-xs text-gray-500 hover:text-gartify-blue transition-colors flex items-center gap-0.5">
+              <Phone className="inline h-3 w-3" aria-hidden="true" />{b.user.phone}
             </a>
           )}
         </div>
-        <p className="text-sm text-gartify-gray font-medium">
-          <Wrench className="inline h-3.5 w-3.5 mr-1 text-gartify-mid" aria-hidden="true" />
+        <p className="text-xs text-gray-500">{fechaFormateada}</p>
+        <p className="text-sm text-gray-700 font-medium">
+          <Wrench className="inline h-3.5 w-3.5 mr-1 text-gray-400" aria-hidden="true" />
           {SERVICE_LABELS[b.service.type] ?? b.service.name}
-          <span className="text-gray-400 mx-1">·</span>
-          {b.service.duration} min
+          <span className="text-gray-400 font-normal ml-1">({b.service.duration} min)</span>
         </p>
         {(b.vehicleModel || b.vehiclePlate) && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-gray-500">
             {b.vehicleModel}
             {b.vehicleModel && b.vehiclePlate && " · "}
             {b.vehiclePlate && <span className="font-mono font-semibold text-gartify-blue">{b.vehiclePlate}</span>}
           </p>
         )}
-        {b.notes && <p className="text-xs text-muted-foreground italic">{b.notes}</p>}
-        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+        {b.notes && <p className="text-xs text-gray-400 italic">{b.notes}</p>}
+        <div className="flex items-center pt-2 border-t border-gray-100">
           <span className="text-xl font-extrabold text-gartify-orange">{formatPrice(b.totalPrice)}</span>
-          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
         </div>
+        <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} variant="buttons" />
         {b.status === "COMPLETED" && (
           <SelloReservaButton
             bookingId={b.id}
@@ -356,55 +349,63 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
             hasRecord={!!b.serviceRecord}
           />
         )}
-        <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
       </div>
 
       {/* ── CUERPO DESKTOP ────────────────────────────────────────────── */}
-      <div className="hidden sm:flex items-center gap-4 px-4 py-3">
-        {/* Avatar */}
-        <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
-          {(b.user.name ?? "C").split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
-        </div>
+      <div className="hidden sm:block px-4 py-3 space-y-2">
 
-        {/* Info principal */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-gartify-blue text-sm">{b.user.name ?? "Cliente"}</span>
+        {/* Fila 1: cliente + estado */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
+              {(b.user.name ?? "C").split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
+            </div>
+            <span className="font-bold text-gartify-blue text-sm truncate">{b.user.name ?? "Cliente"}</span>
             {b.user.phone && (
-              <a href={`tel:${b.user.phone}`} className="text-xs text-muted-foreground hover:text-gartify-blue transition-colors">
-                <Phone className="inline h-3 w-3 mr-0.5" aria-hidden="true" />{b.user.phone}
+              <a href={`tel:${b.user.phone}`} className="text-xs text-gray-500 hover:text-gartify-blue transition-colors flex items-center gap-0.5 shrink-0">
+                <Phone className="h-3 w-3" aria-hidden="true" />{b.user.phone}
               </a>
             )}
           </div>
-          <p className="text-sm text-gartify-gray mt-0.5">
-            <Wrench className="inline h-3.5 w-3.5 mr-1 text-gartify-mid" aria-hidden="true" />
-            {SERVICE_LABELS[b.service.type] ?? b.service.name}
-          </p>
-          <p className="text-xs text-muted-foreground mt-0.5 flex flex-wrap gap-x-2">
-            <span>{fechaFormateada}</span>
-            <span className="text-gray-300">·</span>
-            <span>{b.service.duration} min</span>
-            {b.vehicleModel && <><span className="text-gray-300">·</span><span>{b.vehicleModel}</span></>}
-            {b.vehiclePlate && <span className="font-mono font-semibold text-gartify-blue">{b.vehiclePlate}</span>}
-          </p>
-          {b.notes && <p className="text-xs text-muted-foreground italic mt-0.5">{b.notes}</p>}
-          <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
+          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
         </div>
 
-        {/* Derecha: precio + estado + sello */}
-        <div className="flex flex-col items-end gap-1.5 shrink-0">
-          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
-          <span className="text-lg font-extrabold text-gartify-orange">{formatPrice(b.totalPrice)}</span>
-            {/* Sello de revisión — solo para reservas completadas */}
-          {b.status === "COMPLETED" && (
-            <SelloReservaButton
-              bookingId={b.id}
-              serviceName={b.service.name}
-              vehiclePlate={b.vehiclePlate}
-              vehicleModel={b.vehicleModel}
-              hasRecord={!!b.serviceRecord}
-            />
-          )}
+        {/* Fila 2: servicio + precio */}
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm text-gray-700 font-medium flex items-center gap-1 min-w-0">
+            <Wrench className="h-3.5 w-3.5 text-gray-400 shrink-0" aria-hidden="true" />
+            <span className="truncate">{SERVICE_LABELS[b.service.type] ?? b.service.name}</span>
+            <span className="text-gray-400 font-normal shrink-0">({b.service.duration} min)</span>
+          </p>
+          <span className="text-lg font-extrabold text-gartify-orange shrink-0">{formatPrice(b.totalPrice)}</span>
+        </div>
+
+        {/* Fila 3: metadatos */}
+        {(b.vehicleModel || b.vehiclePlate) && (
+          <p className="text-xs text-gray-500 flex flex-wrap items-center gap-x-1.5">
+            {b.vehicleModel && <span>{b.vehicleModel}</span>}
+            {b.vehiclePlate && <><span className="text-gray-300">·</span><span className="font-mono font-semibold text-gartify-blue">{b.vehiclePlate}</span></>}
+          </p>
+        )}
+
+        {/* Fila 4: código + fecha (derecha) + sello */}
+        <div className="flex items-center justify-between gap-4 pt-1 border-t border-gray-100">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-[11px] font-mono text-gray-400 shrink-0">{codigoReserva}</span>
+            {b.notes && <p className="text-xs text-gray-400 italic truncate">{b.notes}</p>}
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="text-xs text-gray-500">{fechaFormateada}</span>
+            {b.status === "COMPLETED" && (
+              <SelloReservaButton
+                bookingId={b.id}
+                serviceName={b.service.name}
+                vehiclePlate={b.vehiclePlate}
+                vehicleModel={b.vehicleModel}
+                hasRecord={!!b.serviceRecord}
+              />
+            )}
+          </div>
         </div>
       </div>
     </article>

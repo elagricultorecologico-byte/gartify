@@ -17,7 +17,7 @@ export default async function RecambiosPage() {
   if (user.role !== "GARAGE_OWNER") redirect("/cuenta");
 
   return (
-    <div className="container max-w-6xl py-10">
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gartify-blue flex items-center gap-2">

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, CreditCard, Wrench, Tag, CalendarClock, User, Truck, Car, CalendarDays } from "lucide-react";
+import { Menu, X, LogOut, Settings, CalendarClock, User, Truck, Car, Zap, Crown } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -26,12 +26,12 @@ export function Navbar() {
     : isGarageOwner ? "bg-blue-400/20 text-blue-200"
     : isDistributor ? "bg-orange-400/20 text-orange-200"
     : "bg-white/10 text-white/60";
-  const [counts, setCounts] = useState<{ services: number; offers: number } | null>(null);
+  const [counts, setCounts] = useState<{ name: string; plan: string; services: number; offers: number } | null>(null);
 
   const fetchCounts = useCallback(async () => {
     if (!isGarageOwner) return;
     const res = await fetch("/api/garage/counts");
-    if (res.ok) setCounts(await res.json() as { services: number; offers: number });
+    if (res.ok) setCounts(await res.json() as { name: string; plan: string; services: number; offers: number });
   }, [isGarageOwner]);
 
   useEffect(() => {
@@ -44,8 +44,13 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Fetch garage data eagerly para GARAGE_OWNER (nombre + plan en el avatar)
   useEffect(() => {
-    if (dropdownOpen) fetchCounts();
+    void fetchCounts();
+  }, [fetchCounts]);
+
+  useEffect(() => {
+    if (dropdownOpen) void fetchCounts();
   }, [dropdownOpen, fetchCounts]);
 
   return (
@@ -72,56 +77,60 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           {session ? (
             <div className="relative" ref={dropdownRef}>
-              {/* Avatar trigger */}
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors"
-              >
-                <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
-                  {initial}
+              {/* Avatar — para GARAGE_OWNER: estático. Para otros roles: abre dropdown */}
+              {isGarageOwner ? (
+                <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1">
+                    <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                      {initial}
+                    </div>
+                    <div className="flex flex-col items-start">
+                      {counts ? (
+                        <>
+                          <span className="text-white text-sm font-semibold leading-tight max-w-[140px] truncate">{counts.name}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-tight inline-flex items-center gap-1 ${
+                            counts.plan === "PRO"     ? "bg-blue-400/20 text-blue-200" :
+                            counts.plan === "PREMIUM" ? "bg-amber-400/20 text-amber-200" :
+                                                        "bg-white/10 text-white/60"
+                          }`}>
+                            {counts.plan === "PRO"     && <Zap   className="h-2.5 w-2.5" />}
+                            {counts.plan === "PREMIUM" && <Crown className="h-2.5 w-2.5" />}
+                            {counts.plan === "STARTER" ? "Starter" : counts.plan === "PRO" ? "Pro" : "Premium"}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                      )}
+                    </div>
+                  </div>
+                  <Link href="/cuenta/taller/perfil" title="Perfil del taller" className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+                    <Settings className="h-4 w-4" />
+                  </Link>
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
-                  <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
-                </div>
-              </button>
+              ) : (
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors"
+                >
+                  <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    {initial}
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
+                  </div>
+                </button>
+              )}
 
-              {/* Dropdown */}
-              {dropdownOpen && (
+              {/* Dropdown — solo para roles que no son GARAGE_OWNER */}
+              {!isGarageOwner && dropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
-                  {/* Header */}
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="text-xs text-muted-foreground">Conectado como</p>
                     <p className="text-sm font-semibold text-gartify-blue truncate">{session.user?.name}</p>
                   </div>
 
-                  {/* Links según rol */}
-                  {isGarageOwner ? (
-                    <>
-                      <Link href="/cuenta/taller" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <Settings className="h-4 w-4 text-gartify-blue" />Mi portal
-                      </Link>
-                      <Link href="/cuenta/taller/agenda" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <CalendarDays className="h-4 w-4 text-gartify-blue" />Agenda
-                      </Link>
-                      <Link href="/cuenta/taller/perfil" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <User className="h-4 w-4 text-gartify-blue" />Perfil del taller
-                      </Link>
-                      <Link href="/cuenta/taller/servicios" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <Wrench className="h-4 w-4 text-gartify-blue" />
-                        Servicios
-                        {counts && <span className="ml-auto text-xs text-muted-foreground">({counts.services})</span>}
-                      </Link>
-                      <Link href="/cuenta/taller/ofertas" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <Tag className="h-4 w-4 text-gartify-blue" />
-                        Ofertas
-                        {counts && <span className="ml-auto text-xs text-muted-foreground">({counts.offers})</span>}
-                      </Link>
-                      <Link href="/cuenta/taller/planes" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <CreditCard className="h-4 w-4 text-gartify-blue" />Planes
-                      </Link>
-                    </>
-                  ) : isAdmin ? (
+                  {isAdmin ? (
                     <Link href="/admin" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Settings className="h-4 w-4 text-gartify-blue" />Panel admin
                     </Link>
@@ -143,7 +152,6 @@ export function Navbar() {
                     </>
                   )}
 
-                  {/* Cerrar sesión */}
                   <div className="border-t border-gray-100 mt-1 pt-1">
                     <button
                       onClick={() => signOut({ callbackUrl: "/" })}
@@ -172,9 +180,16 @@ export function Navbar() {
         </div>
 
         {/* Mobile toggle */}
-        <button className="md:hidden text-white" onClick={() => setOpen(!open)}>
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="md:hidden flex items-center gap-1">
+          {isGarageOwner && (
+            <Link href="/cuenta/taller/perfil" title="Perfil del taller" className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+              <Settings className="h-4 w-4" />
+            </Link>
+          )}
+          <button className="text-white p-1" onClick={() => setOpen(!open)}>
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -199,11 +214,14 @@ export function Navbar() {
               </div>
               {isGarageOwner ? (
                 <>
-                  <Link href="/cuenta/taller" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Mi portal</Link>
+                  <Link href="/cuenta/taller" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Reservas</Link>
                   <Link href="/cuenta/taller/agenda" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Agenda</Link>
                   <Link href="/cuenta/taller/servicios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Servicios</Link>
-                  <Link href="/cuenta/taller/perfil" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Perfil del taller</Link>
-                  <Link href="/cuenta/taller/planes" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Planes y suscripcion</Link>
+                  <Link href="/cuenta/taller/horario" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Horario</Link>
+                  <Link href="/cuenta/taller/ofertas" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Ofertas</Link>
+                  <Link href="/cuenta/taller/recambios" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Recambios</Link>
+                  <Link href="/cuenta/taller/planes" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Mi plan</Link>
+                  <Link href="/cuenta/taller/tv" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Modo TV</Link>
                 </>
               ) : isDistributor ? (
                 <Link href="/distribuidor/dashboard" className="block text-sm text-white font-semibold" onClick={() => setOpen(false)}>Mi dashboard</Link>

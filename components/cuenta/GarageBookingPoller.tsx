@@ -63,7 +63,7 @@ export function GarageBookingPoller({ initialBookings, garageId, garageRating }:
 
     return [
       { icon: "Calendar"    as const, label: "Pendientes",  value: pending,                   color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
-      { icon: "TrendingUp"  as const, label: "Confirmadas", value: confirmed,                 color: "text-gartify-mid",    bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "TrendingUp"  as const, label: "Confirmadas", value: confirmed,                 color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
       { icon: "Euro"        as const, label: "Facturado",   value: formatPrice(revenue),      color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
       { icon: "Star"        as const, label: "Valoración",  value: garageRating.toFixed(1),   color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
     ];

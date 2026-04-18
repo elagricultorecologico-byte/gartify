@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { ServiciosManager } from "@/components/cuenta/ServiciosManager";
 
@@ -40,11 +39,7 @@ export default async function ServiciosPage() {
   if (!garage) redirect("/cuenta/taller/perfil");
 
   return (
-    <div className="container max-w-6xl py-8">
-      <Link href="/cuenta/taller" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gartify-blue mb-4">
-        <ChevronLeft className="h-4 w-4" />
-        Panel del taller
-      </Link>
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       <h1 className="text-2xl font-bold text-gartify-blue mb-6">Servicios</h1>
 
       <ServiciosManager garageId={garage.id} initialServices={garage.services} />
