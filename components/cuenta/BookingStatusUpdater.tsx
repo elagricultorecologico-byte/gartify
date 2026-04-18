@@ -69,18 +69,13 @@ export function BookingStatusUpdater({ bookingId, currentStatus }: { bookingId: 
   return (
     <div className="flex flex-col items-end gap-1.5">
       <Select value={status} onValueChange={handleChange} disabled={loading}>
-        <SelectTrigger className={`h-8 w-40 text-xs font-semibold bg-white border-0 shadow-sm px-3 ${BOOKING_STATUS_COLORS[status]}`}>
+        <SelectTrigger className="h-7 w-36 text-xs font-medium bg-white border border-gray-200 shadow-none px-2.5 text-gray-600 hover:border-gray-300 transition-colors">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={status}>{BOOKING_STATUS_LABELS[status]}</SelectItem>
-          {/* PROPONER HORA — desactivado temporalmente (descomentar cuando se reactive)
-          {canPropose && (
-            <SelectItem value="__PROPOSE__">🕐 Proponer nueva hora</SelectItem>
-          )}
-          */}
+        <SelectContent className="text-xs font-medium">
+          <SelectItem value={status} className="text-xs">{BOOKING_STATUS_LABELS[status]}</SelectItem>
           {next.map((s) => (
-            <SelectItem key={s} value={s}>{BOOKING_STATUS_LABELS[s]}</SelectItem>
+            <SelectItem key={s} value={s} className="text-xs">{BOOKING_STATUS_LABELS[s]}</SelectItem>
           ))}
         </SelectContent>
       </Select>

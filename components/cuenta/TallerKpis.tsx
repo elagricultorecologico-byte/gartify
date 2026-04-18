@@ -32,13 +32,10 @@ export function TallerKpis({ stats }: { stats: KpiData[] }) {
       <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 ${!visible ? "hidden lg:grid" : "grid"}`}>
         {stats.map(({ icon, label, value, color, bg, border }) => {
           const Icon = ICON_MAP[icon];
-          const isPendientes = label === "Pendientes" && Number(value) > 0;
           return (
             <div
               key={label}
-              className={`rounded-xl border ${border} ${bg} px-4 py-3 flex flex-col gap-1 ${
-                isPendientes ? "ring-2 ring-amber-400/60 ring-offset-1" : ""
-              }`}
+              className={`rounded-xl border ${border} ${bg} px-4 py-3 flex flex-col gap-1`}
             >
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>

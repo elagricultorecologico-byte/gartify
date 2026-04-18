@@ -62,10 +62,10 @@ export function GarageBookingPoller({ initialBookings, garageId, garageRating }:
       .reduce((s, b) => s + b.totalPrice, 0);
 
     return [
-      { icon: "Calendar"    as const, label: "Pendientes",  value: pending,                   color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
-      { icon: "TrendingUp"  as const, label: "Confirmadas", value: confirmed,                 color: "text-gartify-mid",    bg: "bg-blue-50",    border: "border-blue-100" },
-      { icon: "Euro"        as const, label: "Facturado",   value: formatPrice(revenue),      color: "text-gartify-orange", bg: "bg-orange-50",  border: "border-orange-100" },
-      { icon: "Star"        as const, label: "Valoración",  value: garageRating.toFixed(1),   color: "text-yellow-500",     bg: "bg-yellow-50",  border: "border-yellow-100" },
+      { icon: "Calendar"    as const, label: "Pendientes",  value: pending,                   color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "TrendingUp"  as const, label: "Confirmadas", value: confirmed,                 color: "text-gartify-mid",    bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "Euro"        as const, label: "Facturado",   value: formatPrice(revenue),      color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "Star"        as const, label: "Valoración",  value: garageRating.toFixed(1),   color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
     ];
   }, [reservas, garageRating]);
 

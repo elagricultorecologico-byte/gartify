@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Car, Clock, Timer, FileText, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { Clock, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
 import { SelloReservaButton } from "@/components/cuenta/SelloReservaButton";
@@ -46,14 +46,6 @@ const STATUS_BAND: Record<string, string> = {
   CANCELLED: "bg-red-50     text-red-500     border-red-200",
 };
 
-// Acento lateral de color según estado (reemplaza el border gris plano)
-const STATUS_ACCENT: Record<string, string> = {
-  PENDING:   "#F59E0B",  // amber
-  PROPOSED:  "#8B5CF6",  // violet
-  CONFIRMED: "#10B981",  // emerald
-  COMPLETED: "#94A3B8",  // slate
-  CANCELLED: "#F87171",  // red
-};
 
 const POR_PAGINA = 10;
 
@@ -163,7 +155,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
 
       {/* ── SIDEBAR DESKTOP ─────────────────────────────────────────────── */}
       <aside className="hidden lg:block lg:w-64 lg:shrink-0 lg:sticky lg:top-24">
-        <div className="bg-gray-50/80 border border-gray-100 rounded-xl shadow-none p-4">
+        <div className="bg-blue-50 border border-gartify-blue/40 rounded-xl shadow-none p-4">
           <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
             <SlidersHorizontal className="h-4 w-4 shrink-0" />
             <span className="text-sm font-semibold">Filtros</span>
@@ -181,7 +173,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
       <div className="flex-1 min-w-0 space-y-3">
 
         {/* Panel colapsable — solo móvil */}
-        <div className="lg:hidden bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="lg:hidden bg-blue-50 border border-gartify-blue/40 rounded-xl shadow-none overflow-hidden">
           <button
             type="button"
             className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
@@ -316,64 +308,95 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
   const codigoReserva = b.code ?? b.id.slice(-8).toUpperCase();
   const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
-  const accentColor = STATUS_ACCENT[b.status] ?? "#E5E7EB";
-
   return (
-    <article
-      className={`relative bg-white rounded-xl shadow-sm hover:shadow-[0_4px_20px_-4px_rgba(30,64,175,0.15)] transition-all overflow-hidden ${isPast ? "opacity-75" : ""}`}
-      style={{ borderLeft: `4px solid ${accentColor}` }}
-    >
+    <article className={`bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden ${isPast ? "opacity-70" : ""}`}>
+
       {/* ── BANDA DE ESTADO — solo móvil ──────────────────────────────── */}
       <div className={`sm:hidden flex items-center justify-between gap-2 px-4 py-2 border-b ${bandClasses}`}>
         <span className="text-xs font-bold uppercase tracking-wide">
           {BOOKING_STATUS_LABELS[b.status] ?? b.status}
         </span>
-        <span className="flex items-center gap-1 text-xs opacity-75">
-          <Clock className="h-3 w-3" aria-hidden="true" />{fechaFormateada}
-        </span>
+        <span className="text-xs opacity-75">{fechaFormateada}</span>
       </div>
 
       {/* ── CUERPO MÓVIL ──────────────────────────────────────────────── */}
-      <div className="sm:hidden flex flex-col gap-2.5 px-4 py-3">
-        <div className="flex flex-col gap-0.5">
+      <div className="sm:hidden flex flex-col gap-2 px-4 py-3">
+        <div className="flex items-center justify-between gap-2">
           <span className="font-bold text-gartify-blue text-base leading-tight">{b.user.name ?? "Cliente"}</span>
           {b.user.phone && (
-            <a href={`tel:${b.user.phone}`} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-gartify-blue transition-colors w-fit">
-              <Phone className="h-3 w-3" aria-hidden="true" />{b.user.phone}
+            <a href={`tel:${b.user.phone}`} className="text-xs text-muted-foreground hover:text-gartify-blue transition-colors">
+              {b.user.phone}
             </a>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
-            <Wrench className="h-3 w-3" aria-hidden="true" />{SERVICE_LABELS[b.service.type] ?? b.service.name}
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 text-gartify-gray text-xs px-2.5 py-0.5 font-medium">
-            <Clock className="h-3 w-3" aria-hidden="true" />{b.service.duration} min
-          </span>
-        </div>
+        <p className="text-sm text-gartify-gray font-medium">
+          <Wrench className="inline h-3.5 w-3.5 mr-1 text-gartify-mid" aria-hidden="true" />
+          {SERVICE_LABELS[b.service.type] ?? b.service.name}
+          <span className="text-gray-400 mx-1">·</span>
+          {b.service.duration} min
+        </p>
         {(b.vehicleModel || b.vehiclePlate) && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Car className="h-3.5 w-3.5 text-gartify-mid shrink-0" aria-hidden="true" />
-            {b.vehicleModel && <span>{b.vehicleModel}</span>}
-            {b.vehicleModel && b.vehiclePlate && <span className="text-gray-300">·</span>}
-            {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue">{b.vehiclePlate}</span>}
-          </div>
+          <p className="text-xs text-muted-foreground">
+            {b.vehicleModel}
+            {b.vehicleModel && b.vehiclePlate && " · "}
+            {b.vehiclePlate && <span className="font-mono font-semibold text-gartify-blue">{b.vehiclePlate}</span>}
+          </p>
         )}
-        {b.notes && (
-          <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-2 text-xs text-muted-foreground">
-            <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" /><span>{b.notes}</span>
-          </div>
-        )}
-        <div className="flex flex-col items-center pt-2 border-t border-gray-100">
-          <span className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">Total</span>
-          <span className="text-2xl font-extrabold text-gartify-orange leading-none">{formatPrice(b.totalPrice)}</span>
-        </div>
-        <div className="flex justify-center">
+        {b.notes && <p className="text-xs text-muted-foreground italic">{b.notes}</p>}
+        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+          <span className="text-xl font-extrabold text-gartify-orange">{formatPrice(b.totalPrice)}</span>
           <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
         </div>
-        {/* Sello de revisión — solo para reservas completadas */}
         {b.status === "COMPLETED" && (
-          <div className="flex justify-center">
+          <SelloReservaButton
+            bookingId={b.id}
+            serviceName={b.service.name}
+            vehiclePlate={b.vehiclePlate}
+            vehicleModel={b.vehicleModel}
+            hasRecord={!!b.serviceRecord}
+          />
+        )}
+        <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
+      </div>
+
+      {/* ── CUERPO DESKTOP ────────────────────────────────────────────── */}
+      <div className="hidden sm:flex items-center gap-4 px-4 py-3">
+        {/* Avatar */}
+        <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
+          {(b.user.name ?? "C").split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
+        </div>
+
+        {/* Info principal */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-gartify-blue text-sm">{b.user.name ?? "Cliente"}</span>
+            {b.user.phone && (
+              <a href={`tel:${b.user.phone}`} className="text-xs text-muted-foreground hover:text-gartify-blue transition-colors">
+                <Phone className="inline h-3 w-3 mr-0.5" aria-hidden="true" />{b.user.phone}
+              </a>
+            )}
+          </div>
+          <p className="text-sm text-gartify-gray mt-0.5">
+            <Wrench className="inline h-3.5 w-3.5 mr-1 text-gartify-mid" aria-hidden="true" />
+            {SERVICE_LABELS[b.service.type] ?? b.service.name}
+          </p>
+          <p className="text-xs text-muted-foreground mt-0.5 flex flex-wrap gap-x-2">
+            <span>{fechaFormateada}</span>
+            <span className="text-gray-300">·</span>
+            <span>{b.service.duration} min</span>
+            {b.vehicleModel && <><span className="text-gray-300">·</span><span>{b.vehicleModel}</span></>}
+            {b.vehiclePlate && <span className="font-mono font-semibold text-gartify-blue">{b.vehiclePlate}</span>}
+          </p>
+          {b.notes && <p className="text-xs text-muted-foreground italic mt-0.5">{b.notes}</p>}
+          <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
+        </div>
+
+        {/* Derecha: precio + estado + sello */}
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
+          <span className="text-lg font-extrabold text-gartify-orange">{formatPrice(b.totalPrice)}</span>
+            {/* Sello de revisión — solo para reservas completadas */}
+          {b.status === "COMPLETED" && (
             <SelloReservaButton
               bookingId={b.id}
               serviceName={b.service.name}
@@ -381,64 +404,7 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
               vehicleModel={b.vehicleModel}
               hasRecord={!!b.serviceRecord}
             />
-          </div>
-        )}
-        <div className="flex justify-center pt-1">
-          <span className="text-[11px] font-mono text-muted-foreground">{codigoReserva}</span>
-        </div>
-      </div>
-
-      {/* ── CUERPO DESKTOP ────────────────────────────────────────────── */}
-      <div className="hidden sm:block px-4 py-3 relative">
-        <div className="absolute top-3 right-4 flex flex-col items-end gap-1.5">
-          <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
-          <span className="text-lg font-extrabold text-gartify-orange leading-none">{formatPrice(b.totalPrice)}</span>
-        </div>
-        <div className="flex items-start gap-3">
-          <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
-            {(b.user.name ?? "C").split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="pr-44">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-gartify-blue text-sm">{b.user.name ?? "Cliente"}</span>
-                {b.user.phone && (
-                  <a href={`tel:${b.user.phone}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-gartify-blue transition-colors">
-                    <Phone className="h-3 w-3" aria-hidden="true" />{b.user.phone}
-                  </a>
-                )}
-              </div>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
-                  <Wrench className="h-3 w-3" aria-hidden="true" />{SERVICE_LABELS[b.service.type] ?? b.service.name}
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{fechaFormateada}</span>
-                <span className="flex items-center gap-1"><Timer className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.service.duration} min</span>
-                {b.vehicleModel && <span className="flex items-center gap-1"><Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.vehicleModel}</span>}
-                {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue">{b.vehiclePlate}</span>}
-              </div>
-              {b.notes && (
-                <div className="flex items-start gap-1.5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-1.5 text-xs text-muted-foreground mt-2">
-                  <FileText className="h-3 w-3 shrink-0 mt-0.5 text-gartify-mid" aria-hidden="true" /><span>{b.notes}</span>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center justify-start mt-1">
-              <span className="text-xs font-mono text-muted-foreground">{codigoReserva}</span>
-            </div>
-            {/* Sello de revisión — solo para reservas completadas */}
-            {b.status === "COMPLETED" && (
-              <SelloReservaButton
-                bookingId={b.id}
-                serviceName={b.service.name}
-                vehiclePlate={b.vehiclePlate}
-                vehicleModel={b.vehicleModel}
-                hasRecord={!!b.serviceRecord}
-              />
-            )}
-          </div>
+          )}
         </div>
       </div>
     </article>
