@@ -23,8 +23,6 @@ interface ItemNavegacion {
   exact?: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface PropsSidebarTaller {}
 
 // ── Datos estáticos de navegación ────────────────────────────────────────────
 
@@ -120,7 +118,7 @@ function ContenidoSidebar({
 
 // ── Componente principal ─────────────────────────────────────────────────────
 
-export function SidebarTaller(_props: PropsSidebarTaller) {
+export function SidebarTaller() {
   const pathname = usePathname();
 
   return (
