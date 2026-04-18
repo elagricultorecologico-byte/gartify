@@ -17,8 +17,6 @@ interface PropsTallerShell {
  */
 export function TallerShell({
   children,
-  garageName,
-  plan,
 }: PropsTallerShell) {
   const pathname = usePathname();
 
