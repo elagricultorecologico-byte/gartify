@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Car, Clock, FileText, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { Car, Clock, Timer, FileText, Phone, Search, Wrench, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BookingStatusUpdater } from "@/components/cuenta/BookingStatusUpdater";
 import { SelloReservaButton } from "@/components/cuenta/SelloReservaButton";
@@ -44,6 +44,15 @@ const STATUS_BAND: Record<string, string> = {
   CONFIRMED: "bg-green-50   text-green-700   border-green-200",
   COMPLETED: "bg-slate-50   text-slate-500   border-slate-200",
   CANCELLED: "bg-red-50     text-red-500     border-red-200",
+};
+
+// Acento lateral de color según estado (reemplaza el border gris plano)
+const STATUS_ACCENT: Record<string, string> = {
+  PENDING:   "#F59E0B",  // amber
+  PROPOSED:  "#8B5CF6",  // violet
+  CONFIRMED: "#10B981",  // emerald
+  COMPLETED: "#94A3B8",  // slate
+  CANCELLED: "#F87171",  // red
 };
 
 const POR_PAGINA = 10;
@@ -154,7 +163,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
 
       {/* ── SIDEBAR DESKTOP ─────────────────────────────────────────────── */}
       <aside className="hidden lg:block lg:w-64 lg:shrink-0 lg:sticky lg:top-24">
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+        <div className="bg-gray-50/80 border border-gray-100 rounded-xl shadow-none p-4">
           <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
             <SlidersHorizontal className="h-4 w-4 shrink-0" />
             <span className="text-sm font-semibold">Filtros</span>
@@ -307,10 +316,13 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
   const codigoReserva = b.code ?? b.id.slice(-8).toUpperCase();
   const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
+  const accentColor = STATUS_ACCENT[b.status] ?? "#E5E7EB";
+
   return (
-    <article className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all overflow-hidden ${
-      isPast ? "opacity-75 border-gray-100" : "border-gray-200 hover:border-gartify-blue/30"
-    }`}>
+    <article
+      className={`relative bg-white rounded-xl shadow-sm hover:shadow-[0_4px_20px_-4px_rgba(30,64,175,0.15)] transition-all overflow-hidden ${isPast ? "opacity-75" : ""}`}
+      style={{ borderLeft: `4px solid ${accentColor}` }}
+    >
       {/* ── BANDA DE ESTADO — solo móvil ──────────────────────────────── */}
       <div className={`sm:hidden flex items-center justify-between gap-2 px-4 py-2 border-b ${bandClasses}`}>
         <span className="text-xs font-bold uppercase tracking-wide">
@@ -378,8 +390,9 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
 
       {/* ── CUERPO DESKTOP ────────────────────────────────────────────── */}
       <div className="hidden sm:block px-4 py-3 relative">
-        <div className="absolute top-3 right-4">
+        <div className="absolute top-3 right-4 flex flex-col items-end gap-1.5">
           <BookingStatusUpdater bookingId={b.id} currentStatus={b.status} garageId={garageId} />
+          <span className="text-lg font-extrabold text-gartify-orange leading-none">{formatPrice(b.totalPrice)}</span>
         </div>
         <div className="flex items-start gap-3">
           <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
@@ -402,7 +415,7 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
               </div>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{fechaFormateada}</span>
-                <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.service.duration} min</span>
+                <span className="flex items-center gap-1"><Timer className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.service.duration} min</span>
                 {b.vehicleModel && <span className="flex items-center gap-1"><Car className="h-3 w-3 text-gartify-mid" aria-hidden="true" />{b.vehicleModel}</span>}
                 {b.vehiclePlate && <span className="font-mono font-semibold tracking-wider text-gartify-blue">{b.vehiclePlate}</span>}
               </div>
@@ -412,8 +425,7 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
                 </div>
               )}
             </div>
-            <div className="flex items-center justify-between mt-1">
-              <span className="font-bold text-gartify-orange text-sm">{formatPrice(b.totalPrice)}</span>
+            <div className="flex items-center justify-start mt-1">
               <span className="text-xs font-mono text-muted-foreground">{codigoReserva}</span>
             </div>
             {/* Sello de revisión — solo para reservas completadas */}
