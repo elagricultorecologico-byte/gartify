@@ -23,10 +23,8 @@ interface ItemNavegacion {
   exact?: boolean;
 }
 
-interface PropsSidebarTaller {
-  garageName?: string;
-  plan?: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface PropsSidebarTaller {}
 
 // ── Datos estáticos de navegación ────────────────────────────────────────────
 
@@ -122,7 +120,7 @@ function ContenidoSidebar({
 
 // ── Componente principal ─────────────────────────────────────────────────────
 
-export function SidebarTaller({ garageName: _garageName, plan: _plan }: PropsSidebarTaller) {
+export function SidebarTaller(_props: PropsSidebarTaller) {
   const pathname = usePathname();
 
   return (
