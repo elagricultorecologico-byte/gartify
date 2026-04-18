@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import Link from "next/link";
 import { ServiciosManager } from "@/components/cuenta/ServiciosManager";
 
 export const metadata: Metadata = {

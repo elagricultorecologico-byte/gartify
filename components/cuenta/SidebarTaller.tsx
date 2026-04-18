@@ -122,7 +122,7 @@ function ContenidoSidebar({
 
 // ── Componente principal ─────────────────────────────────────────────────────
 
-export function SidebarTaller({ garageName, plan }: PropsSidebarTaller) {
+export function SidebarTaller({ garageName: _garageName, plan: _plan }: PropsSidebarTaller) {
   const pathname = usePathname();
 
   return (
