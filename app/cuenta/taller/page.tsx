@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { CalendarDays } from "lucide-react";
 import type { GarageBookingItem } from "@/components/cuenta/GarageBookingList";
 import { GarageBookingPoller } from "@/components/cuenta/GarageBookingPoller";
 import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
@@ -77,8 +78,21 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
 
   return (
     <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
-      {/* Banner de confirmación de suscripción exitosa */}
       {suscripcionActivada && <BannerExitoSuscripcion plan={garage.plan} />}
+
+      <div className="bg-white border border-gray-200 overflow-hidden mb-5">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <CalendarDays className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-gartify-blue">Reservas</h1>
+              <p className="text-xs text-gartify-gray mt-0.5">Gestiona las citas de {garage.name}</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <GarageBookingPoller initialBookings={reservasRaw} garageId={garage.id} garageRating={garage.rating} />
     </div>

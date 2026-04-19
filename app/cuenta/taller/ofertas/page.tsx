@@ -44,31 +44,38 @@ export default async function OfertasPage() {
 
   return (
     <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
-      <h1 className="text-2xl font-bold text-gartify-blue mb-6">Ofertas de horario</h1>
-
-      {!planPermitido ? (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 text-center">
-          <Lock className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-          <h2 className="font-bold text-amber-800 text-lg mb-1">Función disponible en Plan Pro</h2>
-          <p className="text-sm text-amber-700 mb-4">
-            Las ofertas especiales de horario están incluidas en los planes Pro y Premium.
-          </p>
-          <Link
-            href="/cuenta/taller/planes"
-            className="inline-flex items-center gap-2 bg-gartify-orange text-white text-sm font-semibold px-5 py-2 rounded-lg hover:bg-gartify-orange/90 transition-colors"
-          >
-            Ver planes
-          </Link>
+      <div className="bg-white border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <Tag className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-gartify-blue">Ofertas de horario</h1>
+              <p className="text-xs text-gartify-gray mt-0.5">Crea ofertas especiales por días y horas para atraer más clientes</p>
+            </div>
+          </div>
         </div>
-      ) : (
-        <div className="bg-white rounded-xl border border-gartify-orange/25 shadow-sm p-6">
-          <h2 className="font-bold text-gartify-blue mb-4 flex items-center gap-2">
-            <Tag className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
-            Nueva oferta
-          </h2>
-          <GarageOfferForm ofertas={taller.offers} />
+        <div className="p-6">
+          {!planPermitido ? (
+            <div className="bg-amber-50 border border-amber-200 p-8 text-center">
+              <Lock className="h-10 w-10 text-amber-400 mx-auto mb-3" />
+              <h2 className="font-bold text-amber-800 text-lg mb-1">Función disponible en Plan Pro</h2>
+              <p className="text-sm text-amber-700 mb-4">
+                Las ofertas especiales de horario están incluidas en los planes Pro y Premium.
+              </p>
+              <Link
+                href="/cuenta/taller/planes"
+                className="inline-flex items-center gap-2 bg-gartify-orange text-white text-sm font-semibold px-5 py-2 hover:bg-gartify-orange/90 transition-colors"
+              >
+                Ver planes
+              </Link>
+            </div>
+          ) : (
+            <GarageOfferForm ofertas={taller.offers} />
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -35,7 +35,7 @@ export function TallerKpis({ stats }: { stats: KpiData[] }) {
           return (
             <div
               key={label}
-              className={`rounded-xl border ${border} ${bg} px-4 py-3 flex flex-col gap-1`}
+              className={`border ${border} ${bg} px-4 py-3 flex flex-col gap-1`}
             >
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>

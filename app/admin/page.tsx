@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { Building2, Calendar, Euro, TrendingUp, ChevronRight } from "lucide-react";
+import { Building2, Calendar, Euro, TrendingUp, ChevronRight, LayoutDashboard } from "lucide-react";
 import { formatPrice, formatDateTime, BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS, SERVICE_LABELS } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -52,9 +52,18 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="container max-w-5xl py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gartify-blue">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">Visión global de la plataforma</p>
+      <div className="bg-white border border-gray-200 overflow-hidden mb-8">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <LayoutDashboard className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-gartify-blue">Dashboard</h1>
+              <p className="text-xs text-gartify-gray mt-0.5">Visión global de la plataforma</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">

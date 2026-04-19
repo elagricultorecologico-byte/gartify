@@ -185,21 +185,25 @@ export default async function DistribuidorDashboardPage() {
 
   return (
     <div className="container max-w-5xl py-10">
-      {/* Encabezado */}
-      <div className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gartify-blue">
-            Portal del distribuidor
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {distribuidor.name} · {distribuidor.email}
-          </p>
-        </div>
-        {!distribuidor.isActive && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-            Cuenta inactiva
+      <div className="bg-white border border-gray-200 overflow-hidden mb-8">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+                <Package className="h-5 w-5 text-gartify-blue" />
+              </div>
+              <div>
+                <h1 className="text-base font-bold text-gartify-blue">Portal del distribuidor</h1>
+                <p className="text-xs text-gartify-gray mt-0.5">{distribuidor.name} · {distribuidor.email}</p>
+              </div>
+            </div>
+            {!distribuidor.isActive && (
+              <div className="border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+                Cuenta inactiva
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Fila 1: Total + 4 estados */}

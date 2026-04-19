@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { formatPrice, formatDateTime, BOOKING_STATUS_LABELS, BOOKING_STATUS_COLORS, SERVICE_LABELS } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Star, Euro, Calendar } from "lucide-react";
+import { MapPin, Phone, Star, Euro, Calendar, Building2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -50,30 +50,39 @@ export default async function AdminGarageDetailPage({ params }: { params: { id: 
   return (
     <div className="container max-w-5xl py-10 space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold text-gartify-blue">{garage.name}</h1>
-          <div className="flex flex-wrap items-center gap-3 mt-1 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{garage.address}, {garage.city}</span>
-            <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" />{garage.phone}</span>
-            <span className="flex items-center gap-1 text-yellow-500">
-              <Star className="h-3.5 w-3.5 fill-yellow-400" />
-              {garage.rating.toFixed(1)} ({garage.reviewCount} reseñas)
-            </span>
+      <div className="bg-white border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+                <Building2 className="h-5 w-5 text-gartify-blue" />
+              </div>
+              <div>
+                <h1 className="text-base font-bold text-gartify-blue">{garage.name}</h1>
+                <div className="flex flex-wrap items-center gap-3 mt-0.5 text-xs text-gartify-gray">
+                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{garage.address}, {garage.city}</span>
+                  <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{garage.phone}</span>
+                  <span className="flex items-center gap-1 text-yellow-500">
+                    <Star className="h-3 w-3 fill-yellow-400" />
+                    {garage.rating.toFixed(1)} ({garage.reviewCount} reseñas)
+                  </span>
+                </div>
+                <p className="text-xs text-gartify-gray mt-0.5">
+                  Propietario: {garage.owner.name} · {garage.owner.email}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <span className={`inline-flex px-3 py-1 text-xs font-semibold ${
+                garage.isActive ? "bg-green-50 text-green-600 border border-green-100" : "bg-gray-100 text-gray-500"
+              }`}>{garage.isActive ? "Activo" : "Inactivo"}</span>
+              {garage.isVerified && (
+                <span className="inline-flex px-3 py-1 text-xs font-semibold bg-blue-50 text-gartify-mid border border-blue-100">
+                  Verificado
+                </span>
+              )}
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Propietario: {garage.owner.name} · {garage.owner.email}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-            garage.isActive ? "bg-green-50 text-green-600 border border-green-100" : "bg-gray-100 text-gray-500"
-          }`}>{garage.isActive ? "Activo" : "Inactivo"}</span>
-          {garage.isVerified && (
-            <span className="inline-flex rounded-full px-3 py-1 text-xs font-semibold bg-blue-50 text-gartify-mid border border-blue-100">
-              Verificado
-            </span>
-          )}
         </div>
       </div>
 

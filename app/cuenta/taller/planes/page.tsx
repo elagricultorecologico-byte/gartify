@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PlanSelector } from "@/components/cuenta/PlanSelector";
@@ -41,22 +40,18 @@ export default async function PlanesPage() {
 
   return (
     <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
-      {/* Cabecera */}
-      <div className="mb-8">
-        <Link
-          href="/cuenta/taller"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Volver al portal
-        </Link>
-        <h1 className="text-3xl font-extrabold text-gartify-blue">
-          Planes y suscripciones
-        </h1>
-        <p className="mt-2 text-muted-foreground max-w-xl">
-          Elige el plan que mejor se adapte a tu taller. Puedes cambiar o cancelar cuando quieras
-          desde el portal de facturacion de Stripe.
-        </p>
+      <div className="bg-white border border-gray-200 overflow-hidden mb-8">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <CreditCard className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-gartify-blue">Planes y suscripciones</h1>
+              <p className="text-xs text-gartify-gray mt-0.5">Elige el plan que mejor se adapte a tu taller. Puedes cambiar o cancelar cuando quieras</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Información del plan actual */}

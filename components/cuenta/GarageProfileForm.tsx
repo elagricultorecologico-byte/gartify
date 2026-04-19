@@ -140,14 +140,14 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
 
       {/* ── Sección logo ── */}
       <div className="bg-white border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-4">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 border border-white/30 shrink-0">
-              <Camera className="h-4 w-4 text-white" aria-hidden="true" />
+            <div className="flex h-9 w-9 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <Camera className="h-4 w-4 text-gartify-blue" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white">Imagen del taller</h2>
-              <p className="text-xs text-blue-100 mt-0.5">Aparece en los listados y en tu perfil público</p>
+              <h2 className="text-sm font-bold text-gartify-blue">Imagen del taller</h2>
+              <p className="text-xs text-gartify-gray mt-0.5">Aparece en los listados y en tu perfil público</p>
             </div>
           </div>
         </div>
@@ -156,14 +156,14 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
           <div className="flex items-start gap-5 flex-wrap sm:flex-nowrap">
             {/* Preview */}
             <div className="shrink-0">
-              <div className="h-24 w-24 rounded-xl overflow-hidden border-2 border-gray-200 bg-white flex items-center justify-center">
+              <div className="h-24 w-24 overflow-hidden border-2 border-gray-200 bg-white flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={logoPreview ?? "/logo-letra-fondo-azul.png"}
                   alt="Vista previa del logo"
                   className={logoPreview && logoPreview !== "/logo-letra-fondo-azul.png"
-                    ? "w-full h-full object-cover rounded-xl"
-                    : "w-full h-full object-cover rounded-xl"}
+                    ? "w-full h-full object-cover"
+                    : "w-full h-full object-cover"}
                 />
               </div>
               {logoPreview && logoPreview !== (garage.logo ?? null) && logoFile && (
@@ -185,7 +185,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
               <div className="flex flex-wrap gap-2">
                 <label
                   htmlFor="logo-upload"
-                  className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-gartify-blue/30 bg-gartify-blue/5 text-gartify-blue text-sm font-semibold hover:bg-gartify-blue/10 transition-colors"
+                  className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 border border-gartify-blue/30 bg-gartify-blue/5 text-gartify-blue text-sm font-semibold hover:bg-gartify-blue/10 transition-colors"
                 >
                   <Camera className="h-4 w-4" aria-hidden="true" />
                   Seleccionar imagen
@@ -217,7 +217,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                     <button
                       type="button"
                       onClick={handleRemovePreview}
-                      className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-gartify-gray hover:text-red-500 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-2 text-sm text-gartify-gray hover:text-red-500 transition-colors"
                       aria-label="Cancelar selección"
                     >
                       <X className="h-4 w-4" aria-hidden="true" />
@@ -228,13 +228,13 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
               </div>
 
               {logoError && (
-                <div role="alert" className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-xs text-red-600">
+                <div role="alert" className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-xs text-red-600">
                   <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   {logoError}
                 </div>
               )}
               {logoSuccess && (
-                <div role="status" className="flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-3 py-2 text-xs text-green-700">
+                <div role="status" className="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-2 text-xs text-green-700">
                   <CheckCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   Imagen actualizada correctamente.
                 </div>
@@ -246,14 +246,14 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
 
       {/* ── Datos del perfil ── */}
       <div className="bg-white border border-gray-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 border border-white/30 shrink-0">
-              <Building2 className="h-5 w-5 text-white" aria-hidden="true" />
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <Building2 className="h-5 w-5 text-gartify-blue" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Editar perfil del taller</h2>
-              <p className="text-xs text-blue-100 mt-0.5">Actualiza la información pública de tu taller</p>
+              <h2 className="text-base font-bold text-gartify-blue">Editar perfil del taller</h2>
+              <p className="text-xs text-gartify-gray mt-0.5">Actualiza la información pública de tu taller</p>
             </div>
           </div>
         </div>
@@ -453,13 +453,13 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
 
           {/* Feedback */}
           {error && (
-            <div role="alert" className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600">
+            <div role="alert" className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600">
               <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               {error}
             </div>
           )}
           {success && (
-            <div role="status" className="flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-3 py-2 text-sm text-green-700">
+            <div role="status" className="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-2 text-sm text-green-700">
               <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               Perfil actualizado correctamente.
             </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
-import { Users, Building2, User } from "lucide-react";
+import { Users, Building2, User, UsersRound } from "lucide-react";
 import { UserTable } from "@/components/admin/UserTable";
 
 export const dynamic = "force-dynamic";
@@ -27,11 +27,18 @@ export default async function AdminUsuariosPage() {
 
   return (
     <div className="container max-w-5xl py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gartify-blue">Usuarios</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {customers.length} conductores · {garageOwners.length} talleres
-        </p>
+      <div className="bg-white border border-gray-200 overflow-hidden mb-8">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <UsersRound className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-gartify-blue">Usuarios</h1>
+              <p className="text-xs text-gartify-gray mt-0.5">{customers.length} conductores · {garageOwners.length} talleres</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Stats */}

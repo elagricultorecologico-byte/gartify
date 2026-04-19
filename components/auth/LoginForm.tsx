@@ -21,7 +21,7 @@ function GoogleButton({
       onClick={onClick}
       disabled={loading}
       aria-label="Continuar con Google"
-      className="w-full flex items-center justify-center gap-3 h-11 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-sm font-semibold text-gray-700 transition-colors disabled:opacity-50"
+      className="w-full flex items-center justify-center gap-3 h-11 border border-gray-300 bg-white hover:bg-gray-50 text-sm font-semibold text-gray-700 transition-colors disabled:opacity-50"
     >
       <svg
         width="18"
@@ -81,14 +81,18 @@ export function LoginForm() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 bg-blue-50">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          {/* Franja de cabecera */}
-          <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 border border-white/30">
-              <Wrench className="h-6 w-6 text-white" aria-hidden="true" />
+        <div className="bg-white border border-gray-200 overflow-hidden">
+          {/* Cabecera */}
+          <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+                <Wrench className="h-5 w-5 text-gartify-blue" aria-hidden="true" />
+              </div>
+              <div>
+                <h1 className="text-base font-bold text-gartify-blue">Iniciar sesión</h1>
+                <p className="text-xs text-gartify-gray mt-0.5">Accede a tu cuenta de Gartify</p>
+              </div>
             </div>
-            <h1 className="text-xl font-bold text-white">Iniciar sesión</h1>
-            <p className="text-sm text-blue-100 mt-1">Accede a tu cuenta de Gartify</p>
           </div>
 
           <div className="p-6 space-y-5">
@@ -133,7 +137,7 @@ export function LoginForm() {
               {error && (
                 <div
                   role="alert"
-                  className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
+                  className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
                 >
                   <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                   {error}

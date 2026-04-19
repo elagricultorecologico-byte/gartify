@@ -90,7 +90,7 @@ function TarjetaReserva({ reserva }: { reserva: ReservaTv }) {
       {/* Hora + fecha */}
       <div className="shrink-0 text-center w-16">
         <span className="text-2xl font-black text-white leading-none">{hora}</span>
-        <p className="text-[10px] text-slate-400 capitalize leading-tight mt-0.5">{fecha}</p>
+        <p className="text-[10px] font-bold text-slate-400 capitalize leading-tight mt-0.5">{fecha}</p>
       </div>
 
       {/* Separador */}
@@ -99,21 +99,21 @@ function TarjetaReserva({ reserva }: { reserva: ReservaTv }) {
       {/* Cliente + servicio */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-white text-sm truncate">
+          <span className="font-extrabold text-white text-sm truncate">
             {reserva.source === "MANUAL" ? (reserva.clientName ?? "Manual") : (reserva.user?.name ?? "Cliente")}
           </span>
-          <span className={`rounded px-2 py-0.5 text-xs font-semibold ${badgeServicio}`}>{etiquetaServicio}</span>
+          <span className={`rounded px-2 py-0.5 text-xs font-bold ${badgeServicio}`}>{etiquetaServicio}</span>
         </div>
-        <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 flex-wrap">
+        <div className="flex items-center gap-2 mt-0.5 text-xs font-semibold text-slate-400 flex-wrap">
           {reserva.vehicleModel && <span>{reserva.vehicleModel}</span>}
-          {reserva.vehiclePlate && <span className="font-mono uppercase tracking-wider">{reserva.vehiclePlate}</span>}
+          {reserva.vehiclePlate && <span className="font-mono uppercase tracking-wider text-white/70">{reserva.vehiclePlate}</span>}
           {reserva.service && <span>{reserva.service.duration} min</span>}
         </div>
       </div>
 
       {/* Estado */}
       <div className="shrink-0">
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${badgeEstado}`}>
+        <span className={`rounded-full px-2.5 py-0.5 text-xs font-extrabold ${badgeEstado}`}>
           {BOOKING_STATUS_LABELS[reserva.status] ?? reserva.status}
         </span>
       </div>

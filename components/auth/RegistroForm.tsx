@@ -26,7 +26,7 @@ function GoogleButton({
       onClick={onClick}
       disabled={loading}
       aria-label="Registrarse con Google"
-      className="w-full flex items-center justify-center gap-3 h-11 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-sm font-semibold text-gray-700 transition-colors disabled:opacity-50"
+      className="w-full flex items-center justify-center gap-3 h-11 border border-gray-300 bg-white hover:bg-gray-50 text-sm font-semibold text-gray-700 transition-colors disabled:opacity-50"
     >
       <svg
         width="18"
@@ -184,14 +184,18 @@ export function RegistroForm() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 bg-blue-50">
       <div className="w-full max-w-lg">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          {/* Franja de cabecera */}
-          <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 border border-white/30">
-              <Wrench className="h-6 w-6 text-white" aria-hidden="true" />
+        <div className="bg-white border border-gray-200 overflow-hidden">
+          {/* Cabecera */}
+          <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+                <Wrench className="h-5 w-5 text-gartify-blue" aria-hidden="true" />
+              </div>
+              <div>
+                <h1 className="text-base font-bold text-gartify-blue">Crear cuenta</h1>
+                <p className="text-xs text-gartify-gray mt-0.5">Únete a Gartify de forma gratuita</p>
+              </div>
             </div>
-            <h1 className="text-xl font-bold text-white">Crear cuenta</h1>
-            <p className="text-sm text-blue-100 mt-1">Únete a Gartify de forma gratuita</p>
           </div>
 
           <div className="p-6">
@@ -199,14 +203,14 @@ export function RegistroForm() {
             <div
               role="tablist"
               aria-label="Tipo de cuenta"
-              className="flex gap-2 p-1 bg-blue-50 rounded-lg border border-blue-100 mb-6"
+              className="flex gap-2 p-1 bg-blue-50 border border-blue-100 mb-6"
             >
               <button
                 role="tab"
                 type="button"
                 aria-selected={tab === "cliente"}
                 onClick={() => switchTab("cliente")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-semibold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-semibold transition-all ${
                   tab === "cliente"
                     ? "bg-gartify-blue text-white shadow-sm"
                     : "text-gartify-gray hover:text-gartify-blue"
@@ -220,7 +224,7 @@ export function RegistroForm() {
                 type="button"
                 aria-selected={tab === "taller"}
                 onClick={() => switchTab("taller")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-semibold transition-all ${
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-semibold transition-all ${
                   tab === "taller"
                     ? "bg-gartify-blue text-white shadow-sm"
                     : "text-gartify-gray hover:text-gartify-blue"
@@ -326,7 +330,7 @@ export function RegistroForm() {
                   {error && (
                     <div
                       role="alert"
-                      className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
+                      className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
                     >
                       <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                       {error}
@@ -591,7 +595,7 @@ export function RegistroForm() {
                         {excludedBrands.map(b => (
                           <span
                             key={b}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-xs font-medium text-red-700"
+                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-50 border border-red-200 text-xs font-medium text-red-700"
                           >
                             {b}
                             <button
@@ -679,7 +683,7 @@ export function RegistroForm() {
                 {error && (
                   <div
                     role="alert"
-                    className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
+                    className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
                   >
                     <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                     {error}

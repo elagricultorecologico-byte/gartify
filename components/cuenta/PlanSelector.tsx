@@ -147,7 +147,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
         <button
           onClick={() => setEsMensual((prev) => !prev)}
           className={cn(
-            "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gartify-blue",
+            "relative inline-flex h-6 w-11 items-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gartify-blue",
             esMensual ? "bg-gray-300" : "bg-gartify-blue"
           )}
           role="switch"
@@ -156,14 +156,14 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
         >
           <span
             className={cn(
-              "inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform",
+              "inline-block h-4 w-4 transform bg-white shadow-sm transition-transform",
               esMensual ? "translate-x-1" : "translate-x-6"
             )}
           />
         </button>
         <span className={cn("text-sm font-medium flex items-center gap-1.5", !esMensual ? "text-foreground" : "text-muted-foreground")}>
           Anual
-          <span className="inline-flex items-center rounded-full bg-green-100 border border-green-200 text-green-700 text-xs font-bold px-2 py-0.5">
+          <span className="inline-flex items-center bg-green-100 border border-green-200 text-green-700 text-xs font-bold px-2 py-0.5">
             -25%
           </span>
         </span>
@@ -181,7 +181,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
             <div
               key={plan}
               className={cn(
-                "relative rounded-2xl border-2 p-6 flex flex-col gap-5 transition-shadow",
+                "relative border-2 p-6 flex flex-col gap-5 transition-shadow",
                 COLORES_PLAN[plan],
                 esPlanActual && "ring-2 ring-offset-2 ring-gartify-blue shadow-lg",
                 !esPlanActual && "hover:shadow-md"
@@ -190,7 +190,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
               {/* Badge de plan popular */}
               {esPopular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center rounded-full bg-gartify-blue text-white text-xs font-bold px-3 py-1 shadow-sm">
+                  <span className="inline-flex items-center bg-gartify-blue text-white text-xs font-bold px-3 py-1 shadow-sm">
                     Mas popular
                   </span>
                 </div>
@@ -202,7 +202,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
                   <Icono className={cn("h-5 w-5", COLORES_ICONO[plan])} aria-hidden="true" />
                   <h3 className="font-bold text-lg text-foreground">{datos.nombre}</h3>
                   {esPlanActual && (
-                    <span className="ml-auto text-xs font-bold bg-gartify-blue/10 text-gartify-blue rounded-full px-2 py-0.5">
+                    <span className="ml-auto text-xs font-bold bg-gartify-blue/10 text-gartify-blue px-2 py-0.5">
                       Tu plan
                     </span>
                   )}
@@ -229,7 +229,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
                         <p className="text-xs text-green-600 font-medium">
                           Equivale a {(datos.precioAnual / 12).toFixed(0)} €/mes
                         </p>
-                        <p className="text-xs text-green-700 font-bold bg-green-100 rounded-full px-2 py-0.5">
+                        <p className="text-xs text-green-700 font-bold bg-green-100 px-2 py-0.5">
                           Ahorras {(datos.precioMensual * 12) - datos.precioAnual}€/año
                         </p>
                       </div>
@@ -329,7 +329,7 @@ export function PlanSelector({ planActual, tieneSuscripcionActiva }: PropsPlanSe
 
       {/* Mensaje de error global */}
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-center">
+        <div role="alert" className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 text-center">
           {error}
         </div>
       )}

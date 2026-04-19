@@ -194,7 +194,7 @@ export function RecambiosSearch() {
       <div className="flex-1 min-w-0">
 
         {/* Buscador */}
-        <form onSubmit={handleSearch} className="bg-white rounded-xl border border-gartify-blue/15 shadow-sm p-4 mb-6">
+        <form onSubmit={handleSearch} className="bg-white border border-gartify-blue/15 shadow-sm p-4 mb-6">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gartify-blue/40 pointer-events-none" />
@@ -203,13 +203,13 @@ export function RecambiosSearch() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Referencia OEM, nombre de pieza, marca…"
-                className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gartify-blue/20 focus:outline-none focus:border-gartify-blue/50 focus:ring-2 focus:ring-gartify-blue/10 transition placeholder:text-gray-400"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-gartify-blue/20 focus:outline-none focus:border-gartify-blue/50 focus:ring-2 focus:ring-gartify-blue/10 transition placeholder:text-gray-400"
               />
             </div>
             <select
               value={categoria}
               onChange={(e) => setCategoria(e.target.value)}
-              className="py-2 px-3 text-sm rounded-lg border border-gartify-blue/20 focus:outline-none focus:border-gartify-blue/50 text-gray-700 bg-white"
+              className="py-2 px-3 text-sm border border-gartify-blue/20 focus:outline-none focus:border-gartify-blue/50 text-gray-700 bg-white"
             >
               {CATEGORIAS.map((c) => (
                 <option key={c.value} value={c.value}>{c.label}</option>
@@ -220,12 +220,12 @@ export function RecambiosSearch() {
               value={vehiculo}
               onChange={(e) => setVehiculo(e.target.value)}
               placeholder="Vehículo (marca/modelo)"
-              className="py-2 px-3 text-sm rounded-lg border border-gartify-blue/20 focus:outline-none focus:border-gartify-blue/50 w-44 transition placeholder:text-gray-400"
+              className="py-2 px-3 text-sm border border-gartify-blue/20 focus:outline-none focus:border-gartify-blue/50 w-44 transition placeholder:text-gray-400"
             />
             <button
               type="submit"
               disabled={loading}
-              className="shrink-0 bg-gartify-blue hover:bg-gartify-blue/90 text-white font-semibold text-sm px-5 py-2 rounded-lg transition disabled:opacity-50 flex items-center gap-2 shadow-sm"
+              className="shrink-0 bg-gartify-blue hover:bg-gartify-blue/90 text-white font-semibold text-sm px-5 py-2 transition disabled:opacity-50 flex items-center gap-2 shadow-sm"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
               Buscar
@@ -242,7 +242,7 @@ export function RecambiosSearch() {
         )}
 
         {!loading && searched && results.length === 0 && (
-          <div className="text-center py-16 rounded-xl border border-dashed border-gartify-blue/20 bg-blue-50/30">
+          <div className="text-center py-16 border border-dashed border-gartify-blue/20 bg-blue-50/30">
             <Package className="h-10 w-10 mx-auto mb-3 text-gartify-blue/20" />
             <p className="font-semibold text-gartify-blue/60">Sin resultados</p>
             <p className="text-sm text-gray-400 mt-1">Prueba con otro término o cambia los filtros</p>
@@ -253,7 +253,7 @@ export function RecambiosSearch() {
           <div className="space-y-3">
             <p className="text-xs text-gartify-gray font-medium">{results.length} resultado{results.length !== 1 ? "s" : ""}</p>
             {results.map((part) => (
-              <div key={part.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div key={part.id} className="bg-white border border-gray-200 shadow-sm overflow-hidden">
                 {/* Cabecera de la pieza */}
                 <button
                   type="button"
@@ -261,7 +261,7 @@ export function RecambiosSearch() {
                   className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-blue-50/30 transition text-left"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="shrink-0 h-10 w-10 rounded-xl bg-gartify-blue/10 border border-gartify-blue/15 flex items-center justify-center">
+                    <div className="shrink-0 h-10 w-10 bg-gartify-blue/10 border border-gartify-blue/15 flex items-center justify-center">
                       <Package className="h-5 w-5 text-gartify-blue" />
                     </div>
                     <div className="min-w-0">
@@ -274,13 +274,13 @@ export function RecambiosSearch() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0 ml-3">
-                    <span className="text-xs bg-gartify-orange/10 text-gartify-orange border border-gartify-orange/20 rounded-full px-2.5 py-0.5 font-semibold capitalize">
+                    <span className="text-xs bg-gartify-orange/10 text-gartify-orange border border-gartify-orange/20 px-2.5 py-0.5 font-semibold capitalize">
                       {part.categoria.charAt(0) + part.categoria.slice(1).toLowerCase()}
                     </span>
                     <span className="text-sm font-bold text-gartify-orange">
                       Desde {formatEur(Math.min(...part.distributorParts.map((d) => d.precioCoste)))}
                     </span>
-                    <span className="text-xs text-gartify-gray bg-gray-100 rounded-full px-2 py-0.5">{part.distributorParts.length} prov.</span>
+                    <span className="text-xs text-gartify-gray bg-gray-100 px-2 py-0.5">{part.distributorParts.length} prov.</span>
                     {expanded.has(part.id)
                       ? <ChevronUp className="h-4 w-4 text-gartify-blue/50" />
                       : <ChevronDown className="h-4 w-4 text-gartify-blue/50" />}
@@ -310,7 +310,7 @@ export function RecambiosSearch() {
                               <td className="px-4 py-3 font-semibold text-gartify-blue">
                                 <div className="flex items-center gap-1.5 flex-wrap">
                                   {i === 0 && (
-                                    <span className="text-xs bg-green-500 text-white rounded-full px-2 py-0.5 font-bold leading-none">
+                                    <span className="text-xs bg-green-500 text-white px-2 py-0.5 font-bold leading-none">
                                       Mejor precio
                                     </span>
                                   )}
@@ -335,7 +335,7 @@ export function RecambiosSearch() {
                                 <button
                                   type="button"
                                   onClick={() => addToCart(dp, part)}
-                                  className={`text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm ${
+                                  className={`text-xs font-bold px-3 py-1.5 transition shadow-sm ${
                                     inCart
                                       ? "bg-green-50 text-green-700 border border-green-200"
                                       : i === 0
@@ -361,14 +361,16 @@ export function RecambiosSearch() {
 
       {/* ── Carrito ── */}
       <aside className="w-80 shrink-0 sticky top-24">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gartify-hero to-gartify-mid">
-            <div className="flex items-center gap-2 text-white">
-              <ShoppingCart className="h-4 w-4" />
-              <span className="font-bold text-sm">Pedido</span>
+        <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+                <ShoppingCart className="h-4 w-4 text-gartify-blue" />
+              </div>
+              <span className="font-bold text-sm text-gartify-blue">Pedido</span>
             </div>
             {cart.length > 0 && (
-              <span className="text-xs font-bold bg-white/20 text-white rounded-full px-2.5 py-0.5">
+              <span className="text-xs font-bold bg-gartify-blue/10 text-gartify-blue border border-gartify-blue/20 px-2.5 py-0.5">
                 {formatEur(cartTotal)} s/IVA
               </span>
             )}
@@ -376,7 +378,7 @@ export function RecambiosSearch() {
 
           {cart.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="h-14 w-14 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3">
+              <div className="h-14 w-14 bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-3">
                 <ShoppingCart className="h-6 w-6 text-gartify-blue/30" />
               </div>
               <p className="text-sm font-semibold text-gartify-blue/50">Carrito vacío</p>
@@ -385,13 +387,13 @@ export function RecambiosSearch() {
           ) : (
             <div className="p-3 space-y-4">
               {submitted.length > 0 && (
-                <div className="flex items-center gap-2 rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-xs text-green-700 font-semibold">
+                <div className="flex items-center gap-2 bg-green-50 border border-green-200 px-3 py-2 text-xs text-green-700 font-semibold">
                   <CheckCircle className="h-3.5 w-3.5" />
                   {submitted.length} pedido{submitted.length > 1 ? "s" : ""} enviado{submitted.length > 1 ? "s" : ""}
                 </div>
               )}
               {orderError && (
-                <div className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                <div className="text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-2">
                   {orderError}
                 </div>
               )}
@@ -402,7 +404,7 @@ export function RecambiosSearch() {
                 const isSubmitting = submitting === distId;
                 const isDone = submitted.includes(distId);
                 return (
-                  <div key={distId} className={`rounded-xl border overflow-hidden ${isDone ? "border-green-200 bg-green-50/40" : "border-gartify-blue/15"}`}>
+                  <div key={distId} className={`border overflow-hidden ${isDone ? "border-green-200 bg-green-50/40" : "border-gartify-blue/15"}`}>
                     <div className="flex items-center justify-between px-3 py-2 bg-gartify-blue/5 border-b border-gartify-blue/10">
                       <span className="text-xs font-bold text-gartify-blue truncate">{group.name}</span>
                       <span className="text-xs font-bold text-gartify-orange shrink-0 ml-2">{formatEur(groupTotal)}</span>
@@ -415,9 +417,9 @@ export function RecambiosSearch() {
                             <p className="text-xs text-gartify-gray font-mono">{item.referenciaOem}</p>
                           </div>
                           <div className="flex items-center gap-1 shrink-0">
-                            <button type="button" onClick={() => updateQty(item.distributorPartId, item.cantidad - 1)} className="h-5 w-5 rounded-md border border-gartify-blue/20 text-xs font-bold text-gartify-blue hover:bg-blue-50 flex items-center justify-center transition">−</button>
+                            <button type="button" onClick={() => updateQty(item.distributorPartId, item.cantidad - 1)} className="h-5 w-5 border border-gartify-blue/20 text-xs font-bold text-gartify-blue hover:bg-blue-50 flex items-center justify-center transition">−</button>
                             <span className="w-6 text-center text-xs font-bold text-gartify-blue">{item.cantidad}</span>
-                            <button type="button" onClick={() => updateQty(item.distributorPartId, item.cantidad + 1)} className="h-5 w-5 rounded-md border border-gartify-blue/20 text-xs font-bold text-gartify-blue hover:bg-blue-50 flex items-center justify-center transition">+</button>
+                            <button type="button" onClick={() => updateQty(item.distributorPartId, item.cantidad + 1)} className="h-5 w-5 border border-gartify-blue/20 text-xs font-bold text-gartify-blue hover:bg-blue-50 flex items-center justify-center transition">+</button>
                           </div>
                           <span className="text-xs font-bold text-gartify-orange shrink-0 w-14 text-right">
                             {formatEur(item.precio * item.cantidad)}
@@ -434,7 +436,7 @@ export function RecambiosSearch() {
                           type="button"
                           onClick={() => submitOrder(distId)}
                           disabled={isSubmitting}
-                          className="w-full bg-gartify-orange hover:bg-gartify-orange/90 disabled:opacity-50 text-white text-xs font-bold py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm"
+                          className="w-full bg-gartify-orange hover:bg-gartify-orange/90 disabled:opacity-50 text-white text-xs font-bold py-2 transition flex items-center justify-center gap-1.5 shadow-sm"
                         >
                           {isSubmitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
                           Confirmar pedido
@@ -459,7 +461,7 @@ export function RecambiosSearch() {
                   onChange={(e) => setNotes(e.target.value)}
                   rows={2}
                   placeholder="Indicaciones especiales…"
-                  className="w-full text-xs rounded-lg border border-gartify-blue/20 px-2.5 py-1.5 focus:outline-none focus:border-gartify-blue/50 resize-none placeholder:text-gray-400"
+                  className="w-full text-xs border border-gartify-blue/20 px-2.5 py-1.5 focus:outline-none focus:border-gartify-blue/50 resize-none placeholder:text-gray-400"
                 />
               </div>
 

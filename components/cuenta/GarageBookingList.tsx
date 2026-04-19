@@ -77,7 +77,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
 
   if (bookings.length === 0) {
     return (
-      <div className="text-center py-16 rounded-xl border border-dashed border-gray-200 bg-gray-50">
+      <div className="text-center py-16 border border-dashed border-gray-200 bg-gray-50">
         <Clock className="h-10 w-10 mx-auto mb-3 text-gartify-mid opacity-50" aria-hidden="true" />
         <p className="font-semibold text-foreground">Aún no hay reservas</p>
         <p className="text-sm text-muted-foreground mt-1">Cuando recibas citas aparecerán aquí</p>
@@ -105,7 +105,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
         <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Ordenar</p>
         <button
           onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 w-full px-3 py-2 text-sm font-normal border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
           aria-label="Ordenar por fecha"
         >
           {orden === "asc"
@@ -125,12 +125,12 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
               <button
                 key={tab.value}
                 onClick={() => setStatusFilter(tab.value)}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center justify-between px-3 py-2 text-sm font-medium transition-colors ${
                   active ? "bg-gartify-blue text-white" : "text-gartify-gray hover:bg-gray-100"
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`text-xs font-bold rounded-full px-2 py-0.5 leading-none ${
+                <span className={`text-xs font-bold px-2 py-0.5 leading-none ${
                   active ? "bg-white/20 text-white" : COUNT_COLOR
                 }`}>
                   {count}
@@ -148,12 +148,12 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
 
       {/* ── SIDEBAR DESKTOP ─────────────────────────────────────────────── */}
       <aside className="hidden lg:block lg:w-64 lg:shrink-0 lg:sticky lg:top-24">
-        <div className="bg-blue-50 border border-gartify-blue/40 rounded-xl shadow-none p-4">
+        <div className="bg-blue-50 border border-gartify-blue/40 p-4">
           <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
             <SlidersHorizontal className="h-4 w-4 shrink-0" />
             <span className="text-sm font-semibold">Filtros</span>
             {filtrosActivos > 0 && (
-              <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+              <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
                 {filtrosActivos}
               </span>
             )}
@@ -166,7 +166,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
       <div className="flex-1 min-w-0 space-y-3">
 
         {/* Panel colapsable — solo móvil */}
-        <div className="lg:hidden bg-blue-50 border border-gartify-blue/40 rounded-xl shadow-none overflow-hidden">
+        <div className="lg:hidden bg-blue-50 border border-gartify-blue/40 overflow-hidden">
           <button
             type="button"
             className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
@@ -177,7 +177,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
               <SlidersHorizontal className="h-4 w-4 shrink-0" />
               <span className="text-sm font-semibold">Filtros</span>
               {filtrosActivos > 0 && (
-                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+                <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
                   {filtrosActivos}
                 </span>
               )}
@@ -202,7 +202,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                 <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Ordenar</p>
                 <button
                   onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-                  className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm font-normal border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
                 >
                   {orden === "asc"
                     ? <><ArrowUp className="h-3.5 w-3.5" /> Fecha: más próxima</>
@@ -220,12 +220,12 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                       <button
                         key={tab.value}
                         onClick={() => setStatusFilter(tab.value)}
-                        className={`flex items-center justify-between gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                        className={`flex items-center justify-between gap-1 px-3 py-2 text-xs font-semibold transition-colors ${
                           active ? "bg-gartify-blue text-white" : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
                         }`}
                       >
                         <span className="truncate">{tab.label}</span>
-                        <span className={`shrink-0 text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
+                        <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 leading-none ${
                           active ? "bg-white/20 text-white" : COUNT_COLOR
                         }`}>{count}</span>
                       </button>
@@ -302,7 +302,7 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
   const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
   return (
-    <article className={`bg-white rounded-xl border border-gartify-blue/20 shadow-sm hover:shadow-md hover:border-gartify-blue/40 transition-shadow overflow-hidden ${isPast ? "opacity-70" : ""}`}>
+    <article className={`bg-white border border-gartify-blue/20 hover:border-gartify-blue/40 transition-colors overflow-hidden ${isPast ? "opacity-70" : ""}`}>
 
       {/* ── BANDA DE ESTADO — solo móvil ──────────────────────────────── */}
       <div className={`sm:hidden flex items-center justify-between gap-2 px-4 py-2 border-b ${bandClasses}`}>
@@ -357,7 +357,7 @@ function BookingCard({ b, garageId }: { b: GarageBookingItem; garageId: string }
         {/* Fila 1: cliente + estado */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`}>
+            <div className={`h-8 w-8 flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gartify-blue"}`}>
               {(b.user.name ?? "C").split(" ").slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
             </div>
             <span className="font-bold text-gartify-blue text-sm truncate">{b.user.name ?? "Cliente"}</span>

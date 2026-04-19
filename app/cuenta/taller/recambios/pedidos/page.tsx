@@ -50,16 +50,22 @@ export default async function PedidosRecambiosPage() {
 
   return (
     <div className="container max-w-4xl py-10">
-      <div className="flex items-center gap-3 mb-8">
-        <Link href="/cuenta/taller/recambios" className="text-gartify-blue hover:text-gartify-blue/70 transition">
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-gartify-blue flex items-center gap-2">
-            <ClipboardList className="h-6 w-6 text-gartify-orange" />
-            Mis pedidos de recambios
-          </h1>
-          <p className="text-muted-foreground text-sm mt-0.5">{orders.length} pedido{orders.length !== 1 ? "s" : ""} realizados</p>
+      <Link href="/cuenta/taller/recambios" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
+        <ArrowLeft className="h-4 w-4" />
+        Volver a recambios
+      </Link>
+
+      <div className="bg-white border border-gray-200 overflow-hidden mb-6">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <ClipboardList className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-gartify-blue">Mis pedidos de recambios</h1>
+              <p className="text-xs text-gartify-gray mt-0.5">{orders.length} pedido{orders.length !== 1 ? "s" : ""} realizados</p>
+            </div>
+          </div>
         </div>
       </div>
 

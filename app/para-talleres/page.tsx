@@ -186,11 +186,6 @@ export default function ParaTalleresPage() {
       <section className="bg-white py-20 px-4">
         <div className="container max-w-5xl mx-auto">
 
-          {/* Etiqueta de sección */}
-          <span className="inline-block rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-gartify-gray mb-6">
-            Puntos de dolor
-          </span>
-
           <h2 className="text-3xl md:text-4xl font-black text-gartify-dark mb-12 max-w-2xl leading-tight">
             Sabemos que tu negocio está en el elevador,{" "}
             <span className="text-gartify-blue">no en la oficina.</span>
@@ -218,11 +213,6 @@ export default function ParaTalleresPage() {
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-slate-50 py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-
-          {/* Etiqueta de sección */}
-          <span className="inline-block rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-bold uppercase tracking-widest text-gartify-gray mb-6">
-            Cómo funciona
-          </span>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
 
@@ -318,11 +308,6 @@ export default function ParaTalleresPage() {
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-white py-20 px-4">
         <div className="container max-w-3xl mx-auto text-center">
-
-          {/* Etiqueta de sección */}
-          <span className="inline-block rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-gartify-gray mb-6">
-            Prueba social
-          </span>
 
           <h2 className="text-3xl md:text-4xl font-black text-gartify-dark mb-12 leading-tight">
             Ya generamos negocio para{" "}
