@@ -25,7 +25,7 @@ for (let h = 6; h <= 23; h++) {
 }
 
 const SELECT_CLS =
-  "h-8 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gartify-blue font-medium focus:outline-none focus:ring-2 focus:ring-gartify-hero/30";
+  "h-8 rounded-none border border-gray-200 bg-white px-2 text-sm text-gartify-blue font-medium focus:outline-none focus:ring-2 focus:ring-gartify-hero/30";
 
 export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
   const [schedule, setSchedule] = useState<DaySchedule[]>(() =>

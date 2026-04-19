@@ -122,7 +122,7 @@ export function ServiceForm({ garageId, onAdded }: { garageId: string; onAdded?:
                 onClick={() => toggleVehicleType(tipo)}
                 aria-pressed={activo}
                 title={VEHICLE_LABELS[tipo]}
-                className={`flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-medium transition-colors
+                className={`flex items-center gap-1 rounded-none border px-2 py-1 text-xs font-medium transition-colors
                   ${activo
                     ? "bg-gartify-blue/10 border-gartify-blue/40 text-gartify-blue"
                     : "bg-gray-50 border-gray-200 text-muted-foreground hover:border-gray-300"

@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { db } from "@/lib/db";
 import { GarageCard } from "@/components/talleres/GarageCard";
 import { GarageFilters } from "@/components/talleres/GarageFilters";
 import { GaragePagination } from "@/components/talleres/GaragePagination";
+import { GarageSortSelector } from "@/components/talleres/GarageSortSelector";
 import { Search } from "lucide-react";
 import { SERVICE_LABELS } from "@/lib/constants";
 import { VEHICLE_LABELS } from "@/lib/utils";
+import type { GaragePin } from "@/components/talleres/GarageMap";
+
+const GarageMap = dynamic(
+  () => import("@/components/talleres/GarageMap").then((m) => m.GarageMap),
+  { ssr: false }
+);
 
 const DEFAULT_PAGE_SIZE = 10;
 const VALID_PAGE_SIZES = [5, 10, 20, 50];
@@ -15,6 +23,7 @@ type SearchParams = {
   servicio?: string; ciudad?: string; precio?: string; rating?: string;
   distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
   vehicleType?: string; premium?: string; page?: string; pageSize?: string; conOfertas?: string;
+  sort?: string;
 };
 
 function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
@@ -108,10 +117,45 @@ export default async function TalleresPage({
     );
   }
 
+  // Ordenación post-query
+  const sort = searchParams.sort ?? "recomendados";
+  if (sort === "precio") {
+    garages.sort((a, b) => {
+      const priceA = a.services.length > 0 ? Math.min(...a.services.map((s) => s.price)) : Infinity;
+      const priceB = b.services.length > 0 ? Math.min(...b.services.map((s) => s.price)) : Infinity;
+      return priceA - priceB;
+    });
+  } else if (sort === "valoracion") {
+    garages.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
+  } else if (sort === "distancia" && userLat !== null && userLng !== null) {
+    garages.sort((a, b) => {
+      const dA = a.lat != null && a.lng != null ? haversineKm(userLat, userLng, a.lat, a.lng) : Infinity;
+      const dB = b.lat != null && b.lng != null ? haversineKm(userLat, userLng, b.lat, b.lng) : Infinity;
+      return dA - dB;
+    });
+  }
+  // "recomendados": mantiene el orderBy: rating desc de la query
+
   const total = garages.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(currentPage, totalPages);
   const paginatedGarages = garages.slice((safePage - 1) * pageSize, safePage * pageSize);
+
+  // Pins para el mapa: todos los talleres con coordenadas (no solo la página actual)
+  const pins: GaragePin[] = garages
+    .filter((g) => g.lat != null && g.lng != null)
+    .map((g) => ({
+      id:          g.id,
+      name:        g.name,
+      city:        g.city,
+      address:     g.address,
+      lat:         g.lat!,
+      lng:         g.lng!,
+      rating:      g.rating,
+      reviewCount: g.reviewCount,
+      plan:        g.plan,
+      services:    g.services.slice(0, 3).map((s) => ({ name: s.name, price: s.price })),
+    }));
 
   return (
     <div className="container max-w-6xl py-8 px-4 sm:px-8">
@@ -135,6 +179,13 @@ export default async function TalleresPage({
         </p>
       </div>
 
+      {/* Mapa */}
+      {pins.length > 0 && (
+        <div className="relative z-0 h-72 sm:h-96 w-full rounded-xl overflow-hidden border border-gray-200 shadow-sm mb-6">
+          <GarageMap garages={pins} />
+        </div>
+      )}
+
       {/* Layout: sidebar filtros izquierda + lista derecha */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
 
@@ -145,6 +196,13 @@ export default async function TalleresPage({
 
         {/* Lista de talleres */}
         <div className="flex-1 space-y-4">
+          {total > 0 && (
+            <div className="flex items-center justify-end">
+              <Suspense>
+                <GarageSortSelector />
+              </Suspense>
+            </div>
+          )}
           {total === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <Search className="h-10 w-10 mx-auto mb-3 opacity-40" />

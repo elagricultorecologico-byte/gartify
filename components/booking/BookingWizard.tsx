@@ -261,7 +261,7 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
                   type="button"
                   onClick={() => setSelectedVehicleType(tipo)}
                   aria-pressed={seleccionado}
-                  className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  className={`relative flex flex-col items-center gap-2 p-4 rounded-none border-2 cursor-pointer transition-all duration-200 ${
                     seleccionado
                       ? "border-gartify-orange bg-gartify-orange/5 shadow-md scale-[1.02]"
                       : "border-gray-200 bg-white hover:border-gartify-orange/40 hover:shadow-sm"

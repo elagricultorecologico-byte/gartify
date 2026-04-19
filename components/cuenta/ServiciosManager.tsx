@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Clock, Tag, ToggleLeft, ToggleRight, Trash2, Check, X, ChevronLeft, ChevronRight, Wrench, Plus, List } from "lucide-react";
+import { Clock, Lock, ToggleLeft, ToggleRight, Trash2, Check, X, ChevronLeft, ChevronRight, Wrench, Plus, List } from "lucide-react";
 import { ServiceForm } from "@/components/cuenta/ServiceForm";
 import { SERVICE_LABELS, VEHICLE_ICONS, VEHICLE_LABELS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
 
@@ -103,7 +103,7 @@ function ServiceRow({ s, onUpdated, onToggle, onDelete }: {
         </span>
         {isAnchor && (
           <span title="Precio cerrado">
-            <Tag className="h-3 w-3 text-gartify-orange shrink-0" />
+            <Lock className="h-3 w-3 text-gartify-orange shrink-0" />
           </span>
         )}
       </div>

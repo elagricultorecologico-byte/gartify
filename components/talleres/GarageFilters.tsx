@@ -241,7 +241,7 @@ export function GarageFilters() {
               return (
                 <button key={tipo} type="button" onClick={() => update("vehicleType", activo ? "ALL" : tipo)} aria-pressed={activo}
                   className={cn(
-                    "flex items-center gap-1.5 h-8 px-2 rounded-lg border text-xs font-medium transition-all",
+                    "flex items-center gap-1.5 h-8 px-2 rounded-none border text-xs font-medium transition-all",
                     activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
                   )}>
                   <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
@@ -309,7 +309,7 @@ export function GarageFilters() {
             ].map(({ key, icon, label }) => (
               <button key={key} type="button" onClick={() => update(key, isActive(key) ? "ALL" : "true")}
                 className={cn(
-                  "w-full flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all",
+                  "w-full flex items-center gap-2 h-9 px-3 rounded-none border text-sm font-medium transition-all",
                   isActive(key) ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
                 )}>
                 {icon}{label}
@@ -318,7 +318,7 @@ export function GarageFilters() {
             ))}
             <button type="button" onClick={() => update("premium", isActive("premium") ? "ALL" : "true")}
               className={cn(
-                "w-full flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all",
+                "w-full flex items-center gap-2 h-9 px-3 rounded-none border text-sm font-medium transition-all",
                 isActive("premium") ? "bg-amber-50 border-amber-300 text-amber-700 ring-2 ring-amber-200" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
               )}>
               <Crown className={cn("h-3.5 w-3.5 shrink-0", isActive("premium") ? "text-amber-500" : "")} />
@@ -327,7 +327,7 @@ export function GarageFilters() {
             </button>
             <button type="button" onClick={() => update("conOfertas", isActive("conOfertas") ? "ALL" : "true")}
               className={cn(
-                "w-full flex items-center gap-2 h-9 px-3 rounded-lg border text-sm font-medium transition-all",
+                "w-full flex items-center gap-2 h-9 px-3 rounded-none border text-sm font-medium transition-all",
                 isActive("conOfertas") ? "bg-green-50 border-green-300 text-green-700 ring-2 ring-green-200" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
               )}>
               <Zap className={cn("h-3.5 w-3.5 shrink-0", isActive("conOfertas") ? "text-green-600 fill-green-500" : "")} />

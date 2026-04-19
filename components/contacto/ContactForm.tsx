@@ -76,7 +76,7 @@ export function ContactForm() {
                 type="button"
                 aria-pressed={topic === value}
                 onClick={() => setTopic(value)}
-                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all text-left ${
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-none border text-sm font-medium transition-all text-left ${
                   topic === value
                     ? "border-gartify-blue bg-gartify-blue/5 text-gartify-blue"
                     : "border-gray-200 text-gartify-gray hover:border-gartify-blue/40"

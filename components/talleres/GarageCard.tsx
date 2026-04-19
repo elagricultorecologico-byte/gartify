@@ -1,14 +1,8 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { MapPin, Star, Clock, ShieldCheck, Crown, Car, PackageCheck, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, SERVICE_LABELS, VEHICLE_LABELS, VEHICLE_ICONS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
-
-const GarageCardMap = dynamic(
-  () => import("./GarageCardMap").then((m) => m.GarageCardMap),
-  { ssr: false, loading: () => <div className="hidden sm:block sm:w-44 sm:shrink-0 bg-gray-50 animate-pulse border-l border-gray-100" /> }
-);
 
 type Service = { id: string; type: string; name: string; price: number; duration: number };
 
@@ -84,7 +78,11 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "md
 }
 
 export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers }: GarageCardProps) {
-  const cheapest = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
+  const cheapestOffer = offers && offers.length > 0 ? Math.min(...offers.map((o) => o.price)) : null;
+  const cheapestService = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
+  const cheapest = cheapestOffer !== null
+    ? Math.min(cheapestOffer, cheapestService ?? cheapestOffer)
+    : cheapestService;
   const tiposVehiculo = parsearTiposVehiculo(vehicleTypes);
   const mapsQuery = lat != null && lng != null
     ? `${lat},${lng}`
@@ -302,11 +300,6 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
 
         </div>{/* fin .px-4.py-3 */}
       </div>{/* fin contenido principal */}
-
-      {/* ── MAPA INTERACTIVO (solo desktop) ─────────────────────────────── */}
-      <div className="hidden sm:block relative sm:w-44 sm:shrink-0 overflow-hidden border-l border-gray-100">
-        <GarageCardMap lat={lat} lng={lng} address={`${address}, ${city}, España`} mapsUrl={mapsUrl} />
-      </div>
 
     </div>
   );

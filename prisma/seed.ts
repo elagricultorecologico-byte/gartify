@@ -3,10 +3,15 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+function generateCode(): string {
+  return "GRT-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+}
+
 async function main() {
   console.log("🌱 Seeding database...");
 
   // Limpiar en orden correcto (FK constraints)
+  await prisma.serviceRecord.deleteMany();
   await prisma.review.deleteMany();
   await prisma.booking.deleteMany();
   await prisma.garageService.deleteMany();
@@ -420,7 +425,7 @@ async function main() {
         days:      JSON.stringify(["LUN", "MIE", "VIE"]),
         startTime: "09:00",
         endTime:   "11:00",
-        price:     0.01,
+        price:     65,
         isActive:  true,
       },
     ],
@@ -482,6 +487,7 @@ async function main() {
 
     const booking = await prisma.booking.create({
       data: {
+        code:       generateCode(),
         userId:     clienteUser.id,
         garageId:   b.garageId,
         serviceId:  b.serviceId,

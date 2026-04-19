@@ -478,7 +478,7 @@ export function RegistroForm() {
                           key={type}
                           type="button"
                           onClick={() => toggleVehicle(type)}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
+                          className={`flex items-center gap-2 px-3 py-2 rounded-none border text-xs font-medium transition-all ${
                             active
                               ? "border-gartify-blue bg-blue-50 text-gartify-blue"
                               : "border-gray-200 bg-white text-gartify-gray hover:border-gartify-blue/40"

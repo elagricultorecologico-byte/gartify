@@ -396,7 +396,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                     onClick={() => toggleVehicleType(tipo)}
                     aria-pressed={activo}
                     className={cn(
-                      "flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all",
+                      "flex items-center gap-2 px-3 py-2 rounded-none border text-sm font-medium transition-all",
                       activo
                         ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero"
                         : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
@@ -424,7 +424,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 type="button"
                 onClick={() => setCourtesyCar(!courtesyCar)}
                 className={cn(
-                  "flex items-center gap-2.5 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all",
+                  "flex items-center gap-2.5 px-4 py-2.5 rounded-none border text-sm font-medium transition-all",
                   courtesyCar
                     ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero"
                     : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
@@ -438,7 +438,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 type="button"
                 onClick={() => setPickupService(!pickupService)}
                 className={cn(
-                  "flex items-center gap-2.5 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all",
+                  "flex items-center gap-2.5 px-4 py-2.5 rounded-none border text-sm font-medium transition-all",
                   pickupService
                     ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero"
                     : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
