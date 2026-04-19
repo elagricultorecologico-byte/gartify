@@ -80,7 +80,7 @@ export function Navbar() {
               {/* Avatar — para GARAGE_OWNER: estático. Para otros roles: abre dropdown */}
               {isGarageOwner ? (
                 <div className="flex items-center gap-1">
-                  <div className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1">
+                  <Link href="/cuenta/taller" className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
                     <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
                       {initial}
                     </div>
@@ -102,24 +102,33 @@ export function Navbar() {
                         <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
                       )}
                     </div>
-                  </div>
+                  </Link>
                   <Link href="/cuenta/taller/perfil" title="Perfil del taller" className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors">
                     <Settings className="h-4 w-4" />
                   </Link>
                 </div>
               ) : (
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors"
-                >
-                  <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
-                    {initial}
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
-                  </div>
-                </button>
+                <div className="flex items-center gap-1">
+                  {/* Enlace directo al panel según rol */}
+                  <Link
+                    href={isAdmin ? "/admin" : isDistributor ? "/distribuidor/dashboard" : "/cuenta"}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    {isAdmin ? "Panel admin" : isDistributor ? "Mi dashboard" : "Mis reservas"}
+                  </Link>
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors"
+                  >
+                    <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                      {initial}
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
+                    </div>
+                  </button>
+                </div>
               )}
 
               {/* Dropdown — solo para roles que no son GARAGE_OWNER */}
