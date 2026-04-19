@@ -243,7 +243,7 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
         </div>
       )}
 
-      <div className="pt-2">
+      <div className="pt-2 flex justify-end">
         <Button type="submit" disabled={loading} className="bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold gap-2">
           {loading
             ? <><Loader2 className="h-4 w-4 animate-spin" />Guardando...</>
