@@ -91,14 +91,14 @@ function ServiceRow({ s, onUpdated, onToggle, onDelete }: {
   const isAnchor = ANCHOR_TYPES.has(s.type);
 
   return (
-    <div className={`flex items-center gap-2 px-2.5 py-2 rounded-lg border transition-all ${
+    <div className={`flex items-center gap-2 px-2.5 py-2 border transition-all ${
       s.isActive
         ? isAnchor ? "bg-orange-50/50 border-gartify-orange/25" : "bg-white border-gray-100 hover:border-gartify-blue/20"
         : "bg-gray-50 border-gray-100 opacity-50"
     }`}>
       {/* Tipo — ancho fijo para alinear nombres */}
       <div className={`${BADGE_W} flex items-center gap-1`}>
-        <span className="text-[10px] font-bold uppercase tracking-wide text-gartify-blue bg-blue-50 border border-blue-100 px-1.5 py-0.5 rounded-full leading-tight truncate">
+        <span className="text-[10px] font-bold uppercase tracking-wide text-gartify-blue bg-blue-50 border border-blue-100 px-1.5 py-0.5 leading-tight truncate">
           {SERVICE_LABELS[s.type] ?? s.type}
         </span>
         {isAnchor && (
@@ -111,11 +111,15 @@ function ServiceRow({ s, onUpdated, onToggle, onDelete }: {
       {/* Nombre */}
       <p className="flex-1 text-sm font-semibold text-gartify-dark truncate min-w-0">{s.name}</p>
 
-      {/* Duración + vehículos */}
-      <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+      {/* Duración */}
+      <div className="hidden sm:flex items-center justify-center w-16 shrink-0">
         <span className="flex items-center gap-0.5 text-[11px] text-muted-foreground tabular-nums">
           <Clock className="h-3 w-3" />{s.duration}m
         </span>
+      </div>
+
+      {/* Vehículos */}
+      <div className="hidden sm:flex items-center justify-center w-16 shrink-0">
         <span className="flex gap-0.5">
           {tipos.slice(0, 3).map(t => (
             <span key={t} title={VEHICLE_LABELS[t]} className="text-xs leading-none">{VEHICLE_ICONS[t]}</span>
@@ -213,7 +217,8 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
       <div className="flex items-center gap-2 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground border-b border-gray-100 mb-1 shrink-0">
         <div className={BADGE_W}>Tipo</div>
         <div className="flex-1">Servicio</div>
-        <div className="hidden sm:block w-20 text-center">Duración</div>
+        <div className="hidden sm:block w-16 text-center">Duración</div>
+        <div className="hidden sm:block w-16 text-center">Vehículo</div>
         <div className="w-16 text-right">Precio</div>
         <div className="w-12" />
       </div>
@@ -250,13 +255,13 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
         <div className="flex gap-2 mb-4">
           <button
             onClick={() => setMobileTab("lista")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border text-sm font-semibold transition-colors ${mobileTab === "lista" ? "bg-gartify-blue text-white border-gartify-blue" : "bg-white text-gartify-gray border-gray-200"}`}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 border text-sm font-semibold transition-colors ${mobileTab === "lista" ? "bg-gartify-blue text-white border-gartify-blue" : "bg-white text-gartify-gray border-gray-200"}`}
           >
             <List className="h-4 w-4" />Servicios
           </button>
           <button
             onClick={() => setMobileTab("añadir")}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border text-sm font-semibold transition-colors ${mobileTab === "añadir" ? "bg-gartify-blue text-white border-gartify-blue" : "bg-white text-gartify-gray border-gray-200"}`}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 border text-sm font-semibold transition-colors ${mobileTab === "añadir" ? "bg-gartify-blue text-white border-gartify-blue" : "bg-white text-gartify-gray border-gray-200"}`}
           >
             <Plus className="h-4 w-4" />Añadir
           </button>
