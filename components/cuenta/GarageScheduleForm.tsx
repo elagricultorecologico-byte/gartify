@@ -106,7 +106,8 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
       {DAY_ORDER.map((dow) => {
         const day = schedule[dow];
         return (
@@ -227,6 +228,7 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
           </div>
         );
       })}
+      </div>
 
       {error && (
         <div role="alert" className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600 mt-3">
