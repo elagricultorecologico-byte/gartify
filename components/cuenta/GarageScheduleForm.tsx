@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, AlertCircle, Loader2, Copy, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const DAY_LABELS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-// Order displayed: Lun → Dom (Mon first)
 const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
 type DaySchedule = {
@@ -24,20 +23,40 @@ for (let h = 6; h <= 23; h++) {
   if (h < 23) TIME_OPTIONS.push(`${String(h).padStart(2, "0")}:30`);
 }
 
-const SELECT_CLS =
-  "h-8 rounded-none border border-gray-200 bg-white px-2 text-sm text-gartify-blue font-medium focus:outline-none focus:ring-2 focus:ring-gartify-hero/30";
+const LABEL_CLS = "text-xs font-semibold text-gartify-blue uppercase tracking-wide w-14 shrink-0";
+
+function TimeSelect({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+}) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="h-8 w-24 text-sm font-medium text-gartify-blue">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent className="max-h-52">
+        {options.map((t) => (
+          <SelectItem key={t} value={t} className="text-sm">{t}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
 
 export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
   const [schedule, setSchedule] = useState<DaySchedule[]>(() =>
     Array.from({ length: 7 }, (_, i) => {
       const found = initial.find((d) => d.dayOfWeek === i);
-      // Si el taller ya tenía el día guardado, lo usamos tal cual.
-      // Para días nuevos (lun-vie) mostramos mañana + tarde por defecto.
       return found ?? {
         dayOfWeek:      i,
         isOpen:         i >= 1 && i <= 5,
-        openTime:       i === 6 || i === 0 ? "09:00" : "08:00",
-        closeTime:      i === 6 || i === 0 ? "14:00" : "14:00",
+        openTime:       "08:00",
+        closeTime:      "14:00",
         afternoonStart: i >= 1 && i <= 5 ? "16:00" : null,
         afternoonEnd:   i >= 1 && i <= 5 ? "20:00" : null,
       };
@@ -55,19 +74,12 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
     setSuccess(false);
   }
 
-  // Copia el horario de Lunes (dow=1) a Martes–Viernes (dow 2–5)
   function copyMonToFri() {
     const mon = schedule[1];
     setSchedule((prev) =>
       prev.map((d) =>
         d.dayOfWeek >= 2 && d.dayOfWeek <= 5
-          ? {
-              ...d,
-              openTime:       mon.openTime,
-              closeTime:      mon.closeTime,
-              afternoonStart: mon.afternoonStart,
-              afternoonEnd:   mon.afternoonEnd,
-            }
+          ? { ...d, openTime: mon.openTime, closeTime: mon.closeTime, afternoonStart: mon.afternoonStart, afternoonEnd: mon.afternoonEnd }
           : d
       )
     );
@@ -79,13 +91,11 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
     setLoading(true);
     setError("");
     setSuccess(false);
-
     const res = await fetch("/api/garage/schedule", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(schedule),
     });
-
     setLoading(false);
     if (!res.ok) {
       const d = await res.json() as { error?: string };
@@ -103,13 +113,13 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
           <div
             key={dow}
             className={cn(
-              "rounded-xl border px-4 py-3 transition-colors",
+              "border px-4 py-3 transition-colors",
               day.isOpen ? "bg-white border-gray-200" : "bg-gray-50 border-gray-100"
             )}
           >
             <div className="flex flex-col sm:flex-row sm:items-start gap-3">
               {/* Toggle + nombre */}
-              <div className="flex items-center gap-3 sm:w-36 shrink-0 pt-0.5">
+              <div className="flex items-center gap-3 sm:w-36 shrink-0 pt-1">
                 <button
                   type="button"
                   role="switch"
@@ -127,12 +137,7 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
                     )}
                   />
                 </button>
-                <span
-                  className={cn(
-                    "text-sm font-semibold w-20",
-                    day.isOpen ? "text-gartify-blue" : "text-gray-400"
-                  )}
-                >
+                <span className={cn("text-sm font-semibold w-20", day.isOpen ? "text-gartify-blue" : "text-gray-400")}>
                   {DAY_LABELS[dow]}
                 </span>
               </div>
@@ -143,48 +148,40 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
 
                   {/* Mañana */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs text-gray-400 w-14 shrink-0">Mañana</span>
-                    <select
+                    <span className={LABEL_CLS}>Mañana</span>
+                    <TimeSelect
                       value={day.openTime}
-                      onChange={(e) => updateDay(dow, { openTime: e.target.value })}
-                      className={SELECT_CLS}
-                    >
-                      {TIME_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
-                    </select>
+                      options={TIME_OPTIONS}
+                      onChange={(v) => updateDay(dow, { openTime: v })}
+                    />
                     <span className="text-xs text-gartify-gray">–</span>
-                    <select
+                    <TimeSelect
                       value={day.closeTime}
-                      onChange={(e) => updateDay(dow, { closeTime: e.target.value })}
-                      className={SELECT_CLS}
-                    >
-                      {TIME_OPTIONS.filter((t) => t > day.openTime).map((t) => <option key={t} value={t}>{t}</option>)}
-                    </select>
+                      options={TIME_OPTIONS.filter((t) => t > day.openTime)}
+                      onChange={(v) => updateDay(dow, { closeTime: v })}
+                    />
                   </div>
 
                   {/* Tarde */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs text-gray-400 w-14 shrink-0">Tarde</span>
+                    <span className={LABEL_CLS}>Tarde</span>
                     {day.afternoonStart ? (
                       <>
-                        <select
+                        <TimeSelect
                           value={day.afternoonStart}
-                          onChange={(e) => updateDay(dow, { afternoonStart: e.target.value })}
-                          className={SELECT_CLS}
-                        >
-                          {TIME_OPTIONS.filter((t) => t > day.closeTime).map((t) => <option key={t} value={t}>{t}</option>)}
-                        </select>
+                          options={TIME_OPTIONS.filter((t) => t > day.closeTime)}
+                          onChange={(v) => updateDay(dow, { afternoonStart: v })}
+                        />
                         <span className="text-xs text-gartify-gray">–</span>
-                        <select
+                        <TimeSelect
                           value={day.afternoonEnd ?? "20:00"}
-                          onChange={(e) => updateDay(dow, { afternoonEnd: e.target.value })}
-                          className={SELECT_CLS}
-                        >
-                          {TIME_OPTIONS.filter((t) => t > (day.afternoonStart ?? "16:00")).map((t) => <option key={t} value={t}>{t}</option>)}
-                        </select>
+                          options={TIME_OPTIONS.filter((t) => t > (day.afternoonStart ?? "16:00"))}
+                          onChange={(v) => updateDay(dow, { afternoonEnd: v })}
+                        />
                         <button
                           type="button"
                           onClick={() => updateDay(dow, { afternoonStart: null, afternoonEnd: null })}
-                          className="rounded-md p-1 text-gray-300 hover:text-red-400 transition-colors"
+                          className="p-1 text-gray-300 hover:text-red-400 transition-colors"
                           title="Sin horario de tarde"
                         >
                           <X className="h-3.5 w-3.5" />
@@ -195,11 +192,12 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
                         type="button"
                         onClick={() => {
                           const [h, m] = day.closeTime.split(":").map(Number);
-                          const afterMins = h * 60 + m + 60; // +1h de margen mínimo
+                          const afterMins = h * 60 + m + 60;
                           const afterH = String(Math.floor(afterMins / 60)).padStart(2, "0");
                           const afterM = String(afterMins % 60).padStart(2, "0");
                           const start = `${afterH}:${afterM}`;
-                          const [sh, sm] = [Math.floor(afterMins / 60) + 2, afterMins % 60];
+                          const sh = Math.floor(afterMins / 60) + 2;
+                          const sm = afterMins % 60;
                           const end = `${String(sh).padStart(2, "0")}:${String(sm).padStart(2, "0")}`;
                           updateDay(dow, { afternoonStart: start, afternoonEnd: end });
                         }}
@@ -210,12 +208,12 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
                     )}
                   </div>
 
-                  {/* Botón copiar Lun→Vie — solo en Lunes */}
+                  {/* Botón copiar Lun→Vie */}
                   {dow === 1 && (
                     <button
                       type="button"
                       onClick={copyMonToFri}
-                      className="self-start mt-0.5 flex items-center gap-1.5 rounded-lg border border-dashed border-gray-300 px-2.5 py-1 text-xs text-gray-400 hover:border-gartify-blue/40 hover:text-gartify-blue transition-colors"
+                      className="self-start mt-0.5 flex items-center gap-1.5 border border-dashed border-gray-300 px-2.5 py-1 text-xs text-gray-400 hover:border-gartify-blue/40 hover:text-gartify-blue transition-colors"
                     >
                       <Copy className="h-3 w-3" />
                       Aplicar a Lun–Vie
@@ -223,7 +221,7 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
                   )}
                 </div>
               ) : (
-                <span className="text-sm text-gray-400 italic pt-0.5">Cerrado</span>
+                <span className="text-sm text-gray-400 italic pt-1">Cerrado</span>
               )}
             </div>
           </div>
@@ -231,29 +229,24 @@ export function GarageScheduleForm({ initial }: { initial: DaySchedule[] }) {
       })}
 
       {error && (
-        <div role="alert" className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600 mt-3">
+        <div role="alert" className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600 mt-3">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </div>
       )}
       {success && (
-        <div role="status" className="flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-3 py-2 text-sm text-green-700 mt-3">
+        <div role="status" className="flex items-center gap-2 bg-green-50 border border-green-100 px-3 py-2 text-sm text-green-700 mt-3">
           <CheckCircle className="h-4 w-4 shrink-0" />
           Horario guardado correctamente.
         </div>
       )}
 
       <div className="pt-2">
-        <Button
-          type="submit"
-          disabled={loading}
-          className="bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold gap-2"
-        >
-          {loading ? (
-            <><Loader2 className="h-4 w-4 animate-spin" />Guardando...</>
-          ) : (
-            <><CheckCircle className="h-4 w-4" />Guardar horario</>
-          )}
+        <Button type="submit" disabled={loading} className="bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold gap-2">
+          {loading
+            ? <><Loader2 className="h-4 w-4 animate-spin" />Guardando...</>
+            : <><CheckCircle className="h-4 w-4" />Guardar horario</>
+          }
         </Button>
       </div>
     </form>

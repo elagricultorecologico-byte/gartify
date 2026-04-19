@@ -135,7 +135,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Etiqueta */}
         <div className="space-y-1.5">
-          <Label htmlFor="oferta-label">Nombre de la oferta</Label>
+          <Label htmlFor="oferta-label" className="text-xs font-semibold text-gartify-blue uppercase tracking-wide">Nombre de la oferta</Label>
           <Input
             id="oferta-label"
             name="label"
@@ -147,7 +147,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
 
         {/* Selector de días */}
         <div className="space-y-2">
-          <Label>Días de la semana</Label>
+          <Label className="text-xs font-semibold text-gartify-blue uppercase tracking-wide">Días de la semana</Label>
           <div className="flex flex-wrap gap-2">
             {DIAS_SEMANA.map(({ codigo, etiqueta }) => (
               <button
@@ -156,7 +156,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
                 onClick={() => toggleDia(codigo)}
                 aria-pressed={diasSeleccionados.includes(codigo)}
                 className={cn(
-                  "rounded-full px-3 py-1 text-sm font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gartify-orange",
+                  "rounded-none px-3 py-1 text-sm font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gartify-orange",
                   diasSeleccionados.includes(codigo)
                     ? "bg-gartify-orange text-white border-gartify-orange"
                     : "bg-white text-gartify-gray border-gray-300 hover:border-gartify-orange/60 hover:text-gartify-orange"
@@ -171,7 +171,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
         {/* Horario */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label htmlFor="oferta-startTime">Hora inicio</Label>
+            <Label htmlFor="oferta-startTime" className="text-xs font-semibold text-gartify-blue uppercase tracking-wide">Hora inicio</Label>
             <Input
               id="oferta-startTime"
               name="startTime"
@@ -180,7 +180,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="oferta-endTime">Hora fin</Label>
+            <Label htmlFor="oferta-endTime" className="text-xs font-semibold text-gartify-blue uppercase tracking-wide">Hora fin</Label>
             <Input
               id="oferta-endTime"
               name="endTime"
@@ -192,7 +192,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
 
         {/* Precio */}
         <div className="space-y-1.5">
-          <Label htmlFor="oferta-price">Precio de oferta (€)</Label>
+          <Label htmlFor="oferta-price" className="text-xs font-semibold text-gartify-blue uppercase tracking-wide">Precio de oferta (€)</Label>
           <Input
             id="oferta-price"
             name="price"
@@ -233,7 +233,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
               return (
                 <div
                   key={oferta.id}
-                  className="bg-white rounded-xl border border-orange-100 shadow-sm overflow-hidden flex flex-col sm:flex-row hover:border-gartify-orange/40 hover:shadow-md transition-all"
+                  className="bg-white border border-gray-200 overflow-hidden flex flex-col sm:flex-row hover:border-gartify-orange/40 transition-all"
                 >
                   {/* Acento de color izquierdo */}
                   <div className="sm:w-2 shrink-0 bg-gradient-to-b from-gartify-orange to-amber-400" />
@@ -274,7 +274,7 @@ export function GarageOfferForm({ ofertas: ofertasIniciales }: Props) {
           </div>
         </section>
       ) : (
-        <div className="text-center py-10 rounded-xl border border-dashed border-gray-200 bg-gray-50">
+        <div className="text-center py-10 border border-dashed border-gray-200 bg-gray-50">
           <Tag className="h-8 w-8 mx-auto mb-3 text-gartify-mid opacity-50" aria-hidden="true" />
           <p className="font-semibold text-foreground">Sin ofertas todavía</p>
           <p className="text-sm text-muted-foreground mt-1">

@@ -234,7 +234,7 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
   );
 
   const Formulario = (
-    <div className="bg-white rounded-xl border border-gartify-orange/25 shadow-sm p-4">
+    <div className="bg-white border border-gray-200 p-4">
       <h2 className="font-bold text-gartify-blue mb-3 text-sm flex items-center gap-2">
         <Wrench className="h-4 w-4 text-gartify-orange" />
         Añadir servicio

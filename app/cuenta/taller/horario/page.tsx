@@ -29,7 +29,7 @@ export default async function HorarioPage() {
 
   return (
     <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-200 overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5">
           <div className="flex items-center gap-3">

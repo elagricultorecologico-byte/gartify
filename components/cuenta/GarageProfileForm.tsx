@@ -139,7 +139,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
     <div className="space-y-6">
 
       {/* ── Sección logo ── */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-200 overflow-hidden">
         <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 border border-white/30 shrink-0">
@@ -245,7 +245,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
       </div>
 
       {/* ── Datos del perfil ── */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-200 overflow-hidden">
         <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 border border-white/30 shrink-0">
