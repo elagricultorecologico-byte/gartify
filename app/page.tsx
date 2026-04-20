@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Search, Star, Shield,
+  Star, Shield,
   Users, ChevronRight,
   CheckCircle2, CalendarCheck,
   BadgeCheck, Quote, XCircle, AlertTriangle,
