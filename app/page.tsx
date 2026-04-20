@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Search, Wrench, Package, Star, Shield,
+  Search, Wrench, Star, Shield,
   Users, ChevronRight,
-  CheckCircle2, ClipboardList, BarChart3, Upload, CalendarCheck,
+  CheckCircle2, ClipboardList, BarChart3, CalendarCheck,
   BadgeCheck, Quote,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
@@ -122,24 +122,6 @@ const ROLE_DATA = [
     ],
     cta: "Registrar mi taller",
     href: "/registro",
-  },
-  {
-    id: "proveedor",
-    label: "Soy distribuidor",
-    icon: Package,
-    color: "text-gartify-green",
-    bg: "bg-gartify-green/10",
-    borderTop: "border-t-[4px] border-t-gartify-green",
-    accentClass: "bg-gartify-green hover:bg-gartify-green/90",
-    headline: "Vende recambios a la red de talleres",
-    subheadline: "Accede a cientos de talleres verificados que necesitan recambios. Canal B2B directo y sin intermediarios.",
-    steps: [
-      { icon: Upload,        text: "Sube tu catálogo de productos" },
-      { icon: Package,       text: "Los talleres encuentran tus piezas" },
-      { icon: ClipboardList, text: "Gestiona pedidos desde tu panel" },
-    ],
-    cta: "Solicitar acceso",
-    href: "/contacto",
   },
 ];
 
@@ -259,12 +241,12 @@ export default function HomePage() {
               Gartify funciona para todos
             </h2>
             <p className="text-gartify-gray max-w-xl mx-auto">
-              Tanto si buscas taller como si tienes uno, o distribuyes recambios,
+              Tanto si buscas taller como si tienes uno,
               Gartify tiene una solución pensada para ti.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {ROLE_DATA.map(({ id, label, icon: Icon, color, bg, borderTop, accentClass, headline, subheadline, steps, cta, href }) => (
               <div
                 key={id}
