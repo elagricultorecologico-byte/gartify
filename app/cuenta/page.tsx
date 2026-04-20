@@ -75,7 +75,7 @@ export default async function CuentaPage() {
       </div>
 
       {bookings.length === 0 ? (
-        <div className="text-center py-16 rounded-xl border border-dashed border-gray-200 bg-gray-50">
+        <div className="text-center py-16 border border-dashed border-gray-200 bg-gray-50">
           <Calendar
             className="h-10 w-10 mx-auto mb-3 text-gartify-mid opacity-50"
             aria-hidden="true"

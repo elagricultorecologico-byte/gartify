@@ -148,7 +148,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
 
       {/* ── SIDEBAR DESKTOP ─────────────────────────────────────────────── */}
       <aside className="hidden lg:block lg:w-64 lg:shrink-0 lg:sticky lg:top-24">
-        <div className="bg-blue-50 border border-gartify-blue/40 p-4">
+        <div className="bg-white border border-gray-200 p-4">
           <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
             <SlidersHorizontal className="h-4 w-4 shrink-0" />
             <span className="text-sm font-semibold">Filtros</span>
@@ -166,7 +166,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
       <div className="flex-1 min-w-0 space-y-3">
 
         {/* Panel colapsable — solo móvil */}
-        <div className="lg:hidden bg-blue-50 border border-gartify-blue/40 overflow-hidden">
+        <div className="lg:hidden bg-white border border-gray-200 overflow-hidden">
           <button
             type="button"
             className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
@@ -259,7 +259,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                   <button
                     onClick={() => setPagina((p) => Math.max(1, p - 1))}
                     disabled={pagina === 1}
-                    className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                    className="p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
                     aria-label="Página anterior"
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -268,7 +268,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                     <button
                       key={n}
                       onClick={() => setPagina(n)}
-                      className={`min-w-[32px] h-8 rounded text-xs font-semibold transition-colors ${
+                      className={`min-w-[32px] h-8 text-xs font-semibold transition-colors ${
                         n === pagina ? "bg-gartify-blue text-white" : "hover:bg-gray-100 text-muted-foreground"
                       }`}
                     >
@@ -278,7 +278,7 @@ export function GarageBookingList({ bookings, garageId }: { bookings: GarageBook
                   <button
                     onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
                     disabled={pagina === totalPaginas}
-                    className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                    className="p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
                     aria-label="Página siguiente"
                   >
                     <ChevronRight className="h-4 w-4" />

@@ -116,7 +116,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
         <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Ordenar</p>
         <button
           onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 w-full px-3 py-2 text-sm font-normal border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
           aria-label="Ordenar por fecha"
         >
           {orden === "asc"
@@ -137,14 +137,14 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
               <button
                 key={tab.value}
                 onClick={() => setStatusFilter(tab.value)}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center justify-between px-3 py-2 text-sm font-medium transition-colors ${
                   active
                     ? "bg-gartify-blue text-white"
                     : "text-gartify-gray hover:bg-gray-100"
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`text-xs font-bold rounded-full px-2 py-0.5 leading-none ${
+                <span className={`text-xs font-bold px-2 py-0.5 leading-none ${
                   active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
                 }`}>
                   {count}
@@ -162,12 +162,12 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
 
       {/* ── SIDEBAR DESKTOP ─────────────────────────────────────────────── */}
       <aside className="hidden lg:block lg:w-64 lg:shrink-0 lg:sticky lg:top-24">
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+        <div className="bg-white border border-gray-200 p-4">
           <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
             <SlidersHorizontal className="h-4 w-4 shrink-0" />
             <span className="text-sm font-semibold">Filtros</span>
             {filtrosActivos > 0 && (
-              <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+              <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
                 {filtrosActivos}
               </span>
             )}
@@ -180,7 +180,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
       <div className="flex-1 min-w-0 space-y-3">
 
         {/* Panel colapsable — solo móvil */}
-        <div className="lg:hidden bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="lg:hidden bg-white border border-gray-200 overflow-hidden">
           <button
             type="button"
             className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
@@ -191,7 +191,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
               <SlidersHorizontal className="h-4 w-4 shrink-0" />
               <span className="text-sm font-semibold">Filtros</span>
               {filtrosActivos > 0 && (
-                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+                <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
                   {filtrosActivos}
                 </span>
               )}
@@ -218,7 +218,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                   <p className="text-xs font-semibold text-gartify-gray uppercase tracking-wide mb-2">Ordenar</p>
                   <button
                     onClick={() => setOrden((o) => (o === "asc" ? "desc" : "asc"))}
-                    className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2 w-full px-3 py-2 text-sm font-normal border border-gray-200 bg-white text-gartify-gray hover:bg-gray-50 transition-colors"
                   >
                     {orden === "asc"
                       ? <><ArrowUp className="h-3.5 w-3.5" /> Fecha: más próxima</>
@@ -236,12 +236,12 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                         <button
                           key={tab.value}
                           onClick={() => setStatusFilter(tab.value)}
-                          className={`flex items-center justify-between gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
+                          className={`flex items-center justify-between gap-1 px-3 py-2 text-xs font-semibold transition-colors ${
                             active ? "bg-gartify-blue text-white" : "bg-gray-100 text-gartify-gray hover:bg-gray-200"
                           }`}
                         >
                           <span className="truncate">{tab.label}</span>
-                          <span className={`shrink-0 text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
+                          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 leading-none ${
                             active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
                           }`}>{count}</span>
                         </button>
@@ -276,7 +276,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                   <button
                     onClick={() => setPagina((p) => Math.max(1, p - 1))}
                     disabled={pagina === 1}
-                    className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                    className="p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
                     aria-label="Página anterior"
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -285,7 +285,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                     <button
                       key={n}
                       onClick={() => setPagina(n)}
-                      className={`min-w-[32px] h-8 rounded text-xs font-semibold transition-colors ${
+                      className={`min-w-[32px] h-8 text-xs font-semibold transition-colors ${
                         n === pagina ? "bg-gartify-blue text-white" : "hover:bg-gray-100 text-muted-foreground"
                       }`}
                     >
@@ -295,7 +295,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                   <button
                     onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
                     disabled={pagina === totalPaginas}
-                    className="rounded p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                    className="p-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:pointer-events-none transition-colors"
                     aria-label="Página siguiente"
                   >
                     <ChevronRight className="h-4 w-4" />
@@ -344,7 +344,7 @@ function BookingCard({ b }: { b: CustomerBookingItem }) {
   );
 
   return (
-    <article className={`bg-white rounded-xl border shadow-sm hover:shadow-md transition-all overflow-hidden ${
+    <article className={`bg-white border overflow-hidden transition-colors ${
       isPast ? "opacity-75 border-gray-100" : "border-gray-200 hover:border-gartify-blue/30"
     }`}>
       {/* ── BANDA DE ESTADO — solo móvil ──────────────────────────────── */}
@@ -361,7 +361,7 @@ function BookingCard({ b }: { b: CustomerBookingItem }) {
       <div className="sm:hidden flex flex-col gap-2.5 px-4 py-3">
         <span className="font-bold text-gartify-blue text-base leading-tight">{b.garage.name}</span>
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
+          <span className="inline-flex items-center gap-1 bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
             <Wrench className="h-3 w-3" aria-hidden="true" />
             {b.service ? (SERVICE_LABELS[b.service.type] ?? b.service.name) : (b.serviceLabel ?? "—")}
           </span>
@@ -390,14 +390,14 @@ function BookingCard({ b }: { b: CustomerBookingItem }) {
       <div className="hidden sm:block px-4 py-3 relative">
         <div className="absolute top-3 right-4 flex items-center gap-1">{accionesBotones}</div>
         <div className="flex items-start gap-3">
-          <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gradient-to-br from-gartify-hero to-gartify-mid"}`} aria-hidden="true">
+          <div className={`h-9 w-9 flex items-center justify-center shrink-0 text-white text-xs font-bold ${isPast ? "bg-gray-400" : "bg-gartify-blue"}`} aria-hidden="true">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
             <div className="pr-44">
               <span className="font-bold text-gartify-blue text-sm">{b.garage.name}</span>
               <div className="flex items-center gap-2 mt-1.5">
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
+                <span className="inline-flex items-center gap-1 bg-blue-50 text-gartify-hero px-2 py-0.5 font-medium border border-blue-100 text-xs">
                   <Wrench className="h-3 w-3" aria-hidden="true" />
                   {b.service ? (SERVICE_LABELS[b.service.type] ?? b.service.name) : (b.serviceLabel ?? "—")}
                 </span>
