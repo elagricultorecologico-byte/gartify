@@ -148,7 +148,7 @@ export function GarageFilters() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-white border border-gray-200 overflow-hidden">
       {/* Cabecera — en móvil actúa como toggle */}
       <button
         type="button"
@@ -160,7 +160,7 @@ export function GarageFilters() {
           <SlidersHorizontal className="h-4 w-4 shrink-0" />
           <span className="text-sm font-semibold">Filtros</span>
           {hasFilters && (
-            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+            <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
               {activeCount + (hasLocation ? 1 : 0)}
             </span>
           )}
@@ -211,7 +211,7 @@ export function GarageFilters() {
             </div>
           ) : (
             <div className="space-y-2">
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-gartify-hero/5 border border-gartify-hero/20">
+              <div className="flex items-center gap-2 px-2.5 py-1.5 bg-gartify-hero/5 border border-gartify-hero/20">
                 <CheckCircle className="h-3.5 w-3.5 text-gartify-hero shrink-0" />
                 <span className="text-xs text-gartify-hero font-medium flex-1">Ubicación detectada</span>
                 <button type="button" onClick={clearLocation} className="text-gartify-gray/60 hover:text-red-500 transition-colors" aria-label="Quitar ubicación">

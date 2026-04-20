@@ -47,7 +47,7 @@ export function GaragePagination({
           id="pageSize"
           value={pageSize}
           onChange={(e) => changePageSize(Number(e.target.value))}
-          className="h-7 rounded border border-gray-200 bg-white px-1.5 text-xs text-gartify-blue font-medium focus:outline-none focus:ring-1 focus:ring-gartify-blue/40"
+          className="h-7 border border-gray-200 bg-white px-1.5 text-xs text-gartify-blue font-medium focus:outline-none focus:ring-1 focus:ring-gartify-blue/40"
         >
           {PAGE_SIZE_OPTIONS.map((n) => (
             <option key={n} value={n}>{n} por página</option>

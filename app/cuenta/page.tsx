@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
-import { Calendar, Search } from "lucide-react";
+import { Calendar, Search, CalendarDays } from "lucide-react";
 import { CustomerBookingPoller } from "@/components/cuenta/CustomerBookingPoller";
 
 export const dynamic = "force-dynamic";
@@ -42,16 +42,29 @@ export default async function CuentaPage() {
 
   return (
     <div className="container max-w-5xl py-10 px-4 sm:px-8">
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-gartify-gray">
-          Hola, <span className="font-semibold text-gartify-dark">{user.name?.split(" ")[0]}</span>
-        </p>
-        <Link href="/talleres">
-          <button className="flex items-center gap-2 bg-gartify-orange hover:bg-orange-600 px-4 py-2 text-xs font-bold text-white transition-colors">
-            <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
-            Nueva cita
-          </button>
-        </Link>
+      {/* Cabecera */}
+      <div className="bg-white border border-gray-200 overflow-hidden mb-6">
+        <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+                <CalendarDays className="h-5 w-5 text-gartify-blue" />
+              </div>
+              <div>
+                <h1 className="text-base font-bold text-gartify-blue">Mis reservas</h1>
+                <p className="text-xs text-gartify-gray mt-0.5">
+                  Hola, <span className="font-semibold">{user.name?.split(" ")[0]}</span> — aquí están todas tus citas
+                </p>
+              </div>
+            </div>
+            <Link href="/talleres">
+              <button className="flex items-center gap-2 bg-gartify-orange hover:bg-orange-600 px-4 py-2 text-xs font-bold text-white transition-colors shrink-0">
+                <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Nueva cita
+              </button>
+            </Link>
+          </div>
+        </div>
       </div>
 
       {bookings.length === 0 ? (

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { CalendarDays, Car, User, LogOut } from "lucide-react";
+import { CalendarDays, Car, User, LogOut, Search } from "lucide-react";
 
 interface ItemNavegacion {
   href: string;
@@ -12,9 +12,10 @@ interface ItemNavegacion {
 }
 
 const ITEMS_NAVEGACION: ItemNavegacion[] = [
-  { href: "/cuenta",          icon: CalendarDays, label: "Mis reservas",  exact: true },
+  { href: "/cuenta",           icon: CalendarDays, label: "Mis reservas",  exact: true },
   { href: "/cuenta/vehiculos", icon: Car,          label: "Mis vehículos" },
-  { href: "/cuenta/perfil",   icon: User,         label: "Mi perfil" },
+  { href: "/cuenta/perfil",    icon: User,         label: "Mi perfil" },
+  { href: "/talleres",         icon: Search,       label: "Buscar taller" },
 ];
 
 function ItemNav({ item, pathname }: { item: ItemNavegacion; pathname: string }) {

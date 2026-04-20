@@ -92,7 +92,7 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
   const esPremium = plan === "PREMIUM";
 
   return (
-    <div className="bg-white sm:rounded-xl border border-gray-200 hover:border-gartify-blue/30 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col sm:flex-row">
+    <div className="bg-white border border-gray-200 hover:border-gartify-blue/30 transition-all overflow-hidden flex flex-col sm:flex-row">
 
       {/* ── CONTENIDO PRINCIPAL ───────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -102,13 +102,13 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
         {(esPremium || isVerified) && (
           <div className="sm:hidden flex items-center gap-2 px-4 pt-3 pb-0">
             {esPremium && (
-              <span className="inline-flex items-center gap-1 bg-amber-400 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              <span className="inline-flex items-center gap-1 bg-amber-400 text-white text-[11px] font-bold px-2.5 py-1">
                 <Crown className="h-3 w-3" />
                 Premium
               </span>
             )}
             {isVerified && (
-              <span className="inline-flex items-center gap-1 bg-gartify-hero/10 text-gartify-hero text-[11px] font-bold px-2.5 py-1 rounded-full border border-gartify-hero/20">
+              <span className="inline-flex items-center gap-1 bg-gartify-hero/10 text-gartify-hero text-[11px] font-bold px-2.5 py-1 border border-gartify-hero/20">
                 <ShieldCheck className="h-3 w-3" />
                 Verificado
               </span>
@@ -125,7 +125,7 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
               <h3 className="font-bold text-gartify-blue text-base leading-tight truncate">{name}</h3>
               {/* Badge Premium solo visible en desktop (en móvil aparece arriba) */}
               {esPremium && (
-                <span className="hidden sm:inline-flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm shrink-0">
+                <span className="hidden sm:inline-flex items-center gap-1 bg-amber-400 text-white text-[10px] font-bold px-2 py-0.5 shrink-0">
                   <Crown className="h-2.5 w-2.5" />
                   Premium
                 </span>
@@ -174,7 +174,7 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
             {services.slice(0, 2).map((s) => (
               <span
                 key={s.id}
-                className="sm:hidden inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100"
+                className="sm:hidden inline-flex items-center bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100"
               >
                 {SERVICE_LABELS[s.type] ?? s.name}
               </span>
@@ -183,7 +183,7 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
             {services.slice(0, 3).map((s) => (
               <span
                 key={`desk-${s.id}`}
-                className="hidden sm:inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100"
+                className="hidden sm:inline-flex items-center bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100"
               >
                 {SERVICE_LABELS[s.type] ?? s.name}
               </span>
@@ -191,14 +191,14 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
             {/* Contador de servicios restantes */}
             <span className="sm:hidden">
               {services.length > 2 && (
-                <span className="inline-flex items-center rounded-full bg-gray-100 text-gartify-gray text-xs px-2 py-0.5 font-medium">
+                <span className="inline-flex items-center bg-gray-100 text-gartify-gray text-xs px-2 py-0.5 font-medium">
                   +{services.length - 2}
                 </span>
               )}
             </span>
             <span className="hidden sm:inline-flex">
               {services.length > 3 && (
-                <span className="inline-flex items-center rounded-full bg-gray-100 text-gartify-gray text-xs px-2 py-0.5 font-medium">
+                <span className="inline-flex items-center bg-gray-100 text-gartify-gray text-xs px-2 py-0.5 font-medium">
                   +{services.length - 3}
                 </span>
               )}
@@ -214,12 +214,12 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
             {(courtesyCar || pickupService) && (
               <span className="inline-flex items-center gap-1.5">
                 {courtesyCar && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-green-50 text-green-700 text-xs px-2.5 py-0.5 font-medium border border-green-100">
+                  <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-xs px-2.5 py-0.5 font-medium border border-green-100">
                     <Car className="h-3 w-3" />Coche cortesía
                   </span>
                 )}
                 {pickupService && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 text-purple-700 text-xs px-2.5 py-0.5 font-medium border border-purple-100">
+                  <span className="inline-flex items-center gap-1 bg-purple-50 text-purple-700 text-xs px-2.5 py-0.5 font-medium border border-purple-100">
                     <PackageCheck className="h-3 w-3" />Recogida
                   </span>
                 )}
@@ -235,14 +235,14 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
                 <span className="text-[11px] font-bold text-green-700 uppercase tracking-wide">Ofertas especiales</span>
               </div>
               {offers.slice(0, 3).map((oferta) => (
-                <div key={oferta.id} className="flex items-center justify-between gap-2 rounded-lg bg-green-50 border border-green-200 px-2.5 py-1">
+                <div key={oferta.id} className="flex items-center justify-between gap-2 bg-green-50 border border-green-200 px-2.5 py-1">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-xs font-semibold text-green-800 truncate">{oferta.label}</span>
                     <span className="text-[11px] text-green-600 whitespace-nowrap shrink-0 hidden sm:inline">
                       · {formatearDiasOferta(oferta.days)} {oferta.startTime}–{oferta.endTime}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-white bg-green-600 rounded-full px-2.5 py-0.5 shrink-0 whitespace-nowrap">
+                  <span className="text-xs font-bold text-white bg-green-600 px-2.5 py-0.5 shrink-0 whitespace-nowrap">
                     {formatPrice(oferta.price)}
                   </span>
                 </div>

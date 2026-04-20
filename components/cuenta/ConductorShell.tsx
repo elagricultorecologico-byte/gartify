@@ -1,5 +1,3 @@
-"use client";
-
 import { SidebarConductor } from "@/components/cuenta/SidebarConductor";
 
 export function ConductorShell({ children }: { children: React.ReactNode }) {

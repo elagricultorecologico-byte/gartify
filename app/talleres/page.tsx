@@ -181,7 +181,7 @@ export default async function TalleresPage({
 
       {/* Mapa */}
       {pins.length > 0 && (
-        <div className="relative z-0 h-72 sm:h-96 w-full rounded-xl overflow-hidden border border-gray-200 shadow-sm mb-6">
+        <div className="relative z-0 h-72 sm:h-96 w-full overflow-hidden border border-gray-200 mb-6">
           <GarageMap garages={pins} />
         </div>
       )}
