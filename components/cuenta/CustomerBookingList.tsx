@@ -144,7 +144,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`text-xs font-bold px-2 py-0.5 leading-none ${
+                <span className={`text-xs font-bold rounded-full px-2 py-0.5 leading-none ${
                   active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
                 }`}>
                   {count}
@@ -241,7 +241,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                           }`}
                         >
                           <span className="truncate">{tab.label}</span>
-                          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 leading-none ${
+                          <span className={`shrink-0 text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
                             active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
                           }`}>{count}</span>
                         </button>
