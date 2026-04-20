@@ -106,15 +106,21 @@ export function Navbar() {
                 </div>
               ) : !isAdmin && !isDistributor ? (
                 /* Conductor — avatar estático, sin dropdown (usa sidebar) */
-                <Link href="/cuenta" className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
-                  <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
-                    {initial}
+                <div className="relative group">
+                  <Link href="/cuenta" className="flex items-center gap-2 pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
+                    <div className="h-8 w-8 bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                      {initial}
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 leading-tight ${rolStyle}`}>{rolLabel}</span>
+                    </div>
+                  </Link>
+                  {/* Tooltip */}
+                  <div className="pointer-events-none absolute right-0 top-full mt-2 w-max bg-gartify-dark border border-white/10 px-3 py-1.5 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50 whitespace-nowrap">
+                    Ir a mi panel
                   </div>
-                  <div className="flex flex-col items-start">
-                    <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
-                  </div>
-                </Link>
+                </div>
               ) : (
                 /* Admin / Distribuidor — con dropdown */
                 <div className="flex items-center gap-1">
