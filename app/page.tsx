@@ -2,10 +2,10 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Search, Wrench, Star, Shield,
+  Search, Star, Shield,
   Users, ChevronRight,
-  CheckCircle2, ClipboardList, BarChart3, CalendarCheck,
-  BadgeCheck, Quote,
+  CheckCircle2, CalendarCheck,
+  BadgeCheck, Quote, XCircle, AlertTriangle,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -86,44 +86,6 @@ const TESTIMONIALS = [
   },
 ];
 
-const ROLE_DATA = [
-  {
-    id: "cliente",
-    label: "Soy conductor",
-    icon: Search,
-    color: "text-gartify-hero",
-    bg: "bg-gartify-hero/10",
-    borderTop: "border-t-[4px] border-t-gartify-hero",
-    accentClass: "bg-gartify-hero hover:bg-gartify-hero/90",
-    headline: "Tu coche, en buenas manos",
-    subheadline: "Reserva cita en talleres verificados con reseñas reales y precios transparentes. Sin sorpresas.",
-    steps: [
-      { icon: Search,        text: "Busca por servicio y ciudad" },
-      { icon: CalendarCheck, text: "Elige fecha y hora sin llamadas" },
-      { icon: CheckCircle2,  text: "Acude, recibe el servicio y valora" },
-    ],
-    cta: "Buscar taller",
-    href: "/talleres",
-  },
-  {
-    id: "taller",
-    label: "Tengo un taller",
-    icon: Wrench,
-    color: "text-gartify-orange",
-    bg: "bg-gartify-orange/10",
-    borderTop: "border-t-[4px] border-t-gartify-orange",
-    accentClass: "bg-gartify-orange hover:bg-gartify-orange/90",
-    headline: "Llena tu agenda sin esfuerzo",
-    subheadline: "Conecta con conductores de tu zona que buscan exactamente tus servicios. Gestiona todo desde tu portal.",
-    steps: [
-      { icon: Wrench,        text: "Crea tu perfil y añade servicios" },
-      { icon: ClipboardList, text: "Recibe y gestiona reservas online" },
-      { icon: BarChart3,     text: "Consulta estadísticas y reseñas" },
-    ],
-    cta: "Registrar mi taller",
-    href: "/registro",
-  },
-];
 
 // ─── Componentes auxiliares ───────────────────────────────────────────────────
 
@@ -231,64 +193,81 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          2. PROPUESTA DE VALOR POR ROL
+          2. PAS — CONDUCTOR
       ══════════════════════════════════════════════════ */}
       <section className="py-20 bg-white">
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 max-w-5xl mx-auto">
+
+          {/* Encabezado — Problema */}
           <div className="text-center mb-14">
-            <SectionLabel>Para cada perfil</SectionLabel>
-            <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark mb-4">
-              Gartify funciona para todos
+            <SectionLabel>Para conductores</SectionLabel>
+            <h2 className="text-2xl md:text-4xl font-extrabold text-gartify-dark mb-4 leading-tight">
+              ¿Llevas meses aplazando la revisión<br className="hidden md:block" /> porque no sabes a quién fiarte?
             </h2>
-            <p className="text-gartify-gray max-w-xl mx-auto">
-              Tanto si buscas taller como si tienes uno,
-              Gartify tiene una solución pensada para ti.
+            <p className="text-gartify-gray max-w-xl mx-auto text-base leading-relaxed">
+              No eres el único. Encontrar un taller de confianza sigue siendo innecesariamente complicado.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {ROLE_DATA.map(({ id, label, icon: Icon, color, bg, borderTop, accentClass, headline, subheadline, steps, cta, href }) => (
-              <div
-                key={id}
-                className={`flex flex-col rounded-2xl border border-slate-200 bg-white p-8 shadow-sm ${borderTop} hover:shadow-lg transition-shadow duration-300`}
-              >
-                <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${bg}`}>
-                  <Icon className={`h-7 w-7 ${color}`} />
-                </div>
+          {/* AGITACIÓN + SOLUCIÓN en dos columnas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
 
-                <p className={`text-xs font-bold uppercase tracking-widest ${color} mb-2`}>
-                  {label}
-                </p>
-
-                <h3 className="text-xl font-bold text-gartify-dark mb-3 leading-snug">
-                  {headline}
-                </h3>
-
-                <p className="text-sm text-gartify-gray mb-6 leading-relaxed">
-                  {subheadline}
-                </p>
-
-                <ol className="space-y-3 mb-8 flex-1">
-                  {steps.map(({ icon: StepIcon, text }, i) => (
-                    <li key={i} className="flex items-center gap-3 text-sm text-gartify-dark">
-                      <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${accentClass}`}>
-                        {i + 1}
-                      </span>
-                      <StepIcon className={`h-4 w-4 shrink-0 ${color}`} />
-                      {text}
-                    </li>
-                  ))}
-                </ol>
-
-                <Link href={href}>
-                  <Button className={`w-full text-white font-semibold ${accentClass}`}>
-                    {cta}
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+            {/* Columna izquierda — Agitación (dolores) */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8">
+              <div className="flex items-center gap-2 mb-6">
+                <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
+                <p className="text-sm font-bold uppercase tracking-widest text-red-400">El problema</p>
               </div>
-            ))}
+              <ul className="space-y-4">
+                {[
+                  "Llamas a tres talleres y ninguno te da precio claro",
+                  "No sabes si las reseñas de Google son reales o compradas",
+                  "Acabas pagando más de lo esperado sin entender por qué",
+                  "Pierdes medio día gestionando algo que debería durar minutos",
+                ].map((pain) => (
+                  <li key={pain} className="flex items-start gap-3 text-sm text-gartify-gray leading-relaxed">
+                    <XCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" aria-hidden="true" />
+                    {pain}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Columna derecha — Solución */}
+            <div className="bg-gartify-blue border border-gartify-blue rounded-2xl p-8 text-white">
+              <div className="flex items-center gap-2 mb-6">
+                <CheckCircle2 className="h-5 w-5 text-gartify-orange shrink-0" />
+                <p className="text-sm font-bold uppercase tracking-widest text-gartify-orange">Con Gartify</p>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "Talleres verificados con reseñas de conductores reales",
+                  "Precios visibles antes de reservar, sin letra pequeña",
+                  "Reserva en 2 minutos desde el móvil, sin llamadas",
+                  "Historial de revisiones de tu coche siempre disponible",
+                ].map((benefit) => (
+                  <li key={benefit} className="flex items-start gap-3 text-sm text-blue-100 leading-relaxed">
+                    <CheckCircle2 className="h-4 w-4 text-gartify-orange shrink-0 mt-0.5" aria-hidden="true" />
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+
+          {/* CTA central */}
+          <div className="text-center">
+            <p className="text-gartify-gray text-sm mb-5">
+              Más de <strong className="text-gartify-dark">500 talleres verificados</strong> te esperan. Gratis para conductores.
+            </p>
+            <Link href="/talleres">
+              <Button size="lg" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold px-10 text-base shadow-md">
+                Buscar mi taller ahora
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+
         </div>
       </section>
 
