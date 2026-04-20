@@ -111,7 +111,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
             placeholder="Taller, matrícula…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+            className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30 placeholder:text-gartify-gray placeholder:font-normal"
           />
         </div>
       </div>
@@ -215,7 +215,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                       placeholder="Taller, matrícula…"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30"
+                      className="pl-9 text-sm border-gray-200 focus-visible:ring-gartify-blue/30 placeholder:text-gartify-gray placeholder:font-normal"
                     />
                   </div>
                 </div>

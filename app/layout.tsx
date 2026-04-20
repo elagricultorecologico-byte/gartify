@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { NavFooterWrapper } from "@/components/layout/NavFooterWrapper";
+import { CookieBanner } from "@/components/layout/CookieBanner";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <SessionProvider>
           <NavFooterWrapper>{children}</NavFooterWrapper>
+          <CookieBanner />
         </SessionProvider>
       </body>
     </html>
