@@ -62,6 +62,15 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
   const [pagina, setPagina]                   = useState(1);
   const [filtrosMobileAbiertos, setFiltrosMobileAbiertos] = useState(false);
 
+  // Prioridad de grupos: Confirmadas → Pendientes/Propuestas → Completadas/Canceladas
+  const STATUS_PRIORITY: Record<string, number> = {
+    CONFIRMED: 0,
+    PENDING:   1,
+    PROPOSED:  1,
+    COMPLETED: 2,
+    CANCELLED: 2,
+  };
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const result = bookings.filter((b) => {
@@ -74,14 +83,17 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
       );
     });
     result.sort((a, b) => {
+      const pa = STATUS_PRIORITY[a.status] ?? 99;
+      const pb = STATUS_PRIORITY[b.status] ?? 99;
+      if (pa !== pb) return pa - pb;
       const diff = new Date(a.date).getTime() - new Date(b.date).getTime();
       return orden === "asc" ? diff : -diff;
     });
     return result;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookings, search, statusFilter, orden]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useMemo(() => { setPagina(1); }, [search, statusFilter]);
+  useMemo(() => { setPagina(1); }, [search, statusFilter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filtrosActivos = (statusFilter !== "ALL" ? 1 : 0) + (search.trim() !== "" ? 1 : 0);
   const totalPaginas   = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
