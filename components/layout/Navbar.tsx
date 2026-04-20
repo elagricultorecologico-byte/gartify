@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, CalendarClock, User, Truck, Car, Zap, Crown } from "lucide-react";
+import { Menu, X, LogOut, Settings, User, Truck, Zap, Crown } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -104,9 +104,20 @@ export function Navbar() {
                     </div>
                   </Link>
                 </div>
+              ) : !isAdmin && !isDistributor ? (
+                /* Conductor — avatar estático, sin dropdown (usa sidebar) */
+                <Link href="/cuenta" className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
+                  <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    {initial}
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
+                  </div>
+                </Link>
               ) : (
+                /* Admin / Distribuidor — con dropdown */
                 <div className="flex items-center gap-1">
-                  {/* Enlace directo al panel según rol — solo admin y distribuidor */}
                   {(isAdmin || isDistributor) && (
                     <Link
                       href={isAdmin ? "/admin" : "/distribuidor/dashboard"}
@@ -130,8 +141,8 @@ export function Navbar() {
                 </div>
               )}
 
-              {/* Dropdown — solo para roles que no son GARAGE_OWNER */}
-              {!isGarageOwner && dropdownOpen && (
+              {/* Dropdown — solo admin y distribuidor */}
+              {(isAdmin || isDistributor) && dropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50">
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="text-xs text-muted-foreground">Conectado como</p>
@@ -142,22 +153,10 @@ export function Navbar() {
                     <Link href="/admin" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Settings className="h-4 w-4 text-gartify-blue" />Panel admin
                     </Link>
-                  ) : isDistributor ? (
+                  ) : (
                     <Link href="/distribuidor/dashboard" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Truck className="h-4 w-4 text-gartify-blue" />Mi dashboard
                     </Link>
-                  ) : (
-                    <>
-                      <Link href="/cuenta" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <CalendarClock className="h-4 w-4 text-gartify-blue" />Mis reservas
-                      </Link>
-                      <Link href="/cuenta/vehiculos" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <Car className="h-4 w-4 text-gartify-blue" />Mis vehículos
-                      </Link>
-                      <Link href="/cuenta/perfil" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <User className="h-4 w-4 text-gartify-blue" />Mi perfil
-                      </Link>
-                    </>
                   )}
 
                   <div className="border-t border-gray-100 mt-1 pt-1">
