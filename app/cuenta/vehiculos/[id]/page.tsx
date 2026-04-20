@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import {
-  ArrowLeft,
   Car,
   CalendarCheck,
   FileDown,
@@ -86,21 +85,13 @@ export default async function HistorialVehiculoPage({ params }: Props) {
   return (
     <div className="container max-w-3xl py-10 px-4 sm:px-8">
 
-      {/* Navegación: enlace de vuelta + botón exportar PDF */}
-      <div className="flex items-center justify-between mb-6">
-        <Link
-          href="/cuenta/vehiculos"
-          className="inline-flex items-center gap-1.5 text-sm text-gartify-gray hover:text-gartify-blue transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Mis vehículos
-        </Link>
-
+      {/* Botón exportar PDF */}
+      <div className="flex items-center justify-end mb-6">
         <Link
           href={`/cuenta/vehiculos/${id}/pdf`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm text-gartify-blue hover:text-gartify-blue/80 transition-colors border border-gartify-blue/30 rounded-lg px-3 py-1.5 hover:bg-gartify-blue/5"
+          className="inline-flex items-center gap-1.5 text-sm text-gartify-blue hover:text-gartify-blue/80 transition-colors border border-gartify-blue/30 px-3 py-1.5 hover:bg-gartify-blue/5"
         >
           <FileDown className="h-4 w-4" aria-hidden="true" />
           Exportar PDF
@@ -149,7 +140,7 @@ export default async function HistorialVehiculoPage({ params }: Props) {
             Libro de revisiones
           </h2>
           {vehiculo.serviceRecords.length > 0 && (
-            <span className="ml-auto text-xs font-medium text-muted-foreground bg-gray-100 rounded-full px-2.5 py-0.5">
+            <span className="ml-auto text-xs font-medium text-muted-foreground bg-gray-100 px-2.5 py-0.5">
               {vehiculo.serviceRecords.length}{" "}
               {vehiculo.serviceRecords.length === 1 ? "entrada" : "entradas"}
             </span>
@@ -182,7 +173,7 @@ type VehiculoResumen = {
 
 function TarjetaVehiculo({ vehiculo: v }: { vehiculo: VehiculoResumen }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <div className="bg-white border border-gray-200 overflow-hidden">
       {/* Banda de color superior */}
       <div className="h-1.5 bg-gradient-to-r from-gartify-blue to-gartify-orange" />
 
@@ -190,7 +181,7 @@ function TarjetaVehiculo({ vehiculo: v }: { vehiculo: VehiculoResumen }) {
         {/* Cabecera: icono + nombre + matrícula */}
         <div className="flex items-start gap-4 mb-5">
           <div
-            className="h-12 w-12 rounded-xl bg-gradient-to-br from-gartify-blue to-blue-400 flex items-center justify-center shrink-0"
+            className="h-12 w-12 bg-gartify-blue flex items-center justify-center shrink-0"
             aria-hidden="true"
           >
             <Car className="h-6 w-6 text-white" />
@@ -204,7 +195,7 @@ function TarjetaVehiculo({ vehiculo: v }: { vehiculo: VehiculoResumen }) {
                 {v.brand} {v.model}
               </p>
             )}
-            <span className="inline-block mt-1.5 font-mono font-bold text-sm tracking-widest bg-gartify-orange/10 text-gartify-orange border border-gartify-orange/20 rounded-md px-2.5 py-0.5">
+            <span className="inline-block mt-1.5 font-mono font-bold text-sm tracking-widest bg-gartify-orange/10 text-gartify-orange border border-gartify-orange/20 px-2.5 py-0.5">
               {v.plate}
             </span>
           </div>
@@ -275,7 +266,7 @@ function DatoVehiculo({
 
 function EstadoVacio() {
   return (
-    <div className="text-center py-14 rounded-2xl border border-dashed border-gray-200 bg-gray-50">
+    <div className="text-center py-14 border border-dashed border-gray-200 bg-gray-50">
       <ClipboardList
         className="h-10 w-10 mx-auto mb-3 text-gartify-gray opacity-40"
         aria-hidden="true"

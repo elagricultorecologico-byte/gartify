@@ -247,7 +247,7 @@ export function VehicleList({ vehiculosIniciales }: Props) {
 
       {/* Estado vacío */}
       {vehiculos.length === 0 && !mostrarFormulario ? (
-        <div className="text-center py-16 rounded-xl border border-dashed border-gray-200 bg-gray-50">
+        <div className="text-center py-16 border border-dashed border-gray-200 bg-gray-50">
           <Car
             className="h-12 w-12 mx-auto mb-3 text-gartify-gray opacity-40"
             aria-hidden="true"
@@ -293,11 +293,11 @@ interface PropsTarjeta {
 
 function TarjetaVehiculo({ vehiculo: v, estaEliminando, onEditar, onEliminar }: PropsTarjeta) {
   return (
-    <article className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md hover:border-gartify-blue/30 transition-all flex flex-col">
+    <article className="bg-white border border-gray-200 hover:border-gartify-blue/30 transition-colors flex flex-col">
       {/* Cabecera de tarjeta */}
       <div className="flex items-start gap-3 p-4 pb-3 border-b border-gray-100">
         <div
-          className="h-10 w-10 rounded-xl bg-gradient-to-br from-gartify-blue to-blue-400 flex items-center justify-center shrink-0"
+          className="h-10 w-10 bg-gartify-blue flex items-center justify-center shrink-0"
           aria-hidden="true"
         >
           <Car className="h-5 w-5 text-white" />
@@ -310,7 +310,7 @@ function TarjetaVehiculo({ vehiculo: v, estaEliminando, onEditar, onEliminar }: 
             <p className="text-xs text-muted-foreground leading-tight">{v.brand} {v.model}</p>
           )}
           {/* Matrícula destacada */}
-          <span className="inline-block mt-1 font-mono font-bold text-xs tracking-widest bg-gartify-orange/10 text-gartify-orange border border-gartify-orange/20 rounded-md px-2 py-0.5">
+          <span className="inline-block mt-1 font-mono font-bold text-xs tracking-widest bg-gartify-orange/10 text-gartify-orange border border-gartify-orange/20 px-2 py-0.5">
             {v.plate}
           </span>
         </div>
@@ -438,7 +438,7 @@ function FormularioVehiculo({
   }
 
   return (
-    <div className="bg-white border border-gartify-blue/20 rounded-2xl shadow-sm p-6">
+    <div className="bg-white border border-gartify-blue/20 p-6">
       <h2 className="text-base font-bold text-gartify-blue mb-5">
         {esEdicion ? "Editar vehículo" : "Añadir nuevo vehículo"}
       </h2>
@@ -579,7 +579,7 @@ function FormularioVehiculo({
 
         {/* Mensaje de error */}
         {error && (
-          <p className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 px-3 py-2">
             {error}
           </p>
         )}

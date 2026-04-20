@@ -103,19 +103,18 @@ export function Navbar() {
                       )}
                     </div>
                   </Link>
-                  <Link href="/cuenta/taller/perfil" title="Perfil del taller" className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors">
-                    <Settings className="h-4 w-4" />
-                  </Link>
                 </div>
               ) : (
                 <div className="flex items-center gap-1">
-                  {/* Enlace directo al panel según rol */}
-                  <Link
-                    href={isAdmin ? "/admin" : isDistributor ? "/distribuidor/dashboard" : "/cuenta"}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                  >
-                    {isAdmin ? "Panel admin" : isDistributor ? "Mi dashboard" : "Mis reservas"}
-                  </Link>
+                  {/* Enlace directo al panel según rol — solo admin y distribuidor */}
+                  {(isAdmin || isDistributor) && (
+                    <Link
+                      href={isAdmin ? "/admin" : "/distribuidor/dashboard"}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                    >
+                      {isAdmin ? "Panel admin" : "Mi dashboard"}
+                    </Link>
+                  )}
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors"
@@ -190,11 +189,6 @@ export function Navbar() {
 
         {/* Mobile toggle */}
         <div className="md:hidden flex items-center gap-1">
-          {isGarageOwner && (
-            <Link href="/cuenta/taller/perfil" title="Perfil del taller" className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors">
-              <Settings className="h-4 w-4" />
-            </Link>
-          )}
           <button className="text-white p-1" onClick={() => setOpen(!open)}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>

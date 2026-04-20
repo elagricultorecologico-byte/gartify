@@ -28,7 +28,7 @@ export function ItvReminderToggle({ vehicleId, initialValue }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+    <div className="flex items-center justify-between bg-white border border-gray-200 px-4 py-3">
       <div className="flex items-center gap-3">
         {enabled
           ? <Bell className="h-4 w-4 text-gartify-orange" />

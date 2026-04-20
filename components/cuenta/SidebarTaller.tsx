@@ -11,6 +11,7 @@ import {
   Package,
   CreditCard,
   Tv,
+  User,
   LogOut,
 } from "lucide-react";
 
@@ -34,6 +35,7 @@ const ITEMS_NAVEGACION: ItemNavegacion[] = [
   { href: "/cuenta/taller/ofertas",   icon: Tag,             label: "Ofertas" },
   { href: "/cuenta/taller/recambios", icon: Package,         label: "Recambios" },
   { href: "/cuenta/taller/planes",    icon: CreditCard,      label: "Mi plan" },
+  { href: "/cuenta/taller/perfil",   icon: User,            label: "Mi perfil" },
 ];
 
 const ITEM_TV: ItemNavegacion = {
