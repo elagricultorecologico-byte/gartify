@@ -123,7 +123,7 @@ export default function HomePage() {
         {/* Contenido sobre la imagen */}
         <div className="relative w-full px-6 sm:px-10 lg:px-16 xl:px-24 py-16 md:py-24">
           <div className="max-w-2xl">
-            <p className="hero-in hero-d1 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white mb-6">
+            <p className="hero-in hero-d1 inline-flex items-center gap-2 border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white mb-6">
               <span className="h-2 w-2 rounded-full bg-gartify-orange animate-pulse" />
               +500 talleres verificados en España
             </p>
@@ -272,9 +272,9 @@ export default function HomePage() {
               <Link
                 key={type}
                 href={`/talleres?servicio=${type}`}
-                className="group flex flex-col sm:flex-row items-center gap-2 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-gartify-blue/5 hover:border-gartify-blue/30 transition-all duration-200 p-3 sm:px-4 sm:py-3 text-center sm:text-left"
+                className="group flex flex-col sm:flex-row items-center gap-2 sm:gap-3 border border-slate-200 bg-slate-50 hover:bg-gartify-blue/5 hover:border-gartify-blue/30 transition-all duration-200 p-3 sm:px-4 sm:py-3 text-center sm:text-left"
               >
-                <div className="flex h-9 w-9 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-md bg-white shadow-sm">
+                <div className="flex h-9 w-9 sm:h-8 sm:w-8 shrink-0 items-center justify-center bg-white shadow-sm">
                   <Icon className={`h-5 w-5 ${color}`} />
                 </div>
                 <span className="font-semibold text-xs sm:text-sm text-gartify-dark leading-tight">{label}</span>
@@ -314,7 +314,7 @@ export default function HomePage() {
           {/* Testimonios */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {TESTIMONIALS.map(({ name, role, initials, color, rating, text }) => (
-              <div key={name} className="flex flex-col bg-slate-50 border border-slate-200 rounded-2xl p-5 hover:shadow-md transition-shadow">
+              <div key={name} className="flex flex-col bg-slate-50 border border-slate-200 p-5 hover:shadow-md transition-shadow">
                 <Quote className="h-6 w-6 text-gartify-orange mb-3 shrink-0" aria-hidden="true" />
                 <p className="text-sm text-gartify-gray leading-relaxed flex-1">{text}</p>
                 <div className="flex mt-4 mb-3">
@@ -323,7 +323,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <div className="flex items-center gap-2.5 border-t border-slate-200 pt-3">
-                  <div className={`h-8 w-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+                  <div className={`h-8 w-8 ${color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
                     {initials}
                   </div>
                   <div>
@@ -338,7 +338,7 @@ export default function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14">
             {STATS.map(({ value, label, icon: Icon }) => (
-              <div key={label} className="flex flex-col items-center text-center rounded-xl bg-slate-50 border border-slate-200 p-5">
+              <div key={label} className="flex flex-col items-center text-center bg-slate-50 border border-slate-200 p-5">
                 <Icon className="h-5 w-5 text-gartify-orange mb-2" />
                 <span className="text-2xl md:text-3xl font-bold text-gartify-dark">{value}</span>
                 <span className="text-xs text-gartify-gray mt-0.5">{label}</span>

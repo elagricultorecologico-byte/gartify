@@ -97,7 +97,7 @@ export function Footer({ className }: { className?: string }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex items-center justify-center h-10 w-10 rounded-lg border border-white/20 text-blue-300 hover:text-white hover:border-gartify-orange hover:bg-gartify-orange/10 transition-all duration-200"
+                className="flex items-center justify-center h-10 w-10 border border-white/20 text-blue-300 hover:text-white hover:border-gartify-orange hover:bg-gartify-orange/10 transition-all duration-200"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">{svg}</svg>
               </a>
