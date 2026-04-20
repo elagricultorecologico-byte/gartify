@@ -57,7 +57,7 @@ export function SelloReservaButton({
   if (hasRecord) {
     return (
       <span
-        className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 border border-green-200 rounded-full px-2.5 py-1 text-xs font-semibold"
+        className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 border border-green-200 px-2.5 py-1 text-xs font-semibold"
         aria-label="Esta revisión ya tiene sello"
       >
         <CheckCircle2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -150,9 +150,9 @@ export function SelloReservaButton({
 
   return (
     // Formulario inline con borde azul — sin modal
-    <div className="mt-3 rounded-xl border border-gartify-blue/30 bg-white shadow-sm overflow-hidden">
+    <div className="mt-3 border border-gartify-blue/30 bg-white overflow-hidden">
       {/* Cabecera */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-blue-50 border-b border-gartify-blue/20">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <BookOpen className="h-4 w-4 text-gartify-blue shrink-0" aria-hidden="true" />
           <span className="text-sm font-semibold text-gartify-blue">Sello de revisión</span>
@@ -263,7 +263,7 @@ export function SelloReservaButton({
 
         {/* Mensaje de error */}
         {error && (
-          <p role="alert" className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <p role="alert" className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2">
             {error}
           </p>
         )}
