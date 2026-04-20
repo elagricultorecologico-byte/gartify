@@ -2,8 +2,8 @@
 
 import useSWR from "swr";
 import { useEffect, useRef, useState, useMemo } from "react";
-import { Bell, X } from "lucide-react";
-import { GarageBookingList, type GarageBookingItem } from "@/components/cuenta/GarageBookingList";
+import { Bell, X, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { GarageBookingList, GarageBookingFilterContent, type GarageBookingItem } from "@/components/cuenta/GarageBookingList";
 import { TallerKpis, type KpiData } from "@/components/cuenta/TallerKpis";
 import { formatPrice } from "@/lib/utils";
 
@@ -30,29 +30,25 @@ const fetcher = (url: string): Promise<GarageBookingItem[]> =>
 
 // ── Componente principal ─────────────────────────────────────────────────────
 
-/**
- * GarageBookingPoller
- *
- * Envuelve GarageBookingList y añade polling cada 20 segundos mediante SWR.
- * Cuando llega una nueva reserva con estado PENDING muestra un toast de
- * notificación durante 6 segundos en la esquina inferior derecha.
- *
- * Los datos SSR iniciales se pasan como `fallbackData` para evitar parpadeo
- * en la primera carga — SWR los usa directamente sin hacer un fetch inicial
- * visible para el usuario.
- */
 export function GarageBookingPoller({ initialBookings, garageId, garageRating }: Props) {
   const { data } = useSWR<GarageBookingItem[]>("/api/garage/bookings", fetcher, {
-    refreshInterval: 20000,        // polling cada 20s
-    revalidateOnFocus: true,       // revalida al volver a la pestaña
-    fallbackData: initialBookings, // datos SSR iniciales — sin parpadeo
+    refreshInterval: 20000,
+    revalidateOnFocus: true,
+    fallbackData: initialBookings,
   });
 
-  // Usamos `data ?? initialBookings` por seguridad aunque fallbackData
-  // garantiza que `data` nunca sea undefined tras el montaje.
   const reservas = data ?? initialBookings;
 
-  // ── KPIs derivados de las reservas actuales ───────────────────────────────
+  // ── Estado de filtros (dueño aquí, se pasa a lista y panel) ──────────────
+
+  const [search, setSearch]           = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("PENDING");
+  const [orden, setOrden]             = useState<"asc" | "desc">("asc");
+  const [filtrosMobileAbiertos, setFiltrosMobileAbiertos] = useState(false);
+
+  const filtrosActivos = (statusFilter !== "ALL" ? 1 : 0) + (search.trim() !== "" ? 1 : 0);
+
+  // ── KPIs ─────────────────────────────────────────────────────────────────
 
   const stats = useMemo<KpiData[]>(() => {
     const pending   = reservas.filter((b) => b.status === "PENDING").length;
@@ -62,17 +58,15 @@ export function GarageBookingPoller({ initialBookings, garageId, garageRating }:
       .reduce((s, b) => s + b.totalPrice, 0);
 
     return [
-      { icon: "Calendar"    as const, label: "Pendientes",  value: pending,                   color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
-      { icon: "TrendingUp"  as const, label: "Confirmadas", value: confirmed,                 color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
-      { icon: "Euro"        as const, label: "Facturado",   value: formatPrice(revenue),      color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
-      { icon: "Star"        as const, label: "Valoración",  value: garageRating.toFixed(1),   color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "Calendar"    as const, label: "Pendientes",  value: pending,               color: "text-yellow-500",     bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "TrendingUp"  as const, label: "Confirmadas", value: confirmed,             color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "Euro"        as const, label: "Facturado",   value: formatPrice(revenue),  color: "text-gartify-orange", bg: "bg-blue-50", border: "border-gartify-blue/40" },
+      { icon: "Star"        as const, label: "Valoración",  value: garageRating.toFixed(1), color: "text-yellow-500",   bg: "bg-blue-50", border: "border-gartify-blue/40" },
     ];
   }, [reservas, garageRating]);
 
   // ── Detección de reservas nuevas PENDING ─────────────────────────────────
 
-  // Guardamos los IDs de reservas PENDING que ya conocemos para detectar
-  // las que llegan en posteriores actualizaciones de SWR.
   const prevPendingIds = useRef<Set<string>>(
     new Set(
       initialBookings
@@ -85,67 +79,110 @@ export function GarageBookingPoller({ initialBookings, garageId, garageRating }:
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Solo actuamos cuando SWR trae datos frescos del servidor
     if (!data) return;
-
     const pendientesActuales = data.filter((b) => b.status === "PENDING");
-    const nuevas = pendientesActuales.filter(
-      (b) => !prevPendingIds.current.has(b.id)
-    );
+    const nuevas = pendientesActuales.filter((b) => !prevPendingIds.current.has(b.id));
 
     if (nuevas.length > 0) {
       const primera = nuevas[0];
-      setToast({
-        nombre: primera.user.name ?? "Cliente",
-        servicio: primera.service.name,
-      });
-
-      // Limpiamos cualquier timer previo para reiniciar los 6s si llegan
-      // varias reservas seguidas en distintos ciclos de polling.
+      setToast({ nombre: primera.user.name ?? "Cliente", servicio: primera.service.name });
       if (toastTimer.current) clearTimeout(toastTimer.current);
       toastTimer.current = setTimeout(() => setToast(null), 6000);
     }
 
-    // Actualizamos la referencia con los IDs pendientes actuales
     prevPendingIds.current = new Set(pendientesActuales.map((b) => b.id));
   }, [data]);
 
-  // Limpiamos el timer al desmontar el componente
   useEffect(() => {
-    return () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current);
-    };
+    return () => { if (toastTimer.current) clearTimeout(toastTimer.current); };
   }, []);
+
+  // ── Props compartidas del panel de filtros ───────────────────────────────
+
+  const filterProps = { bookings: reservas, search, setSearch, statusFilter, setStatusFilter, orden, setOrden };
 
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
     <>
-      <TallerKpis stats={stats} />
-      <GarageBookingList bookings={reservas} garageId={garageId} />
+      <div className="flex gap-5 items-start">
 
-      {/* Toast de nueva reserva — esquina inferior derecha, estilo Teams */}
+        {/* ── SIDEBAR DESKTOP: filtros ──────────────────────────────────── */}
+        <aside className="hidden lg:block w-56 shrink-0 sticky top-24">
+          <div className="bg-white border border-gray-200 p-4">
+            <div className="flex items-center gap-2 text-gartify-blue mb-4 pb-3 border-b border-gray-100">
+              <SlidersHorizontal className="h-4 w-4 shrink-0" />
+              <span className="text-sm font-semibold">Filtros</span>
+              {filtrosActivos > 0 && (
+                <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+                  {filtrosActivos}
+                </span>
+              )}
+            </div>
+            <GarageBookingFilterContent {...filterProps} />
+          </div>
+        </aside>
+
+        {/* ── COLUMNA DERECHA: KPIs + filtro móvil + lista ─────────────── */}
+        <div className="flex-1 min-w-0 space-y-4">
+
+          {/* KPIs — más estrechos porque están en flex-1 */}
+          <TallerKpis stats={stats} />
+
+          {/* Panel colapsable de filtros — solo móvil */}
+          <div className="lg:hidden bg-white border border-gray-200 overflow-hidden">
+            <button
+              type="button"
+              className="w-full flex items-center justify-between px-4 py-3 border-b border-gray-100"
+              onClick={() => setFiltrosMobileAbiertos((v) => !v)}
+              aria-expanded={filtrosMobileAbiertos}
+            >
+              <div className="flex items-center gap-2 text-gartify-blue">
+                <SlidersHorizontal className="h-4 w-4 shrink-0" />
+                <span className="text-sm font-semibold">Filtros</span>
+                {filtrosActivos > 0 && (
+                  <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
+                    {filtrosActivos}
+                  </span>
+                )}
+              </div>
+              <ChevronDown className={`h-4 w-4 text-gartify-gray transition-transform ${filtrosMobileAbiertos ? "rotate-180" : ""}`} />
+            </button>
+            {filtrosMobileAbiertos && (
+              <div className="px-4 py-4">
+                <GarageBookingFilterContent {...filterProps} />
+              </div>
+            )}
+          </div>
+
+          {/* Lista */}
+          <GarageBookingList
+            bookings={reservas}
+            garageId={garageId}
+            search={search}
+            statusFilter={statusFilter}
+            orden={orden}
+          />
+        </div>
+      </div>
+
+      {/* Toast de nueva reserva */}
       {toast && (
         <div
           role="alert"
           aria-live="polite"
-          className="fixed bottom-6 right-6 z-50 flex items-start gap-3 bg-white border border-gray-200 shadow-xl rounded-2xl px-4 py-3.5 w-80 animate-in slide-in-from-bottom-4 duration-300"
+          className="fixed bottom-6 right-6 z-50 flex items-start gap-3 bg-white border border-gray-200 shadow-xl px-4 py-3.5 w-80 animate-in slide-in-from-bottom-4 duration-300"
         >
-          {/* Keyframe para la barra de progreso del toast */}
           <style>{`
             @keyframes shrink { from { width: 100%; } to { width: 0%; } }
           `}</style>
 
-          {/* Icono */}
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gartify-blue">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-gartify-blue">
             <Bell className="h-4 w-4 text-white" aria-hidden="true" />
           </div>
 
-          {/* Contenido */}
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-gartify-blue leading-tight">
-              Nueva reserva
-            </p>
+            <p className="text-sm font-bold text-gartify-blue leading-tight">Nueva reserva</p>
             <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
               <span className="font-semibold text-foreground">{toast.nombre}</span>
               {" · "}
@@ -153,7 +190,6 @@ export function GarageBookingPoller({ initialBookings, garageId, garageRating }:
             </p>
           </div>
 
-          {/* Botón de cierre */}
           <button
             type="button"
             onClick={() => setToast(null)}
@@ -163,13 +199,9 @@ export function GarageBookingPoller({ initialBookings, garageId, garageRating }:
             <X className="h-4 w-4" />
           </button>
 
-          {/* Barra de progreso — indica cuánto tiempo queda antes del cierre */}
           <div
-            className="absolute bottom-0 left-0 h-0.5 bg-gartify-blue rounded-full"
-            style={{
-              width: "100%",
-              animation: "shrink 6s linear forwards",
-            }}
+            className="absolute bottom-0 left-0 h-0.5 bg-gartify-blue"
+            style={{ width: "100%", animation: "shrink 6s linear forwards" }}
           />
         </div>
       )}

@@ -47,11 +47,11 @@ export const BOOKING_STATUS_LABELS: Record<string, string> = {
 }
 
 export const BOOKING_STATUS_COLORS: Record<string, string> = {
-  PENDING:   "bg-yellow-500/10 text-yellow-500",
-  PROPOSED:  "bg-purple-500/10 text-purple-500",
-  CONFIRMED: "bg-blue-500/10 text-blue-400",
-  COMPLETED: "bg-green-500/10 text-green-500",
-  CANCELLED: "bg-red-500/10 text-red-400",
+  PENDING:   "bg-yellow-100 text-yellow-800 border border-yellow-200",
+  PROPOSED:  "bg-purple-100 text-purple-800 border border-purple-200",
+  CONFIRMED: "bg-blue-100   text-blue-800   border border-blue-200",
+  COMPLETED: "bg-green-100  text-green-800  border border-green-200",
+  CANCELLED: "bg-red-100    text-red-700    border border-red-200",
 }
 
 export function formatPrice(amount: number): string {

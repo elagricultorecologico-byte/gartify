@@ -104,7 +104,7 @@ export function BookingStatusUpdater({
             key={s}
             onClick={() => void handleChange(s)}
             disabled={loading}
-            className={`flex-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${ACTION_STYLE[s] ?? ""}`}
+            className={`flex-1 text-xs font-semibold px-3 py-1.5 transition-colors disabled:opacity-50 ${ACTION_STYLE[s] ?? ""}`}
           >
             {ACTION_LABEL[s] ?? BOOKING_STATUS_LABELS[s]}
           </button>
