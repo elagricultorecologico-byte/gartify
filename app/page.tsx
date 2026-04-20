@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Star, Users, ChevronRight,
+  Star, Shield, Users, ChevronRight,
   CheckCircle2, BadgeCheck, Quote, XCircle, AlertTriangle,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
