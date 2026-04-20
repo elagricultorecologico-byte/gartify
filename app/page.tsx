@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   Star, Shield, Users, ChevronRight,
-  CheckCircle2, BadgeCheck, Quote, XCircle, AlertTriangle,
+  CheckCircle2, BadgeCheck, Quote, AlertTriangle,
   Phone, Banknote, Clock, Eye, Smartphone, ClipboardList,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
