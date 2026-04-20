@@ -41,14 +41,7 @@ const STATUS_TABS = [
   { value: "CANCELLED", label: "Canceladas" },
 ] as const;
 
-const COUNT_COLOR: Record<string, string> = {
-  ALL:       "bg-gray-200 text-gray-700",
-  PENDING:   "bg-yellow-100 text-yellow-700",
-  PROPOSED:  "bg-purple-100 text-purple-700",
-  CONFIRMED: "bg-green-100 text-green-700",
-  COMPLETED: "bg-slate-100 text-slate-600",
-  CANCELLED: "bg-red-100 text-red-600",
-};
+const COUNT_COLOR = "bg-gray-100 text-gray-500";
 
 const STATUS_BAND: Record<string, string> = {
   PENDING:   "bg-yellow-50  text-yellow-700  border-yellow-200",
@@ -144,8 +137,8 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`text-xs font-bold rounded-full px-2 py-0.5 leading-none ${
-                  active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
+                <span className={`text-xs font-bold px-2 py-0.5 leading-none ${
+                  active ? "bg-white/20 text-white" : COUNT_COLOR
                 }`}>
                   {count}
                 </span>
@@ -241,8 +234,8 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
                           }`}
                         >
                           <span className="truncate">{tab.label}</span>
-                          <span className={`shrink-0 text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none ${
-                            active ? "bg-white/20 text-white" : COUNT_COLOR[tab.value]
+                          <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 leading-none ${
+                            active ? "bg-white/20 text-white" : COUNT_COLOR
                           }`}>{count}</span>
                         </button>
                       );
