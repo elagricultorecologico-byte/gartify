@@ -2,10 +2,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Star, Shield,
-  Users, ChevronRight,
-  CheckCircle2, CalendarCheck,
-  BadgeCheck, Quote, XCircle, AlertTriangle,
+  Star, Users, ChevronRight,
+  CheckCircle2, BadgeCheck, Quote, XCircle, AlertTriangle,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -13,36 +11,6 @@ import { POPULAR_SERVICES } from "@/lib/constants";
 
 // ─── Datos ────────────────────────────────────────────────────────────────────
 
-const GARANTIAS = [
-  {
-    icon: BadgeCheck,
-    color: "text-gartify-hero",
-    bg: "bg-gartify-hero/10",
-    title: "Talleres verificados",
-    desc: "Cada taller pasa un proceso de verificación antes de aparecer en Gartify. Solo los mejores.",
-  },
-  {
-    icon: Shield,
-    color: "text-gartify-orange",
-    bg: "bg-gartify-orange/10",
-    title: "Precio sin letra pequeña",
-    desc: "Consulta tarifas reales antes de reservar. El precio que ves es el que pagas en el taller.",
-  },
-  {
-    icon: Star,
-    color: "text-yellow-500",
-    bg: "bg-yellow-50",
-    title: "Reseñas de clientes reales",
-    desc: "Solo opinan conductores que han completado el servicio. Sin reseñas falsas ni compradas.",
-  },
-  {
-    icon: CalendarCheck,
-    color: "text-teal-600",
-    bg: "bg-teal-50",
-    title: "Reserva en 2 minutos",
-    desc: "Sin llamadas, sin esperas. Elige fecha y hora, y confirma tu cita directamente desde el móvil.",
-  },
-];
 
 const STATS = [
   { value: "+500",    label: "talleres verificados", icon: Shield },
@@ -311,46 +279,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <SectionDivider />
-
-      {/* ══════════════════════════════════════════════════
-          4. CADENAS DE REFERENCIA
-      ══════════════════════════════════════════════════ */}
-      <section className="py-14 bg-white">
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-          <div className="text-center mb-10">
-            <SectionLabel>Por qué Gartify</SectionLabel>
-            <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark mb-3">
-              La forma más inteligente de{" "}
-              <span className="text-gartify-blue">cuidar tu coche</span>
-            </h2>
-            <p className="text-gartify-gray max-w-2xl mx-auto text-sm leading-relaxed">
-              Conectamos conductores con talleres de confianza. Transparencia, comodidad y cero sorpresas en cada reserva.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-4xl mx-auto">
-            {GARANTIAS.map(({ icon: Icon, color, bg, title, desc }) => (
-              <div key={title} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 hover:shadow-md transition-shadow">
-                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${bg}`}>
-                  <Icon className={`h-5 w-5 ${color}`} aria-hidden="true" />
-                </div>
-                <h3 className="font-bold text-gartify-dark text-sm leading-snug">{title}</h3>
-                <p className="text-xs text-gartify-gray leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 text-center">
-            <Link href="/talleres">
-              <Button className="bg-gartify-blue hover:bg-gartify-blue/90 text-white font-semibold">
-                Buscar taller ahora
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       <SectionDivider />
 
