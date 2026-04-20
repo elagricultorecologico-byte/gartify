@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, User, Truck, Zap, Crown } from "lucide-react";
+import { Menu, X, LogOut, Settings, Truck, Zap, Crown } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
