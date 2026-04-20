@@ -1,9 +1,11 @@
 import { Suspense } from "react";
+import type React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   Star, Shield, Users, ChevronRight,
   CheckCircle2, BadgeCheck, Quote, XCircle, AlertTriangle,
+  Phone, Banknote, Clock, Eye, Smartphone, ClipboardList,
 } from "lucide-react";
 import { SearchBar } from "@/components/home/SearchBar";
 import { Button } from "@/components/ui/button";
@@ -166,7 +168,7 @@ export default function HomePage() {
       <section className="py-20 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 max-w-5xl mx-auto">
 
-          {/* Encabezado — Problema */}
+          {/* Encabezado */}
           <div className="text-center mb-14">
             <SectionLabel>Para conductores</SectionLabel>
             <h2 className="text-2xl md:text-4xl font-extrabold text-gartify-dark mb-4 leading-tight">
@@ -178,45 +180,57 @@ export default function HomePage() {
           </div>
 
           {/* AGITACIÓN + SOLUCIÓN en dos columnas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 mb-12 overflow-hidden border border-slate-200 shadow-sm">
 
-            {/* Columna izquierda — Agitación (dolores) */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8">
-              <div className="flex items-center gap-2 mb-6">
-                <AlertTriangle className="h-5 w-5 text-red-400 shrink-0" />
-                <p className="text-sm font-bold uppercase tracking-widest text-red-400">El problema</p>
+            {/* Columna izquierda — Problema */}
+            <div className="bg-slate-50 p-8 border-b md:border-b-0 md:border-r border-slate-200">
+              <div className="flex items-center gap-2.5 mb-7">
+                <div className="flex h-8 w-8 items-center justify-center bg-red-100 shrink-0">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                </div>
+                <p className="text-xs font-bold uppercase tracking-widest text-red-500">Sin Gartify</p>
               </div>
-              <ul className="space-y-4">
-                {[
-                  "Llamas a tres talleres y ninguno te da precio claro",
-                  "No sabes si las reseñas de Google son reales o compradas",
-                  "Acabas pagando más de lo esperado sin entender por qué",
-                  "Pierdes medio día gestionando algo que debería durar minutos",
-                ].map((pain) => (
-                  <li key={pain} className="flex items-start gap-3 text-sm text-gartify-gray leading-relaxed">
-                    <XCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" aria-hidden="true" />
-                    {pain}
+              <ul className="space-y-5">
+                {([
+                  { icon: Phone,    text: "Llamas a tres talleres y ninguno te da un precio claro" },
+                  { icon: Star,     text: "No sabes si las reseñas de Google son reales o compradas" },
+                  { icon: Banknote, text: "Acabas pagando más de lo esperado sin entender por qué" },
+                  { icon: Clock,    text: "Pierdes medio día gestionando algo que debería durar minutos" },
+                ] as { icon: React.ElementType; text: string }[]).map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-start gap-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white border border-slate-200 shadow-sm">
+                      <Icon className="h-4 w-4 text-red-400" aria-hidden="true" />
+                    </div>
+                    <div className="pt-1.5">
+                      <p className="text-sm text-gartify-gray leading-snug">{text}</p>
+                    </div>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Columna derecha — Solución */}
-            <div className="bg-gartify-blue border border-gartify-blue rounded-2xl p-8 text-white">
-              <div className="flex items-center gap-2 mb-6">
-                <CheckCircle2 className="h-5 w-5 text-gartify-orange shrink-0" />
-                <p className="text-sm font-bold uppercase tracking-widest text-gartify-orange">Con Gartify</p>
+            <div className="bg-gartify-blue p-8 text-white">
+              <div className="flex items-center gap-2.5 mb-7">
+                <div className="flex h-8 w-8 items-center justify-center bg-gartify-orange/20 shrink-0">
+                  <CheckCircle2 className="h-4 w-4 text-gartify-orange" />
+                </div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gartify-orange">Con Gartify</p>
               </div>
-              <ul className="space-y-4">
-                {[
-                  "Talleres verificados con reseñas de conductores reales",
-                  "Precios visibles antes de reservar, sin letra pequeña",
-                  "Reserva en 2 minutos desde el móvil, sin llamadas",
-                  "Historial de revisiones de tu coche siempre disponible",
-                ].map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-3 text-sm text-blue-100 leading-relaxed">
-                    <CheckCircle2 className="h-4 w-4 text-gartify-orange shrink-0 mt-0.5" aria-hidden="true" />
-                    {benefit}
+              <ul className="space-y-5">
+                {([
+                  { icon: BadgeCheck,   text: "Talleres verificados con reseñas de conductores reales" },
+                  { icon: Eye,          text: "Precios visibles antes de reservar, sin letra pequeña" },
+                  { icon: Smartphone,   text: "Reserva en 2 minutos desde el móvil, sin llamadas" },
+                  { icon: ClipboardList,text: "Historial de revisiones de tu coche siempre disponible" },
+                ] as { icon: React.ElementType; text: string }[]).map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-start gap-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white/10 border border-white/20">
+                      <Icon className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
+                    </div>
+                    <div className="pt-1.5">
+                      <p className="text-sm text-blue-100 leading-snug">{text}</p>
+                    </div>
                   </li>
                 ))}
               </ul>
