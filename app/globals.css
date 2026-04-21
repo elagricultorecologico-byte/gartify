@@ -91,39 +91,87 @@
 }
 
 /* react-phone-number-input — integración con diseño Gartify */
+
+/* Variables de la librería */
 .phone-input-gartify {
+  --PhoneInputCountryFlag-height: 1rem;
+  --PhoneInputCountryFlag-aspectRatio: 1.5;
+  --PhoneInputCountrySelectArrow-width: 0.3em;
+  --PhoneInputCountrySelectArrow-marginLeft: 0.35em;
+  --PhoneInputCountrySelectArrow-borderWidth: 0.15em;
+  --PhoneInputCountrySelect-marginRight: 0.35em;
+  --PhoneInputCountrySelectArrow-color: #64748b;
+  --PhoneInputCountrySelectArrow-opacity: 1;
+  --PhoneInputCountrySelectArrow-transform: rotate(45deg);
+
   display: flex;
   align-items: stretch;
   border: 1px solid #e5e7eb;
   background: white;
 }
 .phone-input-gartify:focus-within {
-  box-shadow: 0 0 0 2px #1e40af40;
-  border-color: #1e40af80;
+  box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.25);
+  border-color: rgba(30, 64, 175, 0.5);
 }
+/* Selector de país */
 .phone-input-gartify .PhoneInputCountry {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0 10px;
   background: #f9fafb;
-  border: none;
   border-right: 1px solid #e5e7eb;
-  gap: 6px;
-  cursor: pointer;
+  flex-shrink: 0;
 }
+/* Icono de bandera */
+.phone-input-gartify .PhoneInputCountryIcon {
+  width: 1.5rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.phone-input-gartify .PhoneInputCountryIconImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Flecha del selector */
 .phone-input-gartify .PhoneInputCountrySelectArrow {
-  color: #64748b;
-  width: 8px;
-  height: 8px;
+  display: block;
+  width: 0.3em;
+  height: 0.3em;
+  margin-left: 0.35em;
+  border-style: solid;
+  border-color: #64748b;
+  border-top-width: 0;
+  border-bottom-width: 0.15em;
+  border-left-width: 0;
+  border-right-width: 0.15em;
+  transform: rotate(45deg);
+  flex-shrink: 0;
 }
+/* Select invisible encima de la bandera */
+.phone-input-gartify .PhoneInputCountrySelect {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+  border: 0;
+}
+/* Input numérico */
 .phone-input-gartify .PhoneInputInput {
   flex: 1;
-  border: none;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   padding: 8px 12px;
   font-size: 0.875rem;
-  outline: none;
   background: transparent;
   min-width: 0;
+  text-align: left;
+  direction: ltr;
 }
 .phone-input-gartify .PhoneInputInput::placeholder {
   color: #9ca3af;
