@@ -61,7 +61,7 @@ export function RegistroForm() {
   const [acceptLegal, setAcceptLegal] = useState(false);
   const [acceptComercial, setAcceptComercial] = useState(false);
   const [whatsappOptIn, setWhatsappOptIn] = useState(false);
-  const [clientePhone, setClientePhone] = useState("");
+  const [clientePhone, setClientePhone] = useState("+34 ");
 
   function addBrand(brand: string) {
     const b = brand.trim();
@@ -105,12 +105,14 @@ export function RegistroForm() {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
     if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
+    const phoneTrimmed = clientePhone.trim();
+    if (!phoneTrimmed || phoneTrimmed === "+34") return setError("El teléfono es obligatorio");
 
     setLoading(true);
     const body = {
       name, email, password,
-      phone: clientePhone.trim() || undefined,
-      whatsappOptIn: clientePhone.trim().length > 0 ? whatsappOptIn : false,
+      phone: phoneTrimmed,
+      whatsappOptIn,
     };
 
     const res = await fetch("/api/register", {
@@ -307,28 +309,35 @@ export function RegistroForm() {
                   <div className="space-y-1.5">
                     <Label htmlFor="cliente-phone" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
                       <Phone className="h-3 w-3" aria-hidden="true" />
-                      Teléfono móvil <span className="font-normal text-gartify-gray">(opcional)</span>
+                      Teléfono móvil <span className="text-red-500">*</span>
                     </Label>
-                    <Input
-                      id="cliente-phone"
-                      type="tel"
-                      value={clientePhone}
-                      onChange={(e) => {
-                        setClientePhone(e.target.value);
-                        if (!e.target.value.trim()) setWhatsappOptIn(false);
-                      }}
-                      placeholder="Ej: 612 345 678"
-                      autoComplete="tel"
-                    />
+                    <div className="flex">
+                      <span className="flex items-center gap-1.5 px-3 bg-gray-50 border border-r-0 border-gray-200 text-sm text-gray-700 shrink-0 select-none">
+                        🇪🇸 <span className="font-medium">+34</span>
+                      </span>
+                      <input
+                        id="cliente-phone"
+                        type="tel"
+                        value={clientePhone.replace(/^\+34\s?/, "")}
+                        onChange={(e) => {
+                          const val = "+34 " + e.target.value.replace(/^\+34\s?/, "");
+                          setClientePhone(val);
+                          if (!e.target.value.trim()) setWhatsappOptIn(false);
+                        }}
+                        placeholder="612 345 678"
+                        autoComplete="tel"
+                        required
+                        className="flex-1 border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-blue focus:border-transparent"
+                      />
+                    </div>
                   </div>
 
                   {/* WhatsApp opt-in */}
-                  <div className={`border p-3 transition-colors ${clientePhone.trim() ? "border-green-200 bg-green-50" : "border-gray-200 bg-gray-50"}`}>
-                    <label className={`flex items-start gap-2.5 ${clientePhone.trim() ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}>
+                  <div className={`border p-3 transition-colors ${whatsappOptIn ? "border-green-200 bg-green-50" : "border-gray-200 bg-gray-50"}`}>
+                    <label className="flex items-start gap-2.5 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={whatsappOptIn}
-                        disabled={!clientePhone.trim()}
                         onChange={(e) => setWhatsappOptIn(e.target.checked)}
                         className="mt-0.5 h-4 w-4 border-gray-300 accent-green-600 shrink-0"
                       />
@@ -338,9 +347,7 @@ export function RegistroForm() {
                           <span className="text-xs font-semibold text-gray-800">Recibir avisos por WhatsApp</span>
                         </div>
                         <p className="text-xs text-gray-500 leading-snug">
-                          {clientePhone.trim()
-                            ? "Confirmaciones de reserva y recordatorios directamente en tu WhatsApp."
-                            : "Añade un teléfono para activar esta opción."}
+                          Confirmaciones de reserva y recordatorios directamente en tu WhatsApp.
                         </p>
                       </div>
                     </label>
