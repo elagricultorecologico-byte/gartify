@@ -320,9 +320,13 @@ export function RegistroForm() {
                         type="tel"
                         value={clientePhone.replace(/^\+34\s?/, "")}
                         onChange={(e) => {
-                          const val = "+34 " + e.target.value.replace(/^\+34\s?/, "");
-                          setClientePhone(val);
-                          if (!e.target.value.trim()) setWhatsappOptIn(false);
+                          const digits = e.target.value.replace(/\D/g, "").slice(0, 9);
+                          const formatted = digits
+                            .replace(/^(\d{3})(\d{0,3})(\d{0,3})$/, (_, a, b, c) =>
+                              [a, b, c].filter(Boolean).join(" ")
+                            );
+                          setClientePhone("+34 " + formatted);
+                          if (!digits) setWhatsappOptIn(false);
                         }}
                         placeholder="612 345 678"
                         autoComplete="tel"
