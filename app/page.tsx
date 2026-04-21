@@ -179,11 +179,11 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* AGITACIÓN + SOLUCIÓN en dos columnas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 mb-12 overflow-hidden border border-slate-200 shadow-sm">
+          {/* AGITACIÓN + SOLUCIÓN: dos columnas + imagen central */}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-0 mb-12 items-stretch">
 
             {/* Columna izquierda — Problema */}
-            <div className="bg-slate-50 p-8 border-b md:border-b-0 md:border-r border-slate-200">
+            <div className="bg-slate-50 p-8 border border-slate-200 md:border-r-0 shadow-sm">
               <div className="flex items-center gap-2.5 mb-7">
                 <div className="flex h-8 w-8 items-center justify-center bg-red-100 shrink-0">
                   <AlertTriangle className="h-4 w-4 text-red-500" />
@@ -209,8 +209,19 @@ export default function HomePage() {
               </ul>
             </div>
 
+            {/* Imagen central */}
+            <div className="hidden md:flex items-end justify-center w-48 shrink-0 relative">
+              <Image
+                src="/persona-movil.png"
+                alt="Conductor reservando taller desde el móvil"
+                width={192}
+                height={320}
+                className="object-contain object-bottom h-full w-full"
+              />
+            </div>
+
             {/* Columna derecha — Solución */}
-            <div className="bg-gartify-blue p-8 text-white">
+            <div className="bg-gartify-blue p-8 text-white border border-gartify-blue md:border-l-0 shadow-sm">
               <div className="flex items-center gap-2.5 mb-7">
                 <div className="flex h-8 w-8 items-center justify-center bg-gartify-orange/20 shrink-0">
                   <CheckCircle2 className="h-4 w-4 text-gartify-orange" />
