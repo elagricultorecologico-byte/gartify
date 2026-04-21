@@ -312,16 +312,30 @@ export function RegistroForm() {
                       Teléfono móvil <span className="text-red-500">*</span>
                     </Label>
                     <div className="flex">
-                      <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 text-sm shrink-0 select-none">
-                        🇪🇸
+                      {/* Bandera española en CSS — funciona en todos los SO */}
+                      <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 shrink-0 select-none gap-1.5" aria-label="España">
+                        <span className="inline-flex flex-col w-5 h-3.5 overflow-hidden shrink-0">
+                          <span className="flex-1 bg-red-600" />
+                          <span className="flex-[2] bg-yellow-400" />
+                          <span className="flex-1 bg-red-600" />
+                        </span>
                       </span>
                       <input
                         id="cliente-phone"
                         type="tel"
                         value={clientePhone}
                         onChange={(e) => {
-                          setClientePhone(e.target.value);
-                          if (!e.target.value.trim()) setWhatsappOptIn(false);
+                          const raw = e.target.value;
+                          // Extraer prefijo (+XX o +XXX) y número local
+                          const prefixMatch = raw.match(/^(\+\d{1,3})\s?/);
+                          const prefix = prefixMatch ? prefixMatch[1] : "+34";
+                          const local = raw.slice(prefixMatch ? prefixMatch[0].length : 0).replace(/\D/g, "").slice(0, 9);
+                          const formatted = local.replace(/^(\d{3})(\d{0,3})(\d{0,3})$/, (_, a, b, c) =>
+                            [a, b, c].filter(Boolean).join(" ")
+                          );
+                          const full = prefix + (formatted ? " " + formatted : "");
+                          setClientePhone(full);
+                          if (!local) setWhatsappOptIn(false);
                         }}
                         placeholder="+34 612 345 678"
                         autoComplete="tel"
