@@ -7,6 +7,8 @@ import {
   Wrench, User, Building2, AlertCircle, Loader2,
   MapPin, Lock, Mail, ChevronRight, Car, Euro, Tag, X, MessageCircle, Phone,
 } from "lucide-react";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,7 +63,7 @@ export function RegistroForm() {
   const [acceptLegal, setAcceptLegal] = useState(false);
   const [acceptComercial, setAcceptComercial] = useState(false);
   const [whatsappOptIn, setWhatsappOptIn] = useState(false);
-  const [clientePhone, setClientePhone] = useState("+34 ");
+  const [clientePhone, setClientePhone] = useState<string | undefined>(undefined);
 
   function addBrand(brand: string) {
     const b = brand.trim();
@@ -105,13 +107,12 @@ export function RegistroForm() {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
     if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
-    const phoneTrimmed = clientePhone.trim();
-    if (!phoneTrimmed) return setError("El teléfono es obligatorio");
+    if (!clientePhone || !isValidPhoneNumber(clientePhone)) return setError("Introduce un teléfono móvil válido");
 
     setLoading(true);
     const body = {
       name, email, password,
-      phone: phoneTrimmed,
+      phone: clientePhone,
       whatsappOptIn,
     };
 
@@ -311,42 +312,21 @@ export function RegistroForm() {
                       <Phone className="h-3 w-3" aria-hidden="true" />
                       Teléfono móvil <span className="text-red-500">*</span>
                     </Label>
-                    <div className="flex">
-                      {/* Bandera española en CSS — funciona en todos los SO */}
-                      <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 shrink-0 select-none gap-1.5" aria-label="España">
-                        <span className="inline-flex flex-col w-5 h-3.5 overflow-hidden shrink-0">
-                          <span className="flex-1 bg-red-600" />
-                          <span className="flex-[2] bg-yellow-400" />
-                          <span className="flex-1 bg-red-600" />
-                        </span>
-                      </span>
-                      <input
-                        id="cliente-phone"
-                        type="tel"
-                        value={clientePhone}
-                        onChange={(e) => {
-                          const raw = e.target.value;
-                          // Extraer prefijo (+XX o +XXX) y número local
-                          const prefixMatch = raw.match(/^(\+\d{1,3})\s?/);
-                          const prefix = prefixMatch ? prefixMatch[1] : "+34";
-                          const local = raw.slice(prefixMatch ? prefixMatch[0].length : 0).replace(/\D/g, "").slice(0, 9);
-                          const formatted = local.replace(/^(\d{3})(\d{0,3})(\d{0,3})$/, (_, a, b, c) =>
-                            [a, b, c].filter(Boolean).join(" ")
-                          );
-                          const full = prefix + (formatted ? " " + formatted : "");
-                          setClientePhone(full);
-                          if (!local) setWhatsappOptIn(false);
-                        }}
-                        placeholder="+34 612 345 678"
-                        autoComplete="tel"
-                        required
-                        className="flex-1 border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-blue focus:border-transparent"
-                      />
-                    </div>
+                    <PhoneInput
+                      id="cliente-phone"
+                      defaultCountry="ES"
+                      value={clientePhone}
+                      onChange={(val) => {
+                        setClientePhone(val);
+                        if (!val) setWhatsappOptIn(false);
+                      }}
+                      placeholder="612 345 678"
+                      className="phone-input-gartify"
+                    />
                   </div>
 
                   {/* WhatsApp opt-in */}
-                  <div className={`border p-3 transition-colors ${whatsappOptIn ? "border-green-200 bg-green-50" : "border-gray-200 bg-gray-50"}`}>
+                  <div className={`border p-3 transition-colors ${whatsappOptIn && clientePhone ? "border-green-200 bg-green-50" : "border-gray-200 bg-gray-50"}`}>
                     <label className="flex items-start gap-2.5 cursor-pointer">
                       <input
                         type="checkbox"
