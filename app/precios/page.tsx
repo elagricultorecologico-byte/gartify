@@ -316,7 +316,7 @@ export default function PreciosPage() {
               </ul>
 
               {/* CTA */}
-              <Link href="/registro?tipo=taller">
+              <Link href="/registro/taller">
                 <Button
                   variant="outline"
                   className="w-full border-gartify-gray/40 text-gartify-dark hover:bg-slate-50"
@@ -382,7 +382,7 @@ export default function PreciosPage() {
               </ul>
 
               {/* CTA */}
-              <Link href="/registro?tipo=taller&plan=pro">
+              <Link href="/registro/taller?plan=pro">
                 <Button
                   className="w-full bg-gartify-orange text-white hover:bg-gartify-orange/90 font-semibold"
                   size="lg"
@@ -591,7 +591,7 @@ export default function PreciosPage() {
                 Contactar con el equipo
               </Button>
             </Link>
-            <Link href="/registro?tipo=taller">
+            <Link href="/registro/taller">
               <Button
                 className="bg-gartify-green hover:bg-gartify-green/90 text-white px-8"
                 size="lg"

@@ -144,7 +144,7 @@ export default function ParaTalleresPage() {
 
               <div className="pt-hero-in pt-d3 flex flex-wrap items-center gap-4">
                 <Link
-                  href="/registro?tipo=taller"
+                  href="/registro/taller"
                   className="inline-flex items-center gap-2 rounded-xl bg-gartify-green px-7 py-3.5 text-white font-bold text-base hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gartify-green focus:ring-offset-2 focus:ring-offset-gartify-dark"
                 >
                   Únete a la red de talleres
@@ -393,7 +393,7 @@ export default function ParaTalleresPage() {
           <p className="mt-6 text-center text-sm text-blue-300">
             ¿Prefieres registrarte directamente?{" "}
             <Link
-              href="/registro?tipo=taller"
+              href="/registro/taller"
               className="text-white font-semibold underline underline-offset-2 hover:text-gartify-orange transition-colors"
             >
               Crea tu perfil ahora

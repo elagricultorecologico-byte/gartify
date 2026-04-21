@@ -75,7 +75,7 @@ export function LoginTallerForm() {
               </Link>
               <p className="text-muted-foreground">
                 ¿Sin cuenta?{" "}
-                <Link href="/registro?tipo=taller" className="text-gartify-orange font-semibold hover:underline">Registra tu taller</Link>
+                <Link href="/registro/taller" className="text-gartify-orange font-semibold hover:underline">Registra tu taller</Link>
               </p>
             </div>
           </div>

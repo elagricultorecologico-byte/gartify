@@ -8,7 +8,6 @@ import {
   MapPin, Lock, Mail, ChevronRight, Car, Euro, Tag, X, MessageCircle, Phone,
 } from "lucide-react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -322,7 +321,6 @@ export function RegistroForm() {
                       }}
                       placeholder="666 666 666"
                       className="phone-input-gartify"
-                      displayInitialValueAsLocalNumber
                     />
                   </div>
 

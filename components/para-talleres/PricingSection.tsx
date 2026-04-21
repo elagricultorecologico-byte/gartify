@@ -78,7 +78,7 @@ export function PricingSection() {
                 </li>
               ))}
             </ul>
-            <Link href="/registro?tipo=taller">
+            <Link href="/registro/taller">
               <Button variant="outline" className="w-full border-gartify-blue/30 text-gartify-blue hover:bg-gartify-blue/5 font-semibold">
                 Empezar gratis
               </Button>
@@ -117,7 +117,7 @@ export function PricingSection() {
                 </li>
               ))}
             </ul>
-            <Link href={`/registro?tipo=taller&plan=pro&ciclo=${ciclo}`}>
+            <Link href={`/registro/taller?plan=pro&ciclo=${ciclo}`}>
               <Button className="w-full bg-gartify-orange hover:bg-gartify-orange/90 text-white font-bold">
                 Empezar con Pro
               </Button>
@@ -156,7 +156,7 @@ export function PricingSection() {
                 </li>
               ))}
             </ul>
-            <Link href={`/registro?tipo=taller&plan=premium&ciclo=${ciclo}`}>
+            <Link href={`/registro/taller?plan=premium&ciclo=${ciclo}`}>
               <Button className="w-full bg-gartify-blue hover:bg-gartify-blue/90 text-white font-bold">
                 Hablar con ventas
               </Button>

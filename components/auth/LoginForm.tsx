@@ -183,7 +183,7 @@ export function LoginForm() {
                 <EmailPasswordForm onSubmit={handleSubmit} loading={loading} error={error} submitLabel="Acceder al portal" />
                 <p className="text-center text-sm text-muted-foreground">
                   ¿Todavía no tienes cuenta?{" "}
-                  <Link href="/registro?tipo=taller" className="text-gartify-orange font-semibold hover:underline">
+                  <Link href="/registro/taller" className="text-gartify-orange font-semibold hover:underline">
                     Registra tu taller
                   </Link>
                 </p>

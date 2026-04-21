@@ -303,7 +303,7 @@ export default function ComoFuncionaPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Link href="/registro?tipo=taller" className="flex-1">
+                  <Link href="/registro/taller" className="flex-1">
                     <Button className="w-full h-11 bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold gap-2">
                       <ChevronRight className="h-4 w-4" /> Registrar mi taller gratis
                     </Button>
