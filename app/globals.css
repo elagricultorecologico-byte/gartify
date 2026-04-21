@@ -101,7 +101,6 @@
   padding: 0 10px;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
-  border-right: none;
   gap: 6px;
   cursor: pointer;
 }
@@ -113,6 +112,7 @@
 .phone-input-gartify .PhoneInputInput {
   flex: 1;
   border: 1px solid #e5e7eb;
+  border-left: none;
   padding: 8px 12px;
   font-size: 0.875rem;
   outline: none;
