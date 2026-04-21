@@ -106,7 +106,7 @@ export function RegistroForm() {
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
     if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
     const phoneTrimmed = clientePhone.trim();
-    if (!phoneTrimmed || phoneTrimmed === "+34") return setError("El teléfono es obligatorio");
+    if (!phoneTrimmed) return setError("El teléfono es obligatorio");
 
     setLoading(true);
     const body = {
@@ -312,23 +312,18 @@ export function RegistroForm() {
                       Teléfono móvil <span className="text-red-500">*</span>
                     </Label>
                     <div className="flex">
-                      <span className="flex items-center gap-1.5 px-3 bg-gray-50 border border-r-0 border-gray-200 text-sm text-gray-700 shrink-0 select-none">
-                        🇪🇸 <span className="font-medium">+34</span>
+                      <span className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 text-sm shrink-0 select-none">
+                        🇪🇸
                       </span>
                       <input
                         id="cliente-phone"
                         type="tel"
-                        value={clientePhone.replace(/^\+34\s?/, "")}
+                        value={clientePhone}
                         onChange={(e) => {
-                          const digits = e.target.value.replace(/\D/g, "").slice(0, 9);
-                          const formatted = digits
-                            .replace(/^(\d{3})(\d{0,3})(\d{0,3})$/, (_, a, b, c) =>
-                              [a, b, c].filter(Boolean).join(" ")
-                            );
-                          setClientePhone("+34 " + formatted);
-                          if (!digits) setWhatsappOptIn(false);
+                          setClientePhone(e.target.value);
+                          if (!e.target.value.trim()) setWhatsappOptIn(false);
                         }}
-                        placeholder="612 345 678"
+                        placeholder="+34 612 345 678"
                         autoComplete="tel"
                         required
                         className="flex-1 border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-blue focus:border-transparent"
