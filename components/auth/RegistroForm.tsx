@@ -265,7 +265,7 @@ export function RegistroForm() {
                 <form onSubmit={handleCliente} className="space-y-3" noValidate>
                   <div className="space-y-1.5">
                     <Label htmlFor="name" className="text-xs font-semibold text-gartify-blue">
-                      Nombre completo
+                      Nombre completo <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="name"
@@ -278,7 +278,7 @@ export function RegistroForm() {
                   <div className="space-y-1.5">
                     <Label htmlFor="email" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
                       <Mail className="h-3 w-3" aria-hidden="true" />
-                      Email
+                      Email <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="email"
@@ -292,7 +292,7 @@ export function RegistroForm() {
                   <div className="space-y-1.5">
                     <Label htmlFor="password" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
                       <Lock className="h-3 w-3" aria-hidden="true" />
-                      Contraseña
+                      Contraseña <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="password"
