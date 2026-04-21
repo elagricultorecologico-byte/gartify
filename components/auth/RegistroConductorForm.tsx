@@ -72,13 +72,6 @@ export function RegistroConductorForm() {
           </div>
 
           <div className="p-6 space-y-4">
-            {/* Micro-beneficios */}
-            <div className="flex items-center justify-center gap-4 text-xs text-gartify-gray">
-              <span className="flex items-center gap-1"><span className="text-gartify-green font-bold">✓</span> Gratis</span>
-              <span className="flex items-center gap-1"><span className="text-gartify-green font-bold">✓</span> Sin permanencia</span>
-              <span className="flex items-center gap-1"><span className="text-gartify-green font-bold">✓</span> Reserva en segundos</span>
-            </div>
-
             {/* Google */}
             <button
               type="button"
