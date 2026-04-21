@@ -112,7 +112,7 @@
 .phone-input-gartify .PhoneInputInput {
   flex: 1;
   border: 1px solid #e5e7eb;
-  border-left: none;
+  margin-left: -1px;
   padding: 8px 12px;
   font-size: 0.875rem;
   outline: none;
