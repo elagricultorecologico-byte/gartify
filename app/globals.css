@@ -94,13 +94,20 @@
 .phone-input-gartify {
   display: flex;
   align-items: stretch;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+.phone-input-gartify:focus-within {
+  box-shadow: 0 0 0 2px #1e40af40;
+  border-color: #1e40af80;
 }
 .phone-input-gartify .PhoneInputCountry {
   display: flex;
   align-items: center;
   padding: 0 10px;
   background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  border: none;
+  border-right: 1px solid #e5e7eb;
   gap: 6px;
   cursor: pointer;
 }
@@ -111,17 +118,12 @@
 }
 .phone-input-gartify .PhoneInputInput {
   flex: 1;
-  border: 1px solid #e5e7eb;
-  margin-left: -1px;
+  border: none;
   padding: 8px 12px;
   font-size: 0.875rem;
   outline: none;
-  background: white;
+  background: transparent;
   min-width: 0;
-}
-.phone-input-gartify .PhoneInputInput:focus {
-  box-shadow: 0 0 0 2px #1e40af40;
-  border-color: transparent;
 }
 .phone-input-gartify .PhoneInputInput::placeholder {
   color: #9ca3af;

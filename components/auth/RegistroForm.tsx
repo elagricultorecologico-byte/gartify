@@ -320,8 +320,9 @@ export function RegistroForm() {
                         setClientePhone(val);
                         if (!val) setWhatsappOptIn(false);
                       }}
-                      placeholder="612 345 678"
+                      placeholder="666 666 666"
                       className="phone-input-gartify"
+                      displayInitialValueAsLocalNumber
                     />
                   </div>
 
