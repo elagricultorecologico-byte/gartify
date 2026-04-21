@@ -378,7 +378,7 @@ export function RegistroForm() {
                         className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
                       />
                       <span className="text-xs text-gray-600 leading-relaxed">
-                        Acepto recibir comunicaciones comerciales de Gartify. (Opcional)
+                        Acepto recibir comunicaciones comerciales de Gartify.
                       </span>
                     </label>
                   </div>
