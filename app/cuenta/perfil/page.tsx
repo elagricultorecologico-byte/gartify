@@ -18,7 +18,7 @@ export default async function PerfilPage() {
 
   const user = await db.user.findUnique({
     where: { id: session.user.id },
-    select: { id: true, name: true, email: true, phone: true },
+    select: { id: true, name: true, email: true, phone: true, whatsappOptIn: true },
   });
 
   if (!user) redirect("/login");

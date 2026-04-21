@@ -4,8 +4,9 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 const schema = z.object({
-  name:  z.string().min(2).max(100),
-  phone: z.string().max(20).optional(),
+  name:          z.string().min(2).max(100),
+  phone:         z.string().max(20).optional(),
+  whatsappOptIn: z.boolean().optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -16,11 +17,11 @@ export async function PATCH(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
 
-  const { name, phone } = parsed.data;
+  const { name, phone, whatsappOptIn } = parsed.data;
 
   await db.user.update({
     where: { id: session.user.id },
-    data: { name, phone: phone ?? null },
+    data: { name, phone: phone ?? null, whatsappOptIn: whatsappOptIn ?? false },
   });
 
   return NextResponse.json({ ok: true });

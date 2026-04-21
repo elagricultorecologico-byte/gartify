@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, User, Building2, AlertCircle, Loader2,
-  MapPin, Lock, Mail, ChevronRight, Car, Euro, Tag, X,
+  MapPin, Lock, Mail, ChevronRight, Car, Euro, Tag, X, MessageCircle, Phone,
 } from "lucide-react";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,8 @@ export function RegistroForm() {
   const [brandInput, setBrandInput] = useState("");
   const [acceptLegal, setAcceptLegal] = useState(false);
   const [acceptComercial, setAcceptComercial] = useState(false);
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+  const [clientePhone, setClientePhone] = useState("");
 
   function addBrand(brand: string) {
     const b = brand.trim();
@@ -105,7 +107,11 @@ export function RegistroForm() {
     if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
 
     setLoading(true);
-    const body = { name, email, password };
+    const body = {
+      name, email, password,
+      phone: clientePhone.trim() || undefined,
+      whatsappOptIn: clientePhone.trim().length > 0 ? whatsappOptIn : false,
+    };
 
     const res = await fetch("/api/register", {
       method: "POST",
@@ -295,6 +301,49 @@ export function RegistroForm() {
                       required
                       minLength={6}
                     />
+                  </div>
+
+                  {/* Teléfono */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="cliente-phone" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
+                      <Phone className="h-3 w-3" aria-hidden="true" />
+                      Teléfono móvil <span className="font-normal text-gartify-gray">(opcional)</span>
+                    </Label>
+                    <Input
+                      id="cliente-phone"
+                      type="tel"
+                      value={clientePhone}
+                      onChange={(e) => {
+                        setClientePhone(e.target.value);
+                        if (!e.target.value.trim()) setWhatsappOptIn(false);
+                      }}
+                      placeholder="Ej: 612 345 678"
+                      autoComplete="tel"
+                    />
+                  </div>
+
+                  {/* WhatsApp opt-in */}
+                  <div className={`border p-3 transition-colors ${clientePhone.trim() ? "border-green-200 bg-green-50" : "border-gray-200 bg-gray-50"}`}>
+                    <label className={`flex items-start gap-2.5 ${clientePhone.trim() ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}>
+                      <input
+                        type="checkbox"
+                        checked={whatsappOptIn}
+                        disabled={!clientePhone.trim()}
+                        onChange={(e) => setWhatsappOptIn(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 border-gray-300 accent-green-600 shrink-0"
+                      />
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <MessageCircle className="h-3.5 w-3.5 text-green-600 shrink-0" aria-hidden="true" />
+                          <span className="text-xs font-semibold text-gray-800">Recibir avisos por WhatsApp</span>
+                        </div>
+                        <p className="text-xs text-gray-500 leading-snug">
+                          {clientePhone.trim()
+                            ? "Confirmaciones de reserva y recordatorios directamente en tu WhatsApp."
+                            : "Añade un teléfono para activar esta opción."}
+                        </p>
+                      </div>
+                    </label>
                   </div>
 
                   {/* Checks legales */}

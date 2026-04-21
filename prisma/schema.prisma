@@ -12,8 +12,9 @@ model User {
   name        String?
   email       String       @unique
   password    String?
-  phone       String?
-  role        String       @default("CUSTOMER")
+  phone          String?
+  whatsappOptIn  Boolean      @default(false)
+  role           String       @default("CUSTOMER")
   bookings    Booking[]
   reviews     Review[]
   garage      Garage?
