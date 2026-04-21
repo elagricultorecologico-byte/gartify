@@ -71,25 +71,27 @@ function GarageModal({ garage, onClose }: { garage: GaragePin; onClose: () => vo
 
       {/* Panel */}
       <div className="fixed z-[9999] bottom-0 left-0 right-0 sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-w-md w-full">
-        <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white shadow-2xl overflow-hidden">
 
-          {/* Cabecera */}
-          <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-5 py-4 flex items-start justify-between">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className="text-white font-bold text-lg leading-tight truncate">{garage.name}</h2>
-                {garage.plan === "PREMIUM" && (
-                  <span className="shrink-0 text-[10px] font-bold bg-amber-400/20 text-amber-200 px-2 py-0.5 rounded-full">PREMIUM</span>
-                )}
+          {/* Cabecera — formato estándar del proyecto */}
+          <div className="bg-gray-50 border-b border-gray-200 px-5 py-4 flex items-start justify-between">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20">
+                <MapPin className="h-5 w-5 text-gartify-blue" />
               </div>
-              <div className="flex items-center gap-1.5 mt-1">
-                <MapPin className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                <span className="text-white/80 text-sm truncate">{garage.address ?? garage.city}</span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-base font-bold text-gartify-blue leading-tight truncate">{garage.name}</h2>
+                  {garage.plan === "PREMIUM" && (
+                    <span className="shrink-0 text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5">PREMIUM</span>
+                  )}
+                </div>
+                <p className="text-xs text-gartify-gray mt-0.5 truncate">{garage.address ?? garage.city}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="ml-3 shrink-0 rounded-full p-1.5 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="ml-3 shrink-0 p-1.5 text-gartify-gray hover:text-gartify-dark hover:bg-gray-100 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -121,7 +123,7 @@ function GarageModal({ garage, onClose }: { garage: GaragePin; onClose: () => vo
                 </div>
                 <div className="space-y-1.5">
                   {garage.services.slice(0, 4).map((s, i) => (
-                    <div key={i} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                    <div key={i} className="flex items-center justify-between bg-gray-50 border border-gray-100 px-3 py-2">
                       <span className="text-sm text-gray-700 truncate mr-3">{s.name}</span>
                       <span className="text-sm font-bold text-gartify-orange shrink-0">{formatPrice(s.price)}</span>
                     </div>
