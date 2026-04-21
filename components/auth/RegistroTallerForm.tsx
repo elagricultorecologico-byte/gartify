@@ -5,8 +5,9 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, AlertCircle, Loader2, ArrowLeft,
-  User, Building2, MapPin, Lock, Car, Euro, Tag, X, ChevronRight,
+  User, Building2, MapPin, Lock, Car, Euro, Tag, X, ChevronRight, MessageCircle,
 } from "lucide-react";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,8 @@ export function RegistroTallerForm() {
   const [brandInput, setBrandInput] = useState("");
   const [acceptLegal, setAcceptLegal] = useState(false);
   const [acceptComercial, setAcceptComercial] = useState(false);
+  const [phone, setPhone] = useState<string | undefined>(undefined);
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
 
   function addBrand(brand: string) {
     const b = brand.trim();
@@ -52,6 +55,7 @@ export function RegistroTallerForm() {
     if (!postalCode || !/^\d{5}$/.test(postalCode)) return setError("Introduce un código postal válido (5 dígitos)");
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
+    if (!phone || !isValidPhoneNumber(phone)) return setError("Introduce un teléfono móvil válido");
     if (vehicleTypes.length === 0) return setError("Selecciona al menos un tipo de vehículo");
     if (!acceptLegal) return setError("Debes aceptar los Términos y la Política de privacidad");
 
@@ -59,7 +63,8 @@ export function RegistroTallerForm() {
     const laborRateRaw = (fd.get("laborRate") as string ?? "").trim();
     const body = {
       ownerName, email, password,
-      phone: fd.get("phone"),
+      phone,
+      whatsappOptIn,
       garageName, address, city, postalCode,
       description: fd.get("description"),
       vehicleTypes,
@@ -115,11 +120,25 @@ export function RegistroTallerForm() {
                     <Input id="ownerName" name="ownerName" placeholder="Carlos Martínez" autoComplete="name" required />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="tphone" className="text-xs font-semibold text-gartify-blue">Teléfono</Label>
-                    <Input id="tphone" name="phone" placeholder="91 000 00 00" autoComplete="tel" required />
+                    <Label htmlFor="tphone" className="text-xs font-semibold text-gartify-blue">Teléfono móvil <span className="text-red-500">*</span></Label>
+                    <PhoneInput
+                      id="tphone"
+                      defaultCountry="ES"
+                      value={phone}
+                      onChange={(val) => { setPhone(val); if (!val) setWhatsappOptIn(false); }}
+                      placeholder="666 666 666"
+                      className="phone-input-gartify"
+                    />
                   </div>
                 </div>
               </div>
+
+              {/* WhatsApp opt-in */}
+              <label className={`flex items-center gap-2.5 cursor-pointer border p-3 transition-colors ${whatsappOptIn && phone ? "border-green-200 bg-green-50" : "border-gray-200 bg-gray-50"}`}>
+                <input type="checkbox" checked={whatsappOptIn} onChange={(e) => setWhatsappOptIn(e.target.checked)} className="h-4 w-4 border-gray-300 accent-green-600 shrink-0" />
+                <MessageCircle className="h-4 w-4 text-green-600 shrink-0" />
+                <span className="text-xs text-gray-700 leading-snug">Recibir avisos por WhatsApp — Confirmaciones de reserva y recordatorios directamente en tu WhatsApp.</span>
+              </label>
 
               {/* Datos del taller */}
               <div className="pt-2">
