@@ -1,6 +1,8 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import PhoneInput from "react-phone-number-input";
+import type { Country } from "react-phone-number-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +14,25 @@ import {
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
 import type { Garage } from "@prisma/client";
 
+const TZ_TO_COUNTRY: Record<string, string> = {
+  "Europe/Madrid": "ES", "Atlantic/Canary": "ES", "Africa/Ceuta": "ES",
+  "Europe/Lisbon": "PT", "Atlantic/Azores": "PT", "Atlantic/Madeira": "PT",
+  "America/Mexico_City": "MX", "America/Cancun": "MX", "America/Merida": "MX",
+  "America/Bogota": "CO", "America/Lima": "PE", "America/Santiago": "CL",
+  "America/Argentina/Buenos_Aires": "AR", "America/Caracas": "VE",
+  "America/La_Paz": "BO", "America/Guayaquil": "EC", "America/Asuncion": "PY",
+  "America/Montevideo": "UY", "America/Panama": "PA", "America/Costa_Rica": "CR",
+  "America/Guatemala": "GT", "America/Tegucigalpa": "HN", "America/Managua": "NI",
+  "America/El_Salvador": "SV", "America/Santo_Domingo": "DO", "America/Havana": "CU",
+};
+
+const COUNTRY_CALLING_CODE: Record<string, string> = {
+  ES: "34", PT: "351", MX: "52", CO: "57", PE: "51", CL: "56",
+  AR: "54", VE: "58", BO: "591", EC: "593", PY: "595", UY: "598",
+  PA: "507", CR: "506", GT: "502", HN: "504", NI: "505", SV: "503",
+  DO: "1", CU: "53",
+};
+
 export function GarageProfileForm({ garage }: { garage: Garage }) {
   const router = useRouter();
 
@@ -19,6 +40,23 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const [phone, setPhone] = useState<string | undefined>(garage.phone ?? undefined);
+  const [defaultCountry, setDefaultCountry] = useState<Country>("ES");
+
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const country = TZ_TO_COUNTRY[tz] ?? navigator.language?.split("-")[1]?.toUpperCase() ?? "ES";
+      setDefaultCountry(country as Country);
+      setPhone((prev) => {
+        if (!prev || prev.startsWith("+")) return prev;
+        const digits = prev.replace(/\D/g, "");
+        const callingCode = COUNTRY_CALLING_CODE[country] ?? "34";
+        return `+${callingCode}${digits}`;
+      });
+    } catch { /* mantiene ES */ }
+  }, []);
 
   const [courtesyCar, setCourtesyCar] = useState(garage.courtesyCar ?? false);
   const [pickupService, setPickupService] = useState(garage.pickupService ?? false);
@@ -117,7 +155,7 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
         address:     fd.get("address"),
         city:        fd.get("city"),
         postalCode:  fd.get("postalCode"),
-        phone:       fd.get("phone"),
+        phone:       phone ?? "",
         email:       fd.get("email"),
         courtesyCar,
         pickupService,
@@ -355,13 +393,13 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 <Label htmlFor="phone" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
                   <Phone className="h-3 w-3" aria-hidden="true" />Teléfono
                 </Label>
-                <Input
+                <PhoneInput
                   id="phone"
-                  name="phone"
-                  defaultValue={garage.phone}
-                  required
-                  placeholder="91 000 00 00"
-                  autoComplete="tel"
+                  defaultCountry={defaultCountry}
+                  value={phone}
+                  onChange={(val) => setPhone(val)}
+                  placeholder="643 703 220"
+                  className="phone-input-gartify"
                 />
               </div>
               <div className="space-y-1.5">
