@@ -127,9 +127,9 @@ export default async function BookingConfirmationPage({
       </div>
 
       {/* Tarjeta principal */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-4">
+      <div className="bg-white border border-gray-200 overflow-hidden mb-4">
         {/* Franja de cabecera */}
-        <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid px-5 py-3 flex items-center justify-between">
+        <div className="bg-gartify-blue px-5 py-3 flex items-center justify-between">
           <p className="text-xs font-bold text-white/80 uppercase tracking-wide">
             Detalle de la reserva
           </p>
