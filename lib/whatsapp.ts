@@ -1,5 +1,5 @@
 import twilio from "twilio";
-import { formatDateTime } from "@/lib/utils";
+import { formatDate, formatDateTime } from "@/lib/utils";
 
 const accountSid    = process.env.TWILIO_ACCOUNT_SID;
 const authToken     = process.env.TWILIO_AUTH_TOKEN;
@@ -147,5 +147,66 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
     console.log("[WhatsApp] Sent OK — SID:", msg.sid, "status:", msg.status, useTemplate ? "(template)" : "(text)");
   } catch (err) {
     console.error("[WhatsApp] Error sending message:", err);
+  }
+}
+
+// ─── Confirmación de reserva al conductor ────────────────────────────────────
+// Template: HX6f73211ea7eab4f72331e7fdd80c87fe
+// {{1}} Nombre conductor  {{2}} Taller  {{3}} Marca  {{4}} Modelo
+// {{5}} Matrícula  {{6}} Servicio  {{7}} Fecha  {{8}} Hora
+// {{9}} Dirección taller  {{10}} Código reserva  {{11}} URL detalle
+
+const CONFIRM_CONTENT_SID = "HX6f73211ea7eab4f72331e7fdd80c87fe";
+
+export interface ConfirmacionReservaParams {
+  clientPhone:   string;
+  clientName:    string;
+  garageName:    string;
+  garageAddress: string;
+  vehicleModel?: string;
+  vehiclePlate?: string;
+  serviceName:   string;
+  date:          Date;
+  bookingId:     string;
+  bookingCode?:  string;
+}
+
+export async function sendConfirmacionReservaWhatsApp(params: ConfirmacionReservaParams) {
+  const client = getClient();
+  if (!client) return;
+
+  const { clientPhone, clientName, garageName, garageAddress, vehicleModel, vehiclePlate, serviceName, date, bookingId, bookingCode } = params;
+
+  const partes = (vehicleModel ?? "").trim().split(/\s+/);
+  const marca  = partes[0] || "—";
+  const modelo = partes.slice(1).join(" ") || "—";
+
+  const hora = new Intl.DateTimeFormat("es-ES", { timeStyle: "short" }).format(date);
+  const baseUrl = process.env.NEXTAUTH_URL ?? "https://gartify.es";
+
+  const to = `whatsapp:${toE164(clientPhone)}`;
+
+  try {
+    const msg = await client.messages.create({
+      messagingServiceSid: MESSAGING_SERVICE,
+      to,
+      contentSid: CONFIRM_CONTENT_SID,
+      contentVariables: JSON.stringify({
+        "1":  clientName,
+        "2":  garageName,
+        "3":  marca,
+        "4":  modelo,
+        "5":  vehiclePlate || "—",
+        "6":  serviceName,
+        "7":  formatDate(date),
+        "8":  hora,
+        "9":  garageAddress,
+        "10": bookingCode || bookingId,
+        "11": `${baseUrl}/reserva/${bookingId}`,
+      }),
+    });
+    console.log("[WhatsApp] ConfirmacionReserva sent OK — SID:", msg.sid);
+  } catch (err) {
+    console.error("[WhatsApp] Error sending ConfirmacionReserva:", err);
   }
 }

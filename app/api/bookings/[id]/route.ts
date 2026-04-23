@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
 import { bookingStatusUpdateEmail } from "@/lib/emails/templates";
+import { sendConfirmacionReservaWhatsApp } from "@/lib/whatsapp";
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const session = await auth();
@@ -20,7 +21,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     include: {
       garage: true,
       service: true,
-      user: { select: { name: true, email: true } },
+      user: { select: { name: true, email: true, phone: true, whatsappOptIn: true } },
     },
   });
 
@@ -39,7 +40,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   const updated = await db.booking.update({ where: { id: params.id }, data: { status } });
 
-  // ── Send status-update email to customer ─────────────────────────────────
+  // ── Email al conductor ───────────────────────────────────────────────────
   const notifyStatuses = ["CONFIRMED", "CANCELLED", "COMPLETED"];
   if (notifyStatuses.includes(status) && booking.user?.email) {
     const mail = bookingStatusUpdateEmail({
@@ -52,6 +53,21 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       bookingId:    booking.id,
     });
     sendMail({ to: booking.user.email, ...mail }).catch(console.error);
+  }
+
+  // ── WhatsApp de confirmación al conductor (solo cuando el taller confirma) ─
+  if (status === "CONFIRMED" && isOwner && booking.user?.phone && booking.user?.whatsappOptIn) {
+    sendConfirmacionReservaWhatsApp({
+      clientPhone:   booking.user.phone,
+      clientName:    booking.user.name  ?? "Cliente",
+      garageName:    booking.garage.name,
+      garageAddress: [booking.garage.address, booking.garage.city].filter(Boolean).join(", "),
+      vehicleModel:  booking.vehicleModel ?? undefined,
+      vehiclePlate:  booking.vehiclePlate ?? undefined,
+      serviceName:   booking.service?.name ?? booking.serviceLabel ?? "Servicio",
+      date:          booking.date,
+      bookingId:     booking.id,
+    }).catch(console.error);
   }
   // ─────────────────────────────────────────────────────────────────────────
 
