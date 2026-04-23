@@ -15,10 +15,19 @@ export function SearchBar({ className }: { className?: string }) {
   const [vehicleType, setVehicleType] = useState<VehicleType | "">((sp.get("vehicleType") as VehicleType) ?? "");
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
+  const [locateError, setLocateError] = useState("");
 
   const handleLocate = () => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      setLocateError("Tu navegador no soporta geolocalización");
+      return;
+    }
+    if (location.protocol !== "https:" && location.hostname !== "localhost") {
+      setLocateError("La detección de ubicación requiere conexión segura (HTTPS)");
+      return;
+    }
     setLocating(true);
+    setLocateError("");
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -41,7 +50,12 @@ export function SearchBar({ className }: { className?: string }) {
           setLocating(false);
         }
       },
-      () => setLocating(false),
+      (err) => {
+        setLocating(false);
+        if (err.code === 1) setLocateError("Permiso de ubicación denegado");
+        else if (err.code === 2) setLocateError("No se pudo obtener la ubicación");
+        else setLocateError("Tiempo de espera agotado");
+      },
       { timeout: 8000 }
     );
   };
@@ -91,7 +105,7 @@ export function SearchBar({ className }: { className?: string }) {
         <Input
           placeholder="Localidad o CP"
           value={ciudad}
-          onChange={(e) => { setCiudad(e.target.value); setUserCoords(null); }}
+          onChange={(e) => { setCiudad(e.target.value); setUserCoords(null); setLocateError(""); }}
           className="pl-9 pr-10 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm"
         />
         <button
@@ -107,6 +121,11 @@ export function SearchBar({ className }: { className?: string }) {
             : <LocateFixed className="h-4 w-4" />
           }
         </button>
+        {locateError && (
+          <p className="absolute top-full left-0 mt-1 text-xs text-red-500 bg-white px-2 py-0.5 shadow-sm whitespace-nowrap z-10">
+            {locateError}
+          </p>
+        )}
       </div>
 
       {/* Selector de tipo de vehículo */}
