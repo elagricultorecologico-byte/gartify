@@ -67,7 +67,7 @@ export function SidebarConductor() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex flex-col w-56 shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto bg-white border-r border-gray-200">
+    <aside className="hidden lg:flex flex-col w-56 shrink-0 sticky top-24 h-[calc(100vh-6rem)] overflow-y-auto bg-white border-r border-gray-200">
       <ContenidoSidebar pathname={pathname} />
     </aside>
   );
