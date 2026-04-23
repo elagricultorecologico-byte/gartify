@@ -7,12 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
 
-type SearchBarProps = {
-  className?: string;
-  onUserCoords?: (coords: { lat: number; lng: number } | null) => void;
-};
-
-export function SearchBar({ className, onUserCoords }: SearchBarProps) {
+export function SearchBar({ className }: { className?: string }) {
   const router = useRouter();
   const sp = useSearchParams();
   const [servicio, setServicio] = useState(sp.get("servicio") ?? "");
@@ -21,19 +16,13 @@ export function SearchBar({ className, onUserCoords }: SearchBarProps) {
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
 
-  // Notifica al padre cada vez que las coordenadas del usuario cambian
-  const actualizarCoords = (coords: { lat: number; lng: number } | null) => {
-    setUserCoords(coords);
-    onUserCoords?.(coords);
-  };
-
   const handleLocate = () => {
     if (!navigator.geolocation) return;
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
-        actualizarCoords({ lat: latitude, lng: longitude });
+        setUserCoords({ lat: latitude, lng: longitude });
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=es`
@@ -102,7 +91,7 @@ export function SearchBar({ className, onUserCoords }: SearchBarProps) {
         <Input
           placeholder="Localidad o CP"
           value={ciudad}
-          onChange={(e) => { setCiudad(e.target.value); actualizarCoords(null); }}
+          onChange={(e) => { setCiudad(e.target.value); setUserCoords(null); }}
           className="pl-9 pr-10 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm"
         />
         <button
