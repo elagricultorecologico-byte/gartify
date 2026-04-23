@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, MessageCircle } from "lucide-react";
 
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function CustomerProfileForm({ user }: Props) {
+  const router = useRouter();
   const [name, setName] = useState(user.name ?? "");
   const [phone, setPhone] = useState(user.phone ?? "");
   const [whatsappOptIn, setWhatsappOptIn] = useState(user.whatsappOptIn);
@@ -50,6 +52,7 @@ export function CustomerProfileForm({ user }: Props) {
     if (res.ok) {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+      router.refresh();
     } else {
       setError("No se pudo guardar. Inténtalo de nuevo.");
     }
