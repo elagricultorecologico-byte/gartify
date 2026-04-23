@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sendConfirmacionReservaWhatsApp } from "@/lib/whatsapp";
 
 interface Params { params: Promise<{ id: string }> }
 
@@ -34,7 +35,21 @@ export async function PATCH(req: Request, { params }: Params) {
   const garageId = await getGarageId(user.id);
   if (!garageId) return NextResponse.json({ error: "Taller no encontrado" }, { status: 404 });
 
-  const booking = await db.booking.findUnique({ where: { id }, select: { garageId: true, source: true } });
+  const booking = await db.booking.findUnique({
+    where: { id },
+    select: {
+      garageId: true,
+      source: true,
+      status: true,
+      date: true,
+      vehicleModel: true,
+      vehiclePlate: true,
+      serviceLabel: true,
+      garage: { select: { name: true, address: true, city: true } },
+      service: { select: { name: true } },
+      user: { select: { name: true, phone: true, whatsappOptIn: true } },
+    },
+  });
   if (!booking || booking.garageId !== garageId) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
 
   const body = await req.json() as unknown;
@@ -63,8 +78,26 @@ export async function PATCH(req: Request, { params }: Params) {
       ...(d.notes        !== undefined ? { notes: d.notes }              : {}),
       ...(d.status       !== undefined ? { status: d.status }            : {}),
     },
-    select: { id: true, status: true },
+    select: { id: true, status: true, code: true },
   });
+
+  // ── WhatsApp de confirmación al conductor ────────────────────────────────
+  if (d.status === "CONFIRMED" && booking.user?.phone && booking.user?.whatsappOptIn) {
+    const bookingDate = d.date ? new Date(d.date) : booking.date;
+    sendConfirmacionReservaWhatsApp({
+      clientPhone:   booking.user.phone,
+      clientName:    booking.user.name  ?? "Cliente",
+      garageName:    booking.garage.name,
+      garageAddress: [booking.garage.address, booking.garage.city].filter(Boolean).join(", "),
+      vehicleModel:  (d.vehicleModel ?? booking.vehicleModel) ?? undefined,
+      vehiclePlate:  (d.vehiclePlate ?? booking.vehiclePlate) ?? undefined,
+      serviceName:   booking.service?.name ?? (d.serviceLabel ?? booking.serviceLabel) ?? "Servicio",
+      date:          bookingDate,
+      bookingId:     id,
+      bookingCode:   updated.code || undefined,
+    }).catch(console.error);
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   return NextResponse.json(updated);
 }
