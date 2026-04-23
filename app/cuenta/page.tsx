@@ -26,6 +26,7 @@ export default async function CuentaPage() {
     where: { userId: user.id },
     select: {
       id: true,
+      code: true,
       status: true,
       date: true,
       totalPrice: true,

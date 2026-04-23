@@ -27,6 +27,7 @@ export async function GET() {
       where: { userId: usuario.id },
       select: {
         id: true,
+        code: true,
         status: true,
         date: true,
         totalPrice: true,

@@ -18,6 +18,7 @@ import {
 
 export type CustomerBookingItem = {
   id: string;
+  code: string;
   status: string;
   date: Date | string;
   totalPrice: number;
@@ -320,7 +321,7 @@ export function CustomerBookingList({ bookings }: { bookings: CustomerBookingIte
 function BookingCard({ b }: { b: CustomerBookingItem }) {
   const isPast          = b.status === "COMPLETED" || b.status === "CANCELLED";
   const bandClasses     = STATUS_BAND[b.status] ?? "bg-gray-50 text-gray-500 border-gray-200";
-  const codigoReserva   = b.id.slice(-8).toUpperCase();
+  const codigoReserva   = b.code || b.id.slice(-8).toUpperCase();
   const fechaFormateada = formatDateTime(b.date instanceof Date ? b.date : new Date(b.date));
 
   const initials = b.garage.name
