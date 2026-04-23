@@ -256,7 +256,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-white/10 bg-gartify-blue px-4 py-4 space-y-3">
+        <div className="md:hidden border-t border-white/10 bg-gartify-blue px-4 py-4 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
           {!session && (
             <>
               <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
