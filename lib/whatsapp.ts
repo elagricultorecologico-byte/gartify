@@ -171,6 +171,62 @@ export interface ConfirmacionReservaParams {
   bookingCode?:  string;
 }
 
+// ─── Vehículo listo al conductor (COMPLETED) ─────────────────────────────────
+// Template: HX2d922f731a4b4af4f9c35f41a2adf80a
+// {{1}} Nombre conductor  {{2}} Taller  {{3}} Matrícula  {{4}} Marca
+// {{5}} Modelo  {{6}} Servicio  {{7}} Precio  {{8}} Dirección taller
+// {{9}} Código reserva
+
+const COMPLETED_CONTENT_SID = "HX2d922f731a4b4af4f9c35f41a2adf80a";
+
+export interface VehiculoListoParams {
+  clientPhone:   string;
+  clientName:    string;
+  garageName:    string;
+  garageAddress: string;
+  vehicleModel?: string;
+  vehiclePlate?: string;
+  serviceName:   string;
+  totalPrice:    number;
+  bookingId:     string;
+  bookingCode?:  string;
+}
+
+export async function sendVehiculoListoWhatsApp(params: VehiculoListoParams) {
+  const client = getClient();
+  if (!client) return;
+
+  const { clientPhone, clientName, garageName, garageAddress, vehicleModel, vehiclePlate, serviceName, totalPrice, bookingId, bookingCode } = params;
+
+  const partes = (vehicleModel ?? "").trim().split(/\s+/);
+  const marca  = partes[0] || "—";
+  const modelo = partes.slice(1).join(" ") || "—";
+  const precio = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(totalPrice);
+  const to     = `whatsapp:${toE164(clientPhone)}`;
+
+  try {
+    const msg = await client.messages.create({
+      messagingServiceSid: MESSAGING_SERVICE,
+      to,
+      contentSid: COMPLETED_CONTENT_SID,
+      contentVariables: JSON.stringify({
+        "1": clientName,
+        "2": garageName,
+        "3": vehiclePlate || "—",
+        "4": marca,
+        "5": modelo,
+        "6": serviceName,
+        "7": precio,
+        "8": garageAddress,
+        "9": bookingCode || bookingId,
+      }),
+    });
+    console.log("[WhatsApp] VehiculoListo sent OK — SID:", msg.sid);
+  } catch (err) {
+    console.error("[WhatsApp] Error sending VehiculoListo:", err);
+  }
+}
+
 export async function sendConfirmacionReservaWhatsApp(params: ConfirmacionReservaParams) {
   const client = getClient();
   if (!client) return;

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { sendConfirmacionReservaWhatsApp } from "@/lib/whatsapp";
+import { sendConfirmacionReservaWhatsApp, sendVehiculoListoWhatsApp } from "@/lib/whatsapp";
 
 interface Params { params: Promise<{ id: string }> }
 
@@ -42,6 +42,7 @@ export async function PATCH(req: Request, { params }: Params) {
       source: true,
       status: true,
       date: true,
+      totalPrice: true,
       vehicleModel: true,
       vehiclePlate: true,
       serviceLabel: true,
@@ -81,21 +82,43 @@ export async function PATCH(req: Request, { params }: Params) {
     select: { id: true, status: true, code: true },
   });
 
-  // ── WhatsApp de confirmación al conductor ────────────────────────────────
-  if (d.status === "CONFIRMED" && booking.user?.phone && booking.user?.whatsappOptIn) {
-    const bookingDate = d.date ? new Date(d.date) : booking.date;
-    sendConfirmacionReservaWhatsApp({
-      clientPhone:   booking.user.phone,
-      clientName:    booking.user.name  ?? "Cliente",
-      garageName:    booking.garage.name,
-      garageAddress: [booking.garage.address, booking.garage.city].filter(Boolean).join(", "),
-      vehicleModel:  (d.vehicleModel ?? booking.vehicleModel) ?? undefined,
-      vehiclePlate:  (d.vehiclePlate ?? booking.vehiclePlate) ?? undefined,
-      serviceName:   booking.service?.name ?? (d.serviceLabel ?? booking.serviceLabel) ?? "Servicio",
-      date:          bookingDate,
-      bookingId:     id,
-      bookingCode:   updated.code || undefined,
-    }).catch(console.error);
+  // ── WhatsApp al conductor ────────────────────────────────────────────────
+  if (d.status && booking.user?.phone && booking.user?.whatsappOptIn) {
+    const garageAddress = [booking.garage.address, booking.garage.city].filter(Boolean).join(", ");
+    const serviceName   = booking.service?.name ?? (d.serviceLabel ?? booking.serviceLabel) ?? "Servicio";
+    const vehicleModel  = (d.vehicleModel ?? booking.vehicleModel) ?? undefined;
+    const vehiclePlate  = (d.vehiclePlate ?? booking.vehiclePlate) ?? undefined;
+    const bookingDate   = d.date ? new Date(d.date) : booking.date;
+
+    if (d.status === "CONFIRMED") {
+      sendConfirmacionReservaWhatsApp({
+        clientPhone:   booking.user.phone,
+        clientName:    booking.user.name ?? "Cliente",
+        garageName:    booking.garage.name,
+        garageAddress,
+        vehicleModel,
+        vehiclePlate,
+        serviceName,
+        date:          bookingDate,
+        bookingId:     id,
+        bookingCode:   updated.code || undefined,
+      }).catch(console.error);
+    }
+
+    if (d.status === "COMPLETED") {
+      sendVehiculoListoWhatsApp({
+        clientPhone:   booking.user.phone,
+        clientName:    booking.user.name ?? "Cliente",
+        garageName:    booking.garage.name,
+        garageAddress,
+        vehicleModel,
+        vehiclePlate,
+        serviceName,
+        totalPrice:    booking.totalPrice ?? 0,
+        bookingId:     id,
+        bookingCode:   updated.code || undefined,
+      }).catch(console.error);
+    }
   }
   // ─────────────────────────────────────────────────────────────────────────
 
