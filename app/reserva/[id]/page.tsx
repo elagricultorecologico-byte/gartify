@@ -128,11 +128,17 @@ export default async function BookingConfirmationPage({
 
       {/* Tarjeta principal */}
       <div className="bg-white border border-gray-200 overflow-hidden mb-4">
-        {/* Franja de cabecera */}
-        <div className="bg-gartify-blue px-5 py-3 flex items-center justify-between">
-          <p className="text-xs font-bold text-white/80 uppercase tracking-wide">
-            Detalle de la reserva
-          </p>
+        {/* Cabecera */}
+        <div className="bg-gray-50 border-b border-gray-200 px-5 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20 shrink-0">
+              <Calendar className="h-5 w-5 text-gartify-blue" />
+            </div>
+            <div>
+              <p className="text-base font-bold text-gartify-blue">Detalle de la reserva</p>
+              <p className="text-xs text-gartify-gray mt-0.5">{booking.garage.name}</p>
+            </div>
+          </div>
           <Badge className={`text-xs ${BOOKING_STATUS_COLORS[booking.status]}`}>
             {BOOKING_STATUS_LABELS[booking.status]}
           </Badge>
