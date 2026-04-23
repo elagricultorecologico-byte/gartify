@@ -151,12 +151,12 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
 }
 
 // ─── Confirmación de reserva al conductor ────────────────────────────────────
-// Template: HX6f73211ea7eab4f72331e7fdd80c87fe
+// Template: HXb6b3a08a7939272409d7e487828c758a
 // {{1}} Nombre conductor  {{2}} Taller  {{3}} Marca  {{4}} Modelo
 // {{5}} Matrícula  {{6}} Servicio  {{7}} Fecha  {{8}} Hora
 // {{9}} Dirección taller  {{10}} Código reserva  {{11}} URL detalle
 
-const CONFIRM_CONTENT_SID = "HX6f73211ea7eab4f72331e7fdd80c87fe";
+const CONFIRM_CONTENT_SID = "HXb6b3a08a7939272409d7e487828c758a";
 
 export interface ConfirmacionReservaParams {
   clientPhone:   string;
