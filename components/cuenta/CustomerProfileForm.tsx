@@ -1,7 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import PhoneInput from "react-phone-number-input";
+import type { Country } from "react-phone-number-input";
+
+const TZ_TO_COUNTRY: Record<string, string> = {
+  "Europe/Madrid": "ES", "Atlantic/Canary": "ES", "Africa/Ceuta": "ES",
+  "Europe/Lisbon": "PT", "Atlantic/Azores": "PT", "Atlantic/Madeira": "PT",
+  "America/Mexico_City": "MX", "America/Cancun": "MX", "America/Merida": "MX",
+  "America/Bogota": "CO", "America/Lima": "PE", "America/Santiago": "CL",
+  "America/Argentina/Buenos_Aires": "AR", "America/Caracas": "VE",
+  "America/La_Paz": "BO", "America/Guayaquil": "EC", "America/Asuncion": "PY",
+  "America/Montevideo": "UY", "America/Panama": "PA", "America/Costa_Rica": "CR",
+  "America/Guatemala": "GT", "America/Tegucigalpa": "HN", "America/Managua": "NI",
+  "America/El_Salvador": "SV", "America/Santo_Domingo": "DO", "America/Havana": "CU",
+};
+
+const COUNTRY_CALLING_CODE: Record<string, string> = {
+  ES: "34", PT: "351", MX: "52", CO: "57", PE: "51", CL: "56",
+  AR: "54", VE: "58", BO: "591", EC: "593", PY: "595", UY: "598",
+  PA: "507", CR: "506", GT: "502", HN: "504", NI: "505", SV: "503",
+  DO: "1", CU: "53",
+};
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, MessageCircle } from "lucide-react";
 
@@ -18,19 +39,31 @@ interface Props {
 export function CustomerProfileForm({ user }: Props) {
   const router = useRouter();
   const [name, setName] = useState(user.name ?? "");
-  const [phone, setPhone] = useState(user.phone ?? "");
+  const [phone, setPhone] = useState<string | undefined>(user.phone ?? undefined);
+  const [defaultCountry, setDefaultCountry] = useState<Country>("ES");
+
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const country = TZ_TO_COUNTRY[tz]
+        ?? navigator.language?.split("-")[1]?.toUpperCase()
+        ?? "ES";
+      setDefaultCountry(country as Country);
+      // Normalizar el teléfono a E.164 si no tiene prefijo "+"
+      setPhone((prev) => {
+        if (!prev || prev.startsWith("+")) return prev;
+        const digits = prev.replace(/\D/g, "");
+        const callingCode = COUNTRY_CALLING_CODE[country] ?? "34";
+        return `+${callingCode}${digits}`;
+      });
+    } catch { /* mantiene ES */ }
+  }, []);
   const [whatsappOptIn, setWhatsappOptIn] = useState(user.whatsappOptIn);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const hasPhone = phone.trim().length > 0;
-
-  // Si se borra el teléfono, desactivamos el opt-in automáticamente
-  function handlePhoneChange(val: string) {
-    setPhone(val);
-    if (!val.trim()) setWhatsappOptIn(false);
-  }
+  const hasPhone = !!phone && phone.trim().length > 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,7 +76,7 @@ export function CustomerProfileForm({ user }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: name.trim(),
-        phone: phone.trim(),
+        phone: phone ?? "",
         whatsappOptIn: hasPhone ? whatsappOptIn : false,
       }),
     });
@@ -95,13 +128,13 @@ export function CustomerProfileForm({ user }: Props) {
         <label htmlFor="cp-phone" className="block text-sm font-semibold text-gray-700 mb-1.5">
           Teléfono móvil
         </label>
-        <input
+        <PhoneInput
           id="cp-phone"
-          type="tel"
+          defaultCountry={defaultCountry}
           value={phone}
-          onChange={(e) => handlePhoneChange(e.target.value)}
-          className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-blue focus:border-transparent transition"
-          placeholder="Ej: 612 345 678"
+          onChange={(val) => { setPhone(val); if (!val) setWhatsappOptIn(false); }}
+          placeholder="666 666 666"
+          className="phone-input-gartify"
         />
       </div>
 
