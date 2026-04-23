@@ -2,12 +2,39 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, Truck, Zap, Crown } from "lucide-react";
+import { Menu, X, LogOut, Settings, Truck, Zap, Crown, Wrench, Package } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
+const TZ_TO_COUNTRY: Record<string, string> = {
+  "Europe/Madrid": "ES", "Atlantic/Canary": "ES", "Africa/Ceuta": "ES",
+  "Europe/Lisbon": "PT", "Atlantic/Azores": "PT", "Atlantic/Madeira": "PT",
+  "America/Mexico_City": "MX", "America/Cancun": "MX", "America/Merida": "MX",
+  "America/Bogota": "CO", "America/Lima": "PE", "America/Santiago": "CL",
+  "America/Argentina/Buenos_Aires": "AR", "America/Caracas": "VE",
+  "America/La_Paz": "BO", "America/Guayaquil": "EC", "America/Asuncion": "PY",
+  "America/Montevideo": "UY", "America/Panama": "PA", "America/Costa_Rica": "CR",
+  "America/Guatemala": "GT", "America/Tegucigalpa": "HN", "America/Managua": "NI",
+  "America/El_Salvador": "SV", "America/Santo_Domingo": "DO", "America/Havana": "CU",
+};
+
+function useCountryCode() {
+  const [code, setCode] = useState("ES");
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const country = TZ_TO_COUNTRY[tz]
+        ?? navigator.language?.split("-")[1]?.toUpperCase()
+        ?? "ES";
+      setCode(country);
+    } catch { /* mantiene ES */ }
+  }, []);
+  return code;
+}
+
 export function Navbar() {
   const { data: session } = useSession();
+  const countryCode = useCountryCode();
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -55,6 +82,33 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-gartify-blue shadow-md">
+      {/* ── Top bar ── */}
+      <div className="hidden md:block bg-blue-700 border-b border-white/10">
+        <div className="container flex items-center justify-end gap-6 h-8 text-xs">
+          <Link href="/registro/taller" className="flex items-center gap-1.5 text-blue-100 hover:text-white transition-colors font-medium">
+            <Wrench className="h-3.5 w-3.5" />
+            Soy taller
+          </Link>
+          <span className="h-3 w-px bg-white/20" />
+          <Link href="/contacto" className="flex items-center gap-1.5 text-blue-100 hover:text-white transition-colors font-medium">
+            <Package className="h-3.5 w-3.5" />
+            Soy casa de recambios
+          </Link>
+          <span className="h-3 w-px bg-white/20" />
+          <span className="flex items-center gap-1.5 text-blue-100 font-medium select-none">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://flagcdn.com/20x15/${countryCode.toLowerCase()}.png`}
+              width={20}
+              height={15}
+              alt={countryCode}
+              className="shrink-0"
+            />
+            {countryCode}
+          </span>
+        </div>
+      </div>
+
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center">
