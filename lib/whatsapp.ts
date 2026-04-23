@@ -152,8 +152,8 @@ export async function sendNuevaReservaWhatsApp(params: NuevaReservaParams) {
 
 // ─── Confirmación de reserva al conductor ────────────────────────────────────
 // Template: HXb6b3a08a7939272409d7e487828c758a
-// {{1}} Nombre conductor  {{2}} Taller  {{3}} Marca  {{4}} Modelo
-// {{5}} Matrícula  {{6}} Servicio  {{7}} Fecha  {{8}} Hora
+// {{1}} Nombre conductor  {{2}} Taller  {{3}} Matrícula  {{4}} Marca
+// {{5}} Modelo  {{6}} Servicio  {{7}} Fecha  {{8}} Hora
 // {{9}} Dirección taller  {{10}} Código reserva  {{11}} URL detalle
 
 const CONFIRM_CONTENT_SID = "HXb6b3a08a7939272409d7e487828c758a";
@@ -194,9 +194,9 @@ export async function sendConfirmacionReservaWhatsApp(params: ConfirmacionReserv
       contentVariables: JSON.stringify({
         "1":  clientName,
         "2":  garageName,
-        "3":  marca,
-        "4":  modelo,
-        "5":  vehiclePlate || "—",
+        "3":  vehiclePlate || "—",
+        "4":  marca,
+        "5":  modelo,
         "6":  serviceName,
         "7":  formatDate(date),
         "8":  hora,
