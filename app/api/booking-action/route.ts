@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sendConfirmacionReservaWhatsApp } from "@/lib/whatsapp";
 
 // Endpoint público — valida token base64url firmado: base64url(bookingId:action)
 // Solo permite acciones: ok | no
@@ -31,21 +32,41 @@ export async function GET(req: Request) {
     return html(`ℹ️ Esta reserva ya está en estado <strong>${booking.status}</strong>. No es necesaria ninguna acción.`, 200);
   }
 
-  // PENDING + ok  → PROPOSED  (taller acepta, pendiente de confirmación del cliente)
-  // PROPOSED + ok → CONFIRMED (cliente confirma la propuesta del taller)
-  const newStatus = action === "ok"
-    ? (booking.status === "PROPOSED" ? "CONFIRMED" : "PROPOSED")
-    : "CANCELLED";
+  // ok → CONFIRMED siempre (taller confirma o cliente acepta propuesta de horario)
+  // no → CANCELLED
+  const newStatus = action === "ok" ? "CONFIRMED" : "CANCELLED";
   await db.booking.update({ where: { id: bookingId }, data: { status: newStatus } });
 
-  const isProposed = booking.status === "PROPOSED";
+  // ── WhatsApp de confirmación al conductor ──────────────────────────────────
+  if (newStatus === "CONFIRMED") {
+    const full = await db.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        garage: true,
+        service: true,
+        user: { select: { name: true, phone: true, whatsappOptIn: true } },
+      },
+    });
+    if (full?.user?.phone && full.user.whatsappOptIn) {
+      sendConfirmacionReservaWhatsApp({
+        clientPhone:   full.user.phone,
+        clientName:    full.user.name ?? "Cliente",
+        garageName:    full.garage.name,
+        garageAddress: [full.garage.address, full.garage.city].filter(Boolean).join(", "),
+        vehicleModel:  full.vehicleModel ?? undefined,
+        vehiclePlate:  full.vehiclePlate ?? undefined,
+        serviceName:   full.service?.name ?? full.serviceLabel ?? "Servicio",
+        date:          full.date,
+        bookingId,
+        bookingCode:   full.code || undefined,
+      }).catch(console.error);
+    }
+  }
+  // ──────────────────────────────────────────────────────────────────────────
+
   const msg = action === "ok"
-    ? (isProposed
-        ? "✅ Cita <strong>confirmada</strong>. ¡Nos vemos en el taller!"
-        : "✅ Reserva <strong>aceptada</strong>. El cliente recibirá una notificación para confirmar la cita.")
-    : (isProposed
-        ? "❌ Propuesta de horario <strong>rechazada</strong>. El taller recibirá una notificación."
-        : "❌ Reserva <strong>rechazada</strong>. El cliente recibirá una notificación.");
+    ? "✅ Reserva <strong>confirmada</strong>. El cliente recibirá una notificación."
+    : "❌ Reserva <strong>rechazada</strong>. El cliente recibirá una notificación.";
 
   return html(msg, 200);
 }
