@@ -163,17 +163,110 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          2. CÓMO FUNCIONA
+          2. PAS — CONDUCTOR
+      ══════════════════════════════════════════════════ */}
+      <section className="py-20 bg-white">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 max-w-5xl mx-auto">
+
+          {/* Encabezado */}
+          <div className="text-center mb-14">
+            <SectionLabel>Para conductores</SectionLabel>
+            <h2 className="text-2xl md:text-4xl font-extrabold text-gartify-dark mb-4 leading-tight">
+              ¿Llevas meses aplazando la revisión<br className="hidden md:block" /> porque no sabes a quién fiarte?
+            </h2>
+            <p className="text-gartify-gray max-w-xl mx-auto text-base leading-relaxed">
+              No eres el único. Encontrar un taller de confianza sigue siendo innecesariamente complicado.
+            </p>
+          </div>
+
+          {/* AGITACIÓN + SOLUCIÓN en dos columnas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 mb-12 overflow-hidden border border-slate-200 shadow-sm">
+
+            {/* Columna izquierda — Problema */}
+            <div className="bg-slate-50 p-8 border-b md:border-b-0 md:border-r border-slate-200">
+              <div className="flex items-center gap-2.5 mb-7">
+                <div className="flex h-8 w-8 items-center justify-center bg-red-100 shrink-0">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                </div>
+                <p className="text-xs font-bold uppercase tracking-widest text-red-500">Sin Gartify</p>
+              </div>
+              <ul className="space-y-5">
+                {([
+                  { icon: Phone,    text: "Llamas a tres talleres y ninguno te da un precio claro" },
+                  { icon: Star,     text: "No sabes si las reseñas de Google son reales o compradas" },
+                  { icon: Banknote, text: "Acabas pagando más de lo esperado sin entender por qué" },
+                  { icon: Clock,    text: "Pierdes medio día gestionando algo que debería durar minutos" },
+                ] as { icon: React.ElementType; text: string }[]).map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-start gap-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white border border-slate-200 shadow-sm">
+                      <Icon className="h-4 w-4 text-red-400" aria-hidden="true" />
+                    </div>
+                    <div className="pt-1.5">
+                      <p className="text-sm text-gartify-gray leading-snug">{text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Columna derecha — Solución */}
+            <div className="bg-gartify-blue p-8 text-white">
+              <div className="flex items-center gap-2.5 mb-7">
+                <div className="flex h-8 w-8 items-center justify-center bg-gartify-orange/20 shrink-0">
+                  <CheckCircle2 className="h-4 w-4 text-gartify-orange" />
+                </div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gartify-orange">Con Gartify</p>
+              </div>
+              <ul className="space-y-5">
+                {([
+                  { icon: BadgeCheck,   text: "Talleres verificados con reseñas de conductores reales" },
+                  { icon: Eye,          text: "Precios visibles antes de reservar, sin letra pequeña" },
+                  { icon: Smartphone,   text: "Reserva en 2 minutos desde el móvil, sin llamadas" },
+                  { icon: ClipboardList,text: "Historial de revisiones de tu coche siempre disponible" },
+                ] as { icon: React.ElementType; text: string }[]).map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-start gap-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white/10 border border-white/20">
+                      <Icon className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
+                    </div>
+                    <div className="pt-1.5">
+                      <p className="text-sm text-blue-100 leading-snug">{text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* CTA central */}
+          <div className="text-center">
+            <p className="text-gartify-gray text-sm mb-5">
+              Más de <strong className="text-gartify-dark">500 talleres verificados</strong> te esperan. Gratis para conductores.
+            </p>
+            <Link href="/talleres">
+              <Button size="lg" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold px-10 text-base shadow-md">
+                Buscar mi taller ahora
+                <ChevronRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+      <SectionDivider />
+
+      {/* ══════════════════════════════════════════════════
+          3. CÓMO FUNCIONA
       ══════════════════════════════════════════════════ */}
       <section className="bg-white">
         <div className="flex flex-col lg:flex-row min-h-[360px]">
 
           {/* Panel izquierdo — pasos */}
-          <div className="bg-blue-50 lg:w-72 xl:w-80 shrink-0 flex flex-col justify-center px-10 py-12">
-            <p className="text-xs font-bold uppercase tracking-widest text-gartify-orange mb-6">
+          <div className="bg-gartify-blue lg:w-72 xl:w-80 shrink-0 flex flex-col justify-center px-10 py-12">
+            <p className="text-xs font-bold uppercase tracking-widest text-orange-300 mb-6">
               Simple y rápido
             </p>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-gartify-blue mb-10 leading-snug">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-10 leading-snug">
               Cómo<br />funciona
             </h2>
             <ol className="space-y-6">
@@ -187,8 +280,8 @@ export default function HomePage() {
                     {n}
                   </span>
                   <div>
-                    <p className="text-gartify-dark font-bold text-sm leading-tight">{label}</p>
-                    <p className="text-gartify-gray text-xs mt-0.5 leading-snug">{desc}</p>
+                    <p className="text-white font-bold text-sm leading-tight">{label}</p>
+                    <p className="text-blue-200 text-xs mt-0.5 leading-snug">{desc}</p>
                   </div>
                 </li>
               ))}
@@ -276,97 +369,6 @@ export default function HomePage() {
               </div>
             );
           })()}
-
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════
-          3. PAS — CONDUCTOR
-      ══════════════════════════════════════════════════ */}
-      <section className="py-20 bg-white">
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 max-w-5xl mx-auto">
-
-          {/* Encabezado */}
-          <div className="text-center mb-14">
-            <SectionLabel>Para conductores</SectionLabel>
-            <h2 className="text-2xl md:text-4xl font-extrabold text-gartify-dark mb-4 leading-tight">
-              ¿Llevas meses aplazando la revisión<br className="hidden md:block" /> porque no sabes a quién fiarte?
-            </h2>
-            <p className="text-gartify-gray max-w-xl mx-auto text-base leading-relaxed">
-              No eres el único. Encontrar un taller de confianza sigue siendo innecesariamente complicado.
-            </p>
-          </div>
-
-          {/* AGITACIÓN + SOLUCIÓN en dos columnas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 mb-12 overflow-hidden border border-slate-200 shadow-sm">
-
-            {/* Columna izquierda — Problema */}
-            <div className="bg-slate-50 p-8 border-b md:border-b-0 md:border-r border-slate-200">
-              <div className="flex items-center gap-2.5 mb-7">
-                <div className="flex h-8 w-8 items-center justify-center bg-red-100 shrink-0">
-                  <AlertTriangle className="h-4 w-4 text-red-500" />
-                </div>
-                <p className="text-xs font-bold uppercase tracking-widest text-red-500">Sin Gartify</p>
-              </div>
-              <ul className="space-y-5">
-                {([
-                  { icon: Phone,    text: "Llamas a tres talleres y ninguno te da un precio claro" },
-                  { icon: Star,     text: "No sabes si las reseñas de Google son reales o compradas" },
-                  { icon: Banknote, text: "Acabas pagando más de lo esperado sin entender por qué" },
-                  { icon: Clock,    text: "Pierdes medio día gestionando algo que debería durar minutos" },
-                ] as { icon: React.ElementType; text: string }[]).map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-3.5">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white border border-slate-200 shadow-sm">
-                      <Icon className="h-4 w-4 text-red-400" aria-hidden="true" />
-                    </div>
-                    <div className="pt-1.5">
-                      <p className="text-sm text-gartify-gray leading-snug">{text}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Columna derecha — Solución */}
-            <div className="bg-gartify-blue p-8 text-white">
-              <div className="flex items-center gap-2.5 mb-7">
-                <div className="flex h-8 w-8 items-center justify-center bg-gartify-orange/20 shrink-0">
-                  <CheckCircle2 className="h-4 w-4 text-gartify-orange" />
-                </div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gartify-orange">Con Gartify</p>
-              </div>
-              <ul className="space-y-5">
-                {([
-                  { icon: BadgeCheck,   text: "Talleres verificados con reseñas de conductores reales" },
-                  { icon: Eye,          text: "Precios visibles antes de reservar, sin letra pequeña" },
-                  { icon: Smartphone,   text: "Reserva en 2 minutos desde el móvil, sin llamadas" },
-                  { icon: ClipboardList,text: "Historial de revisiones de tu coche siempre disponible" },
-                ] as { icon: React.ElementType; text: string }[]).map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-start gap-3.5">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white/10 border border-white/20">
-                      <Icon className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
-                    </div>
-                    <div className="pt-1.5">
-                      <p className="text-sm text-blue-100 leading-snug">{text}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* CTA central */}
-          <div className="text-center">
-            <p className="text-gartify-gray text-sm mb-5">
-              Más de <strong className="text-gartify-dark">500 talleres verificados</strong> te esperan. Gratis para conductores.
-            </p>
-            <Link href="/talleres">
-              <Button size="lg" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold px-10 text-base shadow-md">
-                Buscar mi taller ahora
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
 
         </div>
       </section>
