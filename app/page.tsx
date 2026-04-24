@@ -253,7 +253,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <SectionDivider />
 
       {/* ══════════════════════════════════════════════════
           3. CÓMO FUNCIONA
@@ -373,7 +372,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <SectionDivider />
 
       {/* ══════════════════════════════════════════════════
           6. SOCIAL PROOF
