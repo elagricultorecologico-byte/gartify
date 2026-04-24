@@ -115,17 +115,6 @@ export function Navbar() {
           <Image src="/logo.png" alt="Gartify" width={200} height={56} className="h-12 w-auto object-contain" priority />
         </Link>
 
-        {/* Desktop nav */}
-        {!session && (
-          <nav className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide uppercase">
-            <Link href="/como-funciona" className="text-white/80 hover:text-white transition-colors">
-              Cómo funciona
-            </Link>
-            <Link href="/para-talleres" className="text-white/80 hover:text-white transition-colors">
-              Para talleres
-            </Link>
-          </nav>
-        )}
 
         {/* Auth */}
         <div className="hidden md:flex items-center gap-2">
@@ -257,12 +246,6 @@ export function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-white/10 bg-gartify-blue px-4 py-4 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
-          {!session && (
-            <>
-              <Link href="/como-funciona" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Cómo funciona</Link>
-              <Link href="/para-talleres" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Para talleres</Link>
-            </>
-          )}
           {session ? (
             <>
               <div className="flex items-center gap-2 pb-2 border-b border-white/10">
