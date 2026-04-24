@@ -374,47 +374,6 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ══════════════════════════════════════════════════
-          4. SERVICIOS POPULARES
-      ══════════════════════════════════════════════════ */}
-      <section className="py-16 bg-white">
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
-          <div className="text-center mb-10">
-            <SectionLabel>Servicios más reservados</SectionLabel>
-            <h2 className="text-2xl md:text-3xl font-bold text-gartify-dark">
-              ¿Qué necesitas para tu coche?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-            {POPULAR_SERVICES.slice(0, 8).map(({ type, label, icon: Icon, color }) => (
-              <Link
-                key={type}
-                href={`/talleres?servicio=${type}`}
-                className="group flex flex-col sm:flex-row items-center gap-2 sm:gap-3 border border-slate-200 bg-slate-50 hover:bg-gartify-blue/5 hover:border-gartify-blue/30 transition-all duration-200 p-3 sm:px-4 sm:py-3 text-center sm:text-left"
-              >
-                <div className="flex h-9 w-9 sm:h-8 sm:w-8 shrink-0 items-center justify-center bg-white shadow-sm">
-                  <Icon className={`h-5 w-5 ${color}`} />
-                </div>
-                <span className="font-semibold text-xs sm:text-sm text-gartify-dark leading-tight">{label}</span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-8 text-center">
-            <Link href="/talleres">
-              <Button variant="outline" className="border-gartify-hero text-gartify-hero hover:bg-gartify-hero hover:text-white transition-colors">
-                Ver todos los servicios
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-
-      <SectionDivider />
-
-      {/* ══════════════════════════════════════════════════
           6. SOCIAL PROOF
       ══════════════════════════════════════════════════ */}
       <section className="py-16 bg-white">
