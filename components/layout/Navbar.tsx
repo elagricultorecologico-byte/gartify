@@ -85,7 +85,7 @@ export function Navbar() {
       {/* ── Top bar ── */}
       <div className="hidden md:block bg-blue-700 border-b border-white/10">
         <div className="container flex items-center justify-end gap-6 h-8 text-xs">
-          <Link href="/registro/taller" className="flex items-center gap-1.5 text-blue-100 hover:text-white transition-colors font-medium">
+          <Link href="/para-talleres" className="flex items-center gap-1.5 text-blue-100 hover:text-white transition-colors font-medium">
             <Wrench className="h-3.5 w-3.5" />
             Soy taller
           </Link>
