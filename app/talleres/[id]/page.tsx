@@ -134,7 +134,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
         </nav>
 
         {/* Header card — full width */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col sm:flex-row mb-8">
+        <div className="bg-white border border-gray-200 shadow-sm overflow-hidden flex flex-col sm:flex-row mb-8">
           {/* Avatar strip */}
           <div className="sm:w-48 shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[120px] sm:min-h-0">
             {garage.logo ? (
@@ -147,7 +147,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
               />
             ) : (
               <div className="flex flex-col items-center gap-3 p-6 text-center">
-                <div className="h-16 w-16 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner">
+                <div className="h-16 w-16 bg-white/20 border border-white/30 flex items-center justify-center shadow-inner">
                   <span className="text-2xl font-bold text-white tracking-tight">{initials}</span>
                 </div>
                 <p className="text-xs text-white/70 font-medium uppercase tracking-widest">
@@ -165,7 +165,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <h1 className="text-2xl font-bold text-gartify-blue">{garage.name}</h1>
                   {garage.isVerified && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-gartify-blue/10 text-gartify-blue border border-gartify-blue/20 text-xs font-semibold px-2 py-0.5">
+                    <span className="inline-flex items-center gap-1 bg-gartify-blue/10 text-gartify-blue border border-gartify-blue/20 text-xs font-semibold px-2 py-0.5">
                       <ShieldCheck className="h-3 w-3" />
                       Verificado
                     </span>
@@ -240,7 +240,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                 {garage.services.map((service) => (
                   <div
                     key={service.id}
-                    className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-mid/40 transition-all overflow-hidden flex flex-col"
+                    className="bg-white border border-gray-200 shadow-sm hover:shadow-md hover:border-gartify-mid/40 transition-all overflow-hidden flex flex-col"
                   >
                     {/* Top accent bar */}
                     <div className="h-1 w-full bg-gradient-to-r from-gartify-hero to-gartify-mid" />
@@ -248,7 +248,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                     <div className="p-4 flex flex-col gap-3 flex-1">
                       {/* Badge + duration */}
                       <div className="flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
+                        <span className="inline-flex items-center bg-blue-50 text-gartify-hero text-xs px-2.5 py-0.5 font-medium border border-blue-100">
                           {SERVICE_LABELS[service.type] ?? service.type}
                         </span>
                         <span className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
@@ -297,7 +297,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
               <h2 className="text-xl font-bold text-gartify-blue mb-4">Valoraciones</h2>
 
               {garage.reviews.length === 0 ? (
-                <div className="bg-white rounded-xl border border-dashed border-gray-200 p-8 text-center">
+                <div className="bg-white border border-dashed border-gray-200 p-8 text-center">
                   <Star className="h-8 w-8 mx-auto mb-3 text-gray-300" />
                   <p className="font-semibold text-gartify-blue text-sm">Aún no hay valoraciones</p>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -307,7 +307,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
               ) : (
                 <>
                   {/* Summary + distribution */}
-                  <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 mb-4">
+                  <div className="bg-white border border-gray-200 shadow-sm p-5 mb-4">
                     <div className="flex flex-col sm:flex-row items-start gap-6">
                       {/* Big score */}
                       <div className="text-center shrink-0 sm:w-28">
@@ -321,7 +321,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                           {garage.reviewCount} {garage.reviewCount === 1 ? "valoración" : "valoraciones"}
                         </p>
                         {garage.rating >= 4.5 && (
-                          <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gartify-green bg-gartify-green/10 rounded-full px-2.5 py-1">
+                          <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gartify-green bg-gartify-green/10 px-2.5 py-1">
                             <ShieldCheck className="h-3 w-3" />
                             Top taller
                           </div>
@@ -356,10 +356,10 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                     {garage.reviews.map((review) => (
                       <div
                         key={review.id}
-                        className="bg-white rounded-xl border border-gray-200 shadow-sm p-4"
+                        className="bg-white border border-gray-200 shadow-sm p-4"
                       >
                         <div className="flex items-start gap-3">
-                          <div className="h-9 w-9 rounded-full bg-gartify-hero/10 flex items-center justify-center shrink-0">
+                          <div className="h-9 w-9 bg-gartify-hero/10 flex items-center justify-center shrink-0">
                             <span className="text-xs font-bold text-gartify-hero">
                               {(review.user.name ?? "U")[0].toUpperCase()}
                             </span>
@@ -374,7 +374,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                                 {formatDate(review.createdAt)}
                               </span>
                             </div>
-                            <span className="inline-flex items-center rounded-full bg-blue-50 text-gartify-hero text-xs px-2 py-0.5 font-medium border border-blue-100 mb-1.5">
+                            <span className="inline-flex items-center bg-blue-50 text-gartify-hero text-xs px-2 py-0.5 font-medium border border-blue-100 mb-1.5">
                               {review.booking.service ? (SERVICE_LABELS[review.booking.service.type] ?? review.booking.service.name) : "—"}
                             </span>
                             {review.comment && (
@@ -396,10 +396,15 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
           <aside className="hidden lg:block">
             <div className="sticky top-24 space-y-4">
               {/* Reserve card */}
-              <div className="bg-white rounded-xl border border-gartify-blue/20 shadow-md overflow-hidden">
-                <div className="bg-gradient-to-r from-gartify-hero to-gartify-mid p-4">
-                  <p className="text-white font-bold text-sm">Reserva en 2 minutos</p>
-                  <p className="text-white/70 text-xs mt-0.5">Sin esperas. Confirmación inmediata.</p>
+              <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+                <div className="bg-gray-50 border-b border-gray-200 px-5 py-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20">
+                    <CalendarCheck className="h-5 w-5 text-gartify-blue" />
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-gartify-blue">Reserva en 2 minutos</p>
+                    <p className="text-xs text-gartify-gray mt-0.5">Sin esperas. Confirmación inmediata.</p>
+                  </div>
                 </div>
                 <div className="p-4 space-y-3">
                   <div className="flex items-center gap-2">
@@ -426,7 +431,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                   </Link>
                   <a
                     href={`tel:${formatPhone(garage.phone)}`}
-                    className="flex items-center justify-center gap-2 w-full h-10 rounded-lg border border-gartify-mid/30 text-gartify-mid hover:bg-gartify-mid/5 transition-colors text-sm font-medium"
+                    className="flex items-center justify-center gap-2 w-full h-10 border border-gartify-mid/30 text-gartify-mid hover:bg-gartify-mid/5 transition-colors text-sm font-medium"
                   >
                     <Phone className="h-4 w-4" />
                     {formatPhone(garage.phone)}
@@ -435,7 +440,14 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
               </div>
 
               {/* Guarantees card */}
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 space-y-2.5">
+              <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+                <div className="bg-gray-50 border-b border-gray-200 px-5 py-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-gartify-blue/10 border border-gartify-blue/20">
+                    <ShieldCheck className="h-5 w-5 text-gartify-blue" />
+                  </div>
+                  <p className="text-base font-bold text-gartify-blue">Garantías Gartify</p>
+                </div>
+                <div className="px-5 py-4 space-y-2.5">
                 {[
                   { icon: ShieldCheck, text: "Taller verificado por Gartify" },
                   { icon: Clock, text: "Confirmación en menos de 1h" },
@@ -449,6 +461,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
                     {text}
                   </div>
                 ))}
+                </div>
               </div>
             </div>
           </aside>

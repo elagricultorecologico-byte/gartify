@@ -94,7 +94,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden min-h-[560px] md:min-h-[640px] flex items-center bg-gartify-dark">
         {/* Imagen de fondo full-width */}
         <Image
-          src="/portada-hero.jpeg"
+          src="/portada-hero.jpeg?v=2"
           alt="Taller mecánico profesional"
           fill
           className="object-cover object-center"
@@ -163,7 +163,125 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          2. PAS — CONDUCTOR
+          2. CÓMO FUNCIONA
+      ══════════════════════════════════════════════════ */}
+      <section className="bg-white">
+        <div className="flex flex-col lg:flex-row min-h-[360px]">
+
+          {/* Panel izquierdo — pasos */}
+          <div className="bg-blue-50 lg:w-72 xl:w-80 shrink-0 flex flex-col justify-center px-10 py-12">
+            <p className="text-xs font-bold uppercase tracking-widest text-gartify-orange mb-6">
+              Simple y rápido
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gartify-blue mb-10 leading-snug">
+              Cómo<br />funciona
+            </h2>
+            <ol className="space-y-6">
+              {[
+                { n: "1", label: "Busca",   desc: "Servicio, ciudad y tipo de vehículo" },
+                { n: "2", label: "Compara", desc: "Precios reales y reseñas verificadas" },
+                { n: "3", label: "Reserva", desc: "Confirma en segundos, sin llamadas" },
+              ].map(({ n, label, desc }) => (
+                <li key={n} className="flex items-start gap-4">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-gartify-orange text-white text-sm font-extrabold">
+                    {n}
+                  </span>
+                  <div>
+                    <p className="text-gartify-dark font-bold text-sm leading-tight">{label}</p>
+                    <p className="text-gartify-gray text-xs mt-0.5 leading-snug">{desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <Link href="/talleres" className="mt-10 inline-flex items-center gap-2 bg-gartify-orange hover:bg-orange-600 transition-colors text-white text-sm font-bold px-5 py-3 self-start">
+              Buscar taller
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* Panel derecho — cards de servicios */}
+          {(() => {
+            const HOW_IMAGES: Record<string, string> = {
+              ITV: "/how/itv.jpeg",
+              REVISION: "/how/revision.jpeg",
+              CAMBIO_ACEITE: "/how/aceite.jpeg",
+              FRENOS: "/how/frenos.jpeg",
+              NEUMATICOS: "/how/neumaticos.jpeg",
+              DIAGNOSTICO: "/how/diagnostico.jpeg",
+              CLIMATIZACION: "/how/climatizacion.jpeg",
+              ELECTRICIDAD: "/how/electricidad.jpeg",
+            };
+            return (
+              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr border-l border-t border-slate-100">
+                {POPULAR_SERVICES.slice(0, 8).map(({ type, label, icon: Icon, color, desc }) => {
+                  const img = HOW_IMAGES[type];
+                  return (
+                    <Link
+                      key={type}
+                      href={`/talleres?servicio=${type}`}
+                      className="group relative flex flex-col h-full min-h-[160px] overflow-hidden border-b border-r border-slate-100"
+                      aria-label={`Ver talleres de ${label}`}
+                    >
+                      {img ? (
+                        /* ── Card con fotografía ── */
+                        <>
+                          <Image
+                            src={img}
+                            alt=""
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                          {/* Overlay permanente */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                          {/* Texto sobre imagen */}
+                          <div className="absolute inset-x-0 bottom-0 p-3">
+                            <div className="mb-1.5 inline-flex items-center gap-1.5 bg-white/90 border border-white/60 px-2 py-0.5">
+                              <Icon className="h-3 w-3 text-gartify-blue" aria-hidden="true" />
+                              <span className="text-[10px] font-bold uppercase tracking-wide text-gartify-blue">{label}</span>
+                            </div>
+                            <p className="text-white text-xs leading-snug line-clamp-2 drop-shadow">{desc}</p>
+                          </div>
+                          {/* Hover CTA */}
+                          <div className="absolute inset-0 flex items-center justify-center bg-gartify-blue/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span className="flex items-center gap-1.5 text-sm font-bold text-white">
+                              Ver talleres <ChevronRight className="h-4 w-4" />
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        /* ── Card sin imagen: icono + texto ── */
+                        <>
+                          <div className="absolute inset-0 bg-slate-50 flex items-center justify-center">
+                            <Icon className={`h-24 w-24 opacity-[0.06] ${color}`} aria-hidden="true" />
+                          </div>
+                          <div className="absolute inset-x-0 bottom-0 p-3">
+                            <div className="mb-1.5 inline-flex items-center gap-1.5 bg-white border border-slate-200 px-2 py-0.5">
+                              <Icon className={`h-3 w-3 ${color}`} aria-hidden="true" />
+                              <span className={`text-[10px] font-bold uppercase tracking-wide ${color}`}>{label}</span>
+                            </div>
+                            <p className="text-gartify-gray text-xs leading-snug line-clamp-2">{desc}</p>
+                          </div>
+                          {/* Hover CTA */}
+                          <div className="absolute inset-0 flex items-center justify-center bg-gartify-blue/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span className="flex items-center gap-1.5 text-sm font-bold text-white">
+                              Ver talleres <ChevronRight className="h-4 w-4" />
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            );
+          })()}
+
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          3. PAS — CONDUCTOR
       ══════════════════════════════════════════════════ */}
       <section className="py-20 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24 max-w-5xl mx-auto">
@@ -256,7 +374,7 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ══════════════════════════════════════════════════
-          3. SERVICIOS POPULARES
+          4. SERVICIOS POPULARES
       ══════════════════════════════════════════════════ */}
       <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">
@@ -297,7 +415,7 @@ export default function HomePage() {
       <SectionDivider />
 
       {/* ══════════════════════════════════════════════════
-          5. SOCIAL PROOF
+          6. SOCIAL PROOF
       ══════════════════════════════════════════════════ */}
       <section className="py-16 bg-white">
         <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-24">

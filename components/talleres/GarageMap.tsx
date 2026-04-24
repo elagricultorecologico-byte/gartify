@@ -7,25 +7,25 @@ import { X, Star, MapPin, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-function createMarkerIcon(rating: number, selected: boolean): L.DivIcon {
-  const bg    = selected ? "#1e40af" : "#FF5722";
-  const shadow = selected
-    ? "0 2px 10px rgba(30,64,175,0.5)"
-    : "0 2px 6px rgba(0,0,0,0.35)";
-  const scale = selected ? "scale(1.1)" : "scale(1)";
+function createMarkerIcon(_rating: number, selected: boolean): L.DivIcon {
+  const border  = selected ? "#FF5722" : "white";
+  const shadow  = selected
+    ? "0 3px 12px rgba(255,87,34,0.55)"
+    : "0 2px 8px rgba(0,0,0,0.30)";
+  const scale   = selected ? "scale(1.2)" : "scale(1)";
+  const size    = 38;
   const html = `
-    <div style="display:inline-flex;flex-direction:column;align-items:center;transform:${scale};transform-origin:bottom center;">
-      <div style="background:${bg};color:white;padding:3px 7px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:${shadow};display:flex;align-items:center;gap:3px;line-height:1.4;">
-        <span style="color:#FFD700;font-size:13px;line-height:1;">★</span>
-        ${rating.toFixed(1)}
+    <div style="display:inline-flex;flex-direction:column;align-items:center;transform:${scale};transform-origin:bottom center;transition:transform 0.15s;">
+      <div style="width:${size}px;height:${size}px;border-radius:50%;background:#1A3562;border:2.5px solid ${border};box-shadow:${shadow};overflow:hidden;display:flex;align-items:center;justify-content:center;">
+        <img src="/globo.png" width="${size - 6}" height="${size - 6}" style="display:block;object-fit:contain;" />
       </div>
-      <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid ${bg};"></div>
+      <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid ${border};margin-top:-1px;"></div>
     </div>`;
   return L.divIcon({
     className: "",
     html,
-    iconSize:   [48, 34],
-    iconAnchor: [24, 34],
+    iconSize:   [size, size + 8],
+    iconAnchor: [size / 2, size + 8],
   });
 }
 
