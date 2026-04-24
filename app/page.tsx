@@ -59,19 +59,6 @@ const TESTIMONIALS = [
 
 // ─── Componentes auxiliares ───────────────────────────────────────────────────
 
-function SectionDivider() {
-  return (
-    <div className="flex items-center justify-center gap-3 py-2">
-      <span className="h-px flex-1 max-w-xs bg-gradient-to-r from-transparent to-slate-200" />
-      <span className="flex gap-1">
-        <span className="h-1.5 w-1.5 rounded-full bg-gartify-orange/40" />
-        <span className="h-1.5 w-1.5 rounded-full bg-gartify-orange" />
-        <span className="h-1.5 w-1.5 rounded-full bg-gartify-orange/40" />
-      </span>
-      <span className="h-px flex-1 max-w-xs bg-gradient-to-l from-transparent to-slate-200" />
-    </div>
-  );
-}
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
