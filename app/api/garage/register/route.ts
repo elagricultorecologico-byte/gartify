@@ -212,7 +212,7 @@ export async function POST(req: Request) {
             description:  data.description,
             address:      data.address,
             city:         data.city,
-            province:     data.province,
+            ...({ province: data.province } as never),
             postalCode:   data.postalCode,
             phone:        data.phone,
             email:        data.email,
