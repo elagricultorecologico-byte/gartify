@@ -259,7 +259,7 @@ export function GarageFilters() {
             const next = new Set(selected);
             if (next.has(val)) next.delete(val); else next.add(val);
             const params = new URLSearchParams(sp.toString());
-            if (next.size > 0) params.set("categoria", [...next].join(","));
+            if (next.size > 0) params.set("categoria", Array.from(next).join(","));
             else params.delete("categoria");
             router.push(`/talleres?${params.toString()}`);
           }
