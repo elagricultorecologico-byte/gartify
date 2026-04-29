@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
+import { usePostalCodeLookup } from "@/lib/hooks/usePostalCodeLookup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,10 @@ export function RegistroTallerForm() {
   const [acceptComercial, setAcceptComercial] = useState(false);
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [community, setCommunity] = useState("");
+  const { lookup, loading: cpLoading } = usePostalCodeLookup();
 
   function addBrand(brand: string) {
     const b = brand.trim();
@@ -45,14 +50,14 @@ export function RegistroTallerForm() {
     const password = (fd.get("password") as string) ?? "";
     const garageName = (fd.get("garageName") as string ?? "").trim();
     const address = (fd.get("address") as string ?? "").trim();
-    const city = (fd.get("city") as string ?? "").trim();
     const postalCode = (fd.get("postalCode") as string ?? "").trim();
 
     if (!ownerName) return setError("El nombre del responsable es obligatorio");
     if (!garageName) return setError("El nombre del taller es obligatorio");
     if (!address) return setError("La dirección es obligatoria");
-    if (!city) return setError("La ciudad es obligatoria");
     if (!postalCode || !/^\d{5}$/.test(postalCode)) return setError("Introduce un código postal válido (5 dígitos)");
+    if (!city) return setError("La población es obligatoria");
+    if (!province) return setError("La provincia es obligatoria");
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Introduce un email válido");
     if (password.length < 6) return setError("La contraseña debe tener al menos 6 caracteres");
     if (!phone || !isValidPhoneNumber(phone)) return setError("Introduce un teléfono móvil válido");
@@ -65,7 +70,7 @@ export function RegistroTallerForm() {
       ownerName, email, password,
       phone,
       whatsappOptIn,
-      garageName, address, city, postalCode,
+      garageName, address, city, province, postalCode,
       description: fd.get("description"),
       vehicleTypes,
       ...(laborRateRaw && { laborRate: parseFloat(laborRateRaw) }),
@@ -150,21 +155,52 @@ export function RegistroTallerForm() {
                     <Label htmlFor="garageName" className="text-xs font-semibold text-gartify-blue">Nombre del taller</Label>
                     <Input id="garageName" name="garageName" placeholder="Taller Martínez Auto" required />
                   </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="col-span-2 space-y-1.5">
-                      <Label htmlFor="address" className="text-xs font-semibold text-gartify-blue flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />Dirección
-                      </Label>
-                      <Input id="address" name="address" placeholder="Calle Alcalá, 142" autoComplete="street-address" required />
+                  <div className="space-y-1.5">
+                    <Label htmlFor="address" className="text-xs font-semibold text-gartify-blue">Dirección</Label>
+                    <Input id="address" name="address" placeholder="Calle Alcalá, 142" autoComplete="street-address" required />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="postalCode" className="text-xs font-semibold text-gartify-blue">Código postal</Label>
+                      <Input
+                        id="postalCode" name="postalCode" placeholder="28009" maxLength={5}
+                        autoComplete="postal-code" required
+                        onChange={async (e) => {
+                          const cp = e.target.value;
+                          if (/^\d{5}$/.test(cp)) {
+                            const result = await lookup(cp);
+                            if (result) { setCity(result.city); setProvince(result.province); setCommunity(result.community); }
+                          }
+                        }}
+                      />
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="postalCode" className="text-xs font-semibold text-gartify-blue">C.P.</Label>
-                      <Input id="postalCode" name="postalCode" placeholder="28009" autoComplete="postal-code" required maxLength={5} />
+                      <Label htmlFor="city" className="text-xs font-semibold text-gartify-blue flex items-center gap-1.5">
+                        Población {cpLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                      </Label>
+                      <Input
+                        id="city" placeholder="Madrid" value={city}
+                        onChange={e => setCity(e.target.value)}
+                      />
                     </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="city" className="text-xs font-semibold text-gartify-blue">Ciudad</Label>
-                    <Input id="city" name="city" placeholder="Madrid" autoComplete="address-level2" required />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="province" className="text-xs font-semibold text-gartify-blue">Provincia</Label>
+                      <Input
+                        id="province" value={province} readOnly
+                        placeholder="—"
+                        className="h-9 text-sm bg-gray-50 text-gartify-gray cursor-default"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold text-gartify-blue">Comunidad autónoma</Label>
+                      <Input
+                        value={community} readOnly
+                        placeholder="—"
+                        className="h-9 text-sm bg-gray-50 text-gartify-gray cursor-default"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="description" className="text-xs font-semibold text-gartify-blue">

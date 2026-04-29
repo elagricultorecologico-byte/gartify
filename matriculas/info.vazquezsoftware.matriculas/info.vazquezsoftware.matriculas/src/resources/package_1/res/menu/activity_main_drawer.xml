@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+  <group>
+    <item android:icon="@drawable/baseline_premium_24"
+          android:id="@id/nav_premium"
+          android:visible="true"
+          android:title="@string/eliminar_anuncios" />
+  </group>
+  <group>
+    <item android:icon="@drawable/ic_info_outline_black_24dp"
+          android:id="@id/nav_distintivos"
+          android:title="@string/distintivos" />
+  </group>
+  <item android:title="@string/matriculas">
+    <menu>
+      <item android:icon="@0x7f0800be"
+            android:id="@id/nav_guardadas"
+            android:title="@string/matriculasGuardadas" />
+      <item android:icon="@drawable/ic_exportar_excel_black_24dp"
+            android:id="@id/nav_exportar_excel"
+            android:title="@string/exportarExcel" />
+    </menu>
+  </item>
+  <item android:title="@string/vazquezSoftware">
+    <menu>
+      <item android:icon="@drawable/ic_money_24"
+            android:id="@id/nav_app_gasolineras"
+            android:title="@string/app_gasolineras" />
+      <item android:icon="@drawable/ic_more_apps_24dp"
+            android:id="@id/nav_mas_apps"
+            android:title="@string/masApps" />
+      <item android:icon="@drawable/ic_baseline_lock_24"
+            android:id="@id/nav_privacy_policy"
+            android:title="@string/privacy_policy" />
+      <item android:icon="@drawable/ic_info_outline_black_24dp"
+            android:id="@id/nav_aviso_legal"
+            android:title="@string/aviso_legal" />
+    </menu>
+  </item>
+  <item android:title="@string/webs_interes">
+    <menu>
+      <item android:icon="@drawable/ic_carreteras_24dp"
+            android:id="@id/nav_estado_carreteras"
+            android:title="@string/estado_carreteras" />
+    </menu>
+  </item>
+</menu>

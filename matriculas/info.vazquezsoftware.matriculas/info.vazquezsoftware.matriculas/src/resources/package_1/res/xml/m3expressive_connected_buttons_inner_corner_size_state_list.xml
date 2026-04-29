@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:matriculas="http://schemas.android.com/apk/res-auto">
+  <item android:state_checkable="true"
+        android:state_pressed="true"
+        matriculas:cornerSize="?attr/shapeCornerSizeExtraSmall" />
+  <item android:state_checked="true"
+        matriculas:cornerSize="50.0%" />
+  <item matriculas:cornerSize="?attr/shapeCornerSizeSmall" />
+</selector>

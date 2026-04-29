@@ -1,12 +1,12 @@
 "use client";
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { Clock, Lock, ToggleLeft, ToggleRight, Trash2, Check, X, ChevronLeft, ChevronRight, Wrench, Plus, List } from "lucide-react";
+import { Clock, Lock, ToggleLeft, ToggleRight, Trash2, Check, X, ChevronLeft, ChevronRight, Wrench, Plus, List, BookOpen } from "lucide-react";
 import { ServiceForm } from "@/components/cuenta/ServiceForm";
+import { ServiceCatalogModal } from "@/components/cuenta/ServiceCatalogModal";
 import { SERVICE_LABELS, VEHICLE_ICONS, VEHICLE_LABELS, VEHICLE_TYPES, type VehicleType } from "@/lib/utils";
 
 const ANCHOR_TYPES = new Set(["REVISION", "PRE_ITV", "CLIMATIZACION"]);
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 10;
 
 type ServiceItem = {
   id:           string;
@@ -147,9 +147,9 @@ function ServiceRow({ s, onUpdated, onToggle, onDelete }: {
 // ── Componente principal ──────────────────────────────────────────────────────
 
 export function ServiciosManager({ garageId, initialServices }: { garageId: string; initialServices: ServiceItem[] }) {
-  const router = useRouter();
   const [services, setServices] = useState<ServiceItem[]>(initialServices);
   const [page, setPage] = useState(0);
+  const [catalogoAbierto, setCatalogoAbierto] = useState(false);
 
   // Lista unificada: primero activos, luego inactivos; dentro de cada grupo primero anchors
   const sorted = [
@@ -184,9 +184,18 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
     await fetch(`/api/garage/services/${id}`, { method: "DELETE" });
   }
 
-  function handleAdded() { router.refresh(); }
+  function handleAdded(newService: ServiceItem) {
+    setServices(prev => [...prev, newService]);
+  }
+
+  function handleCatalogoSuccess(created: ServiceItem[]) {
+    setServices(prev => [...prev, ...created]);
+  }
 
   const rowProps = { onUpdated: handleUpdated, onToggle: handleToggle, onDelete: handleDelete };
+
+  // Nombres de servicios ya dados de alta para marcarlos como "Ya añadido" en el modal
+  const nombresExistentes = services.map((s) => s.name ?? "").filter(Boolean);
 
   // Tab para móvil
   const [mobileTab, setMobileTab] = useState<"lista" | "añadir">("lista");
@@ -240,9 +249,18 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
 
   const Formulario = (
     <div className="bg-white border border-gray-200 p-4">
+      {/* Botón "Importar del catálogo" en el panel lateral */}
+      <button
+        onClick={() => setCatalogoAbierto(true)}
+        className="w-full flex items-center justify-center gap-2 py-2 mb-4 border border-gartify-blue/30 bg-gartify-blue/5 text-gartify-blue text-sm font-semibold hover:bg-gartify-blue/10 transition-colors"
+      >
+        <BookOpen className="h-4 w-4" />
+        Importar del catálogo
+      </button>
+
       <h2 className="font-bold text-gartify-blue mb-3 text-sm flex items-center gap-2">
         <Wrench className="h-4 w-4 text-gartify-orange" />
-        Añadir servicio
+        Añadir servicio manual
       </h2>
       <ServiceForm garageId={garageId} onAdded={handleAdded} />
     </div>
@@ -265,6 +283,14 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
           >
             <Plus className="h-4 w-4" />Añadir
           </button>
+          {/* Botón catálogo en móvil como tab adicional */}
+          <button
+            onClick={() => setCatalogoAbierto(true)}
+            className="flex items-center justify-center gap-1.5 px-3 py-2 border text-sm font-semibold transition-colors bg-white text-gartify-gray border-gray-200 hover:border-gartify-blue hover:text-gartify-blue"
+            aria-label="Importar del catálogo"
+          >
+            <BookOpen className="h-4 w-4" />
+          </button>
         </div>
         {mobileTab === "lista" ? Lista : Formulario}
       </div>
@@ -274,6 +300,15 @@ export function ServiciosManager({ garageId, initialServices }: { garageId: stri
         <div className="overflow-y-auto">{Formulario}</div>
         {Lista}
       </div>
+
+      {/* ── Modal del catálogo (compartido móvil/desktop) ── */}
+      <ServiceCatalogModal
+        garageId={garageId}
+        existingNames={nombresExistentes}
+        open={catalogoAbierto}
+        onOpenChange={setCatalogoAbierto}
+        onSuccess={handleCatalogoSuccess}
+      />
     </>
   );
 }

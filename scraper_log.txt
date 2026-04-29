@@ -1,0 +1,29 @@
+
+==================================================
+Procesando: NISSAN
+==================================================
+  -> 17 modelos encontrados
+
+  Modelo: Recambios para Nissan Almera
+     -> 5 variantes
+     Variante: Nissan Almera I N15 -> 6 motores
+     Variante: Nissan Almera CLASSIC B10RS -> 1 motores
+     Variante: Nissan Almera TINO V10 -> 3 motores
+     Variante: Nissan Almera II N16 -> 7 motores
+     Variante: Repuestos Nissan Almera II N16 -> 5 motores
+
+  Modelo: Recambios para Nissan Cabstar
+     -> 1 variantes
+     Variante: — -> 8 motores
+
+  Modelo: Recambios para Nissan Juke
+     -> 2 variantes
+     Variante: Nissan JUKE NMUK F15E -> 8 motores
+     Variante: Repuestos Nissan JUKE JPN F15 -> 11 motores
+
+  Modelo: Recambios para Nissan Micra
+     -> 4 variantes
+     Variante: Nissan Micra K11 -> 4 motores
+     Variante: Nissan Micra K14 -> 7 motores
+     Variante: Nissan Micra C+C CK12E -> 2 motores
+     Variante: Repuestos Nissan Micra K12

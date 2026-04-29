@@ -135,14 +135,16 @@ async function main() {
   // Garage 1
   const garage1 = await prisma.garage.upsert({
     where: { ownerId: owner1.id },
-    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]), phone: "+34643703220" },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]), phone: "+34643703220", categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "DIAGNOSTICO_ELECTRONICO"]), province: "Madrid" },
     create: {
       name: "Taller Martínez Auto",
       plan: "STARTER",
       vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "DIAGNOSTICO_ELECTRONICO"]),
       description: "Taller mecánico con más de 20 años de experiencia en Madrid. Especialistas en ITV, revisiones y reparaciones de todo tipo de vehículos.",
       address: "Calle Alcalá, 142",
       city: "Madrid",
+      province: "Madrid",
       postalCode: "28009",
       phone: "+34643703220",
       email: "info@tallerMartinez.es",
@@ -169,14 +171,16 @@ async function main() {
   // Garage 2
   const garage2 = await prisma.garage.upsert({
     where: { ownerId: owner2.id },
-    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]), phone: "687549904" },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]), phone: "687549904", categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "CLIMATIZACION_AC", "ELECTRICIDAD_AUTO"]), province: "Madrid" },
     create: {
       name: "AutoService López",
       plan: "STARTER",
       vehicleTypes: JSON.stringify(["COCHE", "FURGONETA", "AUTOCARAVANA"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "CLIMATIZACION_AC", "ELECTRICIDAD_AUTO"]),
       description: "Centro de mantenimiento y reparación oficial. Trabajamos con todas las marcas. Presupuesto gratuito sin compromiso.",
       address: "Paseo de la Castellana, 89",
       city: "Madrid",
+      province: "Madrid",
       postalCode: "28046",
       phone: "687549904",
       email: "autoservice@lopez.es",
@@ -205,14 +209,16 @@ async function main() {
   // Garage 3
   const garage3 = await prisma.garage.upsert({
     where: { ownerId: owner3.id },
-    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]) },
+    update: { plan: "STARTER", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]), categories: JSON.stringify(["MECANICA_GENERAL", "DIAGNOSTICO_ELECTRONICO", "MOTOS"]), province: "Madrid" },
     create: {
       name: "Mecánica Rápida Vallecas",
       plan: "STARTER",
       vehicleTypes: JSON.stringify(["COCHE", "MOTO"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "DIAGNOSTICO_ELECTRONICO", "MOTOS"]),
       description: "Servicio rápido y económico en el barrio de Vallecas. Cita previa en menos de 24 horas. Sin sorpresas en el presupuesto.",
       address: "Calle de Payaso Fofó, 5",
       city: "Madrid",
+      province: "Madrid",
       postalCode: "28053",
       phone: "91 345 67 89",
       email: "mecanica@vallecas.es",
@@ -238,14 +244,16 @@ async function main() {
   // Garage 4 — Barcelona Eixample
   const garage4 = await prisma.garage.upsert({
     where: { ownerId: owner4.id },
-    update: { plan: "PRO", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMPER"]) },
+    update: { plan: "PRO", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMPER"]), categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "AUTOCARAVANAS"]), province: "Barcelona" },
     create: {
       name: "Taller Puig Motor",
       plan: "PRO",
       vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMPER"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "AUTOCARAVANAS"]),
       description: "Taller familiar en el Eixample con 30 años de historia. Especialistas en marcas alemanas y japonesas. Presupuesto sin compromiso.",
       address: "Carrer de Muntaner, 212",
       city: "Barcelona",
+      province: "Barcelona",
       postalCode: "08036",
       phone: "93 412 55 66",
       email: "info@puigmotor.es",
@@ -274,14 +282,16 @@ async function main() {
   // Garage 5 — Barcelona Gràcia
   const garage5 = await prisma.garage.upsert({
     where: { ownerId: owner5.id },
-    update: { plan: "PRO", vehicleTypes: JSON.stringify(["COCHE", "AUTOCARAVANA", "CAMPER"]) },
+    update: { plan: "PRO", vehicleTypes: JSON.stringify(["COCHE", "AUTOCARAVANA", "CAMPER"]), categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "SUSPENSION_DIRECCION", "AUTOCARAVANAS"]), province: "Barcelona" },
     create: {
       name: "AutoGràcia Ferrer",
       plan: "PRO",
       vehicleTypes: JSON.stringify(["COCHE", "AUTOCARAVANA", "CAMPER"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "SUSPENSION_DIRECCION", "AUTOCARAVANAS"]),
       description: "Taller de confianza en el barrio de Gràcia. Reparaciones rápidas, transparencia total en los presupuestos y recogida a domicilio disponible.",
       address: "Carrer de Verdi, 78",
       city: "Barcelona",
+      province: "Barcelona",
       postalCode: "08012",
       phone: "93 666 77 88",
       email: "autogracia@ferrer.es",
@@ -308,14 +318,16 @@ async function main() {
   // Garage 6 — Sant Feliu de Llobregat
   const garage6 = await prisma.garage.upsert({
     where: { ownerId: owner6.id },
-    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]) },
+    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]), categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "CAMIONES_FURGONETAS", "MOTOS"]), province: "Barcelona" },
     create: {
       name: "Soler Automòbils",
       plan: "PREMIUM",
       vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "CAMIONES_FURGONETAS", "MOTOS"]),
       description: "Taller mecánico oficial en Sant Feliu de Llobregat. Más de 15 años de experiencia. Servicio de sustitución y coche de cortesía disponible.",
       address: "Carrer de la Creu, 34",
       city: "Sant Feliu de Llobregat",
+      province: "Barcelona",
       postalCode: "08980",
       phone: "93 777 88 99",
       email: "soler@automobils.es",
@@ -344,14 +356,16 @@ async function main() {
   // Garage 7 — Sant Feliu de Llobregat
   const garage7 = await prisma.garage.upsert({
     where: { ownerId: owner7.id },
-    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]) },
+    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]), categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "MOTOS"]), province: "Barcelona" },
     create: {
       name: "TallerRàpid Sant Feliu",
       plan: "PREMIUM",
       vehicleTypes: JSON.stringify(["COCHE", "MOTO"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "MOTOS"]),
       description: "El taller más rápido del Baix Llobregat. Cita el mismo día, diagnóstico gratuito en la primera visita y recogida a domicilio.",
       address: "Avinguda de Can Nadal, 15",
       city: "Sant Feliu de Llobregat",
+      province: "Barcelona",
       postalCode: "08980",
       phone: "93 555 44 33",
       email: "info@tallerrapid.es",

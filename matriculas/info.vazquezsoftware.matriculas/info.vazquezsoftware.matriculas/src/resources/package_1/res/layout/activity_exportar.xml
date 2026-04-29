@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@id/rlExportar"
+                      android:padding="10.0dp"
+                      android:layout_width="fill_parent"
+                      android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:matriculas="http://schemas.android.com/apk/res-auto">
+  <ImageView android:id="@id/ivExcelLogo"
+             android:layout_width="50.0dp"
+             android:layout_height="50.0dp"
+             android:layout_margin="20.0sp"
+             android:src="@drawable/excel"
+             matriculas:layout_constraintLeft_toLeftOf="parent"
+             matriculas:layout_constraintTop_toTopOf="parent" />
+  <TextView android:textSize="22.0sp"
+            android:textColor="#333"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10.0dp"
+            android:text="@string/exportarExcel"
+            matriculas:layout_constraintLeft_toRightOf="@id/ivExcelLogo"
+            matriculas:layout_constraintTop_toTopOf="@id/ivExcelLogo" />
+  <TextView android:textSize="20.0sp"
+            android:id="@id/tvInfoExportacion"
+            android:background="@drawable/border"
+            android:padding="10.0dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dp"
+            matriculas:layout_constraintTop_toBottomOf="@id/ivExcelLogo" />
+  <Button android:id="@id/btEnviar"
+          android:background="@drawable/border_button"
+          android:visibility="invisible"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20.0dp"
+          android:text="@string/enviarFichero"
+          android:onClick="onClickEnviar"
+          matriculas:layout_constraintTop_toBottomOf="@id/tvInfoExportacion" />
+  <Button android:id="@id/btExportar"
+          android:background="@drawable/border_button"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/exportar"
+          android:onClick="onClickExportar"
+          matriculas:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

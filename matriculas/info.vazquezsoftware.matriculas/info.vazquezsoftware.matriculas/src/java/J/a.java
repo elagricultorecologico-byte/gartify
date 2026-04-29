@@ -1,0 +1,39 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  android.content.Context
+ *  android.graphics.Rect
+ *  android.text.method.TransformationMethod
+ *  android.view.View
+ *  java.lang.CharSequence
+ *  java.lang.Object
+ *  java.util.Locale
+ */
+package j;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.text.method.TransformationMethod;
+import android.view.View;
+import java.util.Locale;
+
+public class a
+implements TransformationMethod {
+    private Locale a;
+
+    public a(Context context) {
+        this.a = context.getResources().getConfiguration().locale;
+    }
+
+    public CharSequence getTransformation(CharSequence charSequence, View view) {
+        if (charSequence != null) {
+            return charSequence.toString().toUpperCase(this.a);
+        }
+        return null;
+    }
+
+    public void onFocusChanged(View view, CharSequence charSequence, boolean bl, int n2, Rect rect) {
+    }
+}
+

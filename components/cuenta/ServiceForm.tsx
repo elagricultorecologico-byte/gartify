@@ -22,7 +22,9 @@ const TYPES = [
 
 const TODOS_LOS_TIPOS = [...VEHICLE_TYPES] as string[];
 
-export function ServiceForm({ garageId, onAdded }: { garageId: string; onAdded?: () => void }) {
+type CreatedService = { id: string; type: string; name: string | null; description: string | null; price: number; duration: number; isActive: boolean; vehicleTypes: string };
+
+export function ServiceForm({ garageId, onAdded }: { garageId: string; onAdded?: (service: CreatedService) => void }) {
   const router = useRouter();
   const [type, setType] = useState("");
   const [vehicleTypes, setVehicleTypes] = useState<string[]>(TODOS_LOS_TIPOS);
@@ -66,7 +68,7 @@ export function ServiceForm({ garageId, onAdded }: { garageId: string; onAdded?:
     (e.target as HTMLFormElement).reset();
     setType("");
     setVehicleTypes(TODOS_LOS_TIPOS);
-    if (onAdded) { onAdded(); } else { router.refresh(); }
+    if (onAdded) { onAdded(data as CreatedService); } else { router.refresh(); }
   }
 
   return (

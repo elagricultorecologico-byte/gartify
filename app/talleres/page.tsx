@@ -23,7 +23,7 @@ type SearchParams = {
   servicio?: string; ciudad?: string; precio?: string; rating?: string;
   distancia?: string; userLat?: string; userLng?: string; cocheCortesia?: string; recogida?: string;
   vehicleType?: string; premium?: string; page?: string; pageSize?: string; conOfertas?: string;
-  sort?: string;
+  sort?: string; categoria?: string;
 };
 
 function parsePrecioRange(precio: string): { gte?: number; lte?: number } {
@@ -72,6 +72,7 @@ export default async function TalleresPage({
   const premiumOnly = searchParams.premium === "true";
   const conOfertas = searchParams.conOfertas === "true";
   const vehicleType = searchParams.vehicleType ?? null;
+  const categorias = (searchParams.categoria ?? "").split(",").filter(Boolean);
   const currentPage = Math.max(1, parseInt(searchParams.page ?? "1"));
   const parsedSize = parseInt(searchParams.pageSize ?? String(DEFAULT_PAGE_SIZE));
   const pageSize = VALID_PAGE_SIZES.includes(parsedSize) ? parsedSize : DEFAULT_PAGE_SIZE;
@@ -83,6 +84,7 @@ export default async function TalleresPage({
         OR: [
           { city:       { contains: searchParams.ciudad } },
           { postalCode: { contains: searchParams.ciudad } },
+          { province:   { contains: searchParams.ciudad } } as never,
         ],
       }),
       ...(ratingMin !== null && { rating: { gte: ratingMin } }),
@@ -108,6 +110,16 @@ export default async function TalleresPage({
     },
     orderBy: { rating: "desc" },
   });
+
+  // Filtro por tipo de taller — OR logic: basta con que tenga alguna de las categorías seleccionadas
+  if (categorias.length > 0) {
+    garages = garages.filter((g) => {
+      try {
+        const cats = JSON.parse((g as { categories?: string }).categories ?? "[]") as string[];
+        return categorias.some((c) => cats.includes(c));
+      } catch { return false; }
+    });
+  }
 
   // Filtro de distancia (post-query, requiere coordenadas del usuario y del taller)
   if (userLat !== null && userLng !== null && distanciaKm !== null) {

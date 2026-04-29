@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<RelativeLayout android:id="@id/rlPremium"
+                android:padding="16.0dp"
+                android:fitsSystemWindows="true"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+  <LinearLayout android:orientation="horizontal"
+                android:id="@id/llHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80.0dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
+    <ImageView android:id="@id/ivLogo"
+               android:background="@mipmap/ic_launcher"
+               android:layout_width="50.0dp"
+               android:layout_height="50.0dp" />
+    <TextView android:textSize="22.0sp"
+              android:textColor="#333"
+              android:layout_gravity="center_vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="20.0dp"
+              android:text="@string/eliminar_anuncios" />
+  </LinearLayout>
+  <TextView android:textSize="20.0sp"
+            android:id="@id/tvInfoPremium"
+            android:background="@drawable/border"
+            android:padding="10.0dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20.0dp"
+            android:text="@string/info_premium"
+            android:layout_below="@id/llHeader"
+            android:layout_centerHorizontal="true"
+            android:textAlignment="center" />
+  <Button android:enabled="false"
+          android:id="@id/btPremium"
+          android:background="@drawable/border_button"
+          android:paddingLeft="20.0dp"
+          android:paddingRight="20.0dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="20.0dp"
+          android:text="@string/comprar"
+          android:layout_below="@id/tvInfoPremium"
+          android:layout_centerHorizontal="true"
+          android:onClick="onClickPremium" />
+</RelativeLayout>

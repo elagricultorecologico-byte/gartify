@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/collapsible";
 import {
   X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation,
-  Car, PackageCheck, Loader2, CheckCircle, Crown, ChevronDown, Zap,
+  Car, PackageCheck, Loader2, CheckCircle, Crown, ChevronDown, Zap, Tag,
 } from "lucide-react";
-import { SEARCHABLE_SERVICES } from "@/lib/constants";
+import { SEARCHABLE_SERVICES, GARAGE_CATEGORIES } from "@/lib/constants";
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
 
 const PRICE_RANGES = [
@@ -141,7 +141,7 @@ export function GarageFilters() {
   }
 
   const hasLocation = sp.has("userLat") && sp.has("userLng");
-  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType", "premium", "conOfertas"]
+  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType", "premium", "conOfertas", "categoria"]
     .filter(isActive).length;
   const hasFilters = activeCount > 0 || hasLocation;
 
@@ -189,7 +189,7 @@ export function GarageFilters() {
           <div className="relative">
             <MapPin className={cn("pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2", isActive("ciudad") ? "text-gartify-hero" : "text-gartify-gray/70")} />
             <Input
-              placeholder="Ciudad o CP"
+              placeholder="Provincia, ciudad o CP"
               defaultValue={sp.get("ciudad") ?? ""}
               className={cn("h-9 pl-8 text-sm transition-all", activeRing("ciudad"))}
               onKeyDown={(e) => { if (e.key === "Enter") update("ciudad", (e.target as HTMLInputElement).value); }}
@@ -251,6 +251,44 @@ export function GarageFilters() {
             })}
           </div>
         </Section>
+
+        {/* Tipo de taller — multiselección */}
+        {(() => {
+          const selected = new Set((sp.get("categoria") ?? "").split(",").filter(Boolean));
+          function toggleCategoria(val: string) {
+            const next = new Set(selected);
+            if (next.has(val)) next.delete(val); else next.add(val);
+            const params = new URLSearchParams(sp.toString());
+            if (next.size > 0) params.set("categoria", [...next].join(","));
+            else params.delete("categoria");
+            router.push(`/talleres?${params.toString()}`);
+          }
+          return (
+            <Section label="Tipo de taller" icon={<Tag className="h-3 w-3" />} active={selected.size > 0} defaultOpen={selected.size > 0}>
+              <div className="max-h-52 overflow-y-auto flex flex-col gap-1 pr-1">
+                {GARAGE_CATEGORIES.map((cat) => {
+                  const activo = selected.has(cat.value);
+                  return (
+                    <button key={cat.value} type="button" onClick={() => toggleCategoria(cat.value)} aria-pressed={activo}
+                      className={cn(
+                        "w-full flex items-center gap-2 h-8 px-2.5 rounded-none border text-xs font-medium transition-all text-left",
+                        activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-1 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                      )}>
+                      <span className="flex-1">{cat.label}</span>
+                      {activo && <CheckCircle className="h-3 w-3 shrink-0 text-gartify-hero" />}
+                    </button>
+                  );
+                })}
+              </div>
+              {selected.size > 0 && (
+                <button type="button" onClick={() => { const p = new URLSearchParams(sp.toString()); p.delete("categoria"); router.push(`/talleres?${p.toString()}`); }}
+                  className="mt-1.5 text-[11px] text-red-400 hover:text-red-500 flex items-center gap-1">
+                  <X className="h-3 w-3" />Quitar selección
+                </button>
+              )}
+            </Section>
+          );
+        })()}
 
         {/* Servicio */}
         <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={isActive("servicio")}>

@@ -9,9 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   CheckCircle, AlertCircle, Loader2, Building2,
-  MapPin, Phone, Mail, ChevronRight, Camera, X, Car, PackageCheck,
+  MapPin, Phone, Mail, ChevronRight, Camera, X, Car, PackageCheck, Wrench,
 } from "lucide-react";
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
+import { GARAGE_CATEGORIES } from "@/lib/constants";
+import { usePostalCodeLookup } from "@/lib/hooks/usePostalCodeLookup";
 import type { Garage } from "@prisma/client";
 
 const TZ_TO_COUNTRY: Record<string, string> = {
@@ -61,6 +63,11 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
   const [courtesyCar, setCourtesyCar] = useState(garage.courtesyCar ?? false);
   const [pickupService, setPickupService] = useState(garage.pickupService ?? false);
 
+  const [city, setCity] = useState(garage.city);
+  const [province, setProvince] = useState((garage as { province?: string }).province ?? "");
+  const [community, setCommunity] = useState("");
+  const { lookup, loading: cpLoading } = usePostalCodeLookup();
+
   // Parsear el JSON de vehicleTypes almacenado en SQLite como string
   const vehicleTypesParsados = (() => {
     try {
@@ -81,6 +88,23 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
       if (yaSeleccionado && prev.length === 1) return prev;
       return yaSeleccionado ? prev.filter((t) => t !== tipo) : [...prev, tipo];
     });
+  }
+
+  // Parsear el JSON de categories almacenado en SQLite como string
+  // Se usa el cast porque el campo puede no existir en el tipo Prisma hasta el db push
+  const categoriasParsadas = (() => {
+    try {
+      return JSON.parse((garage as { categories?: string }).categories ?? "[]") as string[];
+    } catch {
+      return [] as string[];
+    }
+  })();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(categoriasParsadas);
+
+  function toggleCategoria(cat: string) {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
   }
 
   // — Estado logo —
@@ -153,13 +177,15 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
         name:        fd.get("name"),
         description: fd.get("description"),
         address:     fd.get("address"),
-        city:        fd.get("city"),
+        city,
+        province,
         postalCode:  fd.get("postalCode"),
         phone:       phone ?? "",
         email:       fd.get("email"),
         courtesyCar,
         pickupService,
         vehicleTypes: selectedVehicleTypes,
+        categories: selectedCategories,
       }),
     });
 
@@ -352,22 +378,9 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 />
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2 space-y-1.5">
-                  <Label htmlFor="city" className="text-xs font-semibold text-gartify-blue">
-                    Ciudad
-                  </Label>
-                  <Input
-                    id="city"
-                    name="city"
-                    defaultValue={garage.city}
-                    required
-                    placeholder="Madrid"
-                    autoComplete="address-level2"
-                  />
-                </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="postalCode" className="text-xs font-semibold text-gartify-blue">
-                    C.P.
+                    Código postal
                   </Label>
                   <Input
                     id="postalCode"
@@ -377,6 +390,43 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                     required
                     placeholder="28009"
                     autoComplete="postal-code"
+                    onChange={async (e) => {
+                      const cp = e.target.value;
+                      if (/^\d{5}$/.test(cp)) {
+                        const result = await lookup(cp);
+                        if (result) { setCity(result.city); setProvince(result.province); setCommunity(result.community); }
+                      }
+                    }}
+                  />
+                </div>
+                <div className="col-span-2 space-y-1.5">
+                  <Label htmlFor="city" className="text-xs font-semibold text-gartify-blue flex items-center gap-1.5">
+                    Población {cpLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                  </Label>
+                  <Input
+                    id="city"
+                    value={city}
+                    onChange={e => setCity(e.target.value)}
+                    required
+                    placeholder="Madrid"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-gartify-blue">Provincia</Label>
+                  <Input
+                    value={province} readOnly
+                    placeholder="—"
+                    className="h-9 text-sm bg-gray-50 text-gartify-gray cursor-default"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-gartify-blue">Comunidad autónoma</Label>
+                  <Input
+                    value={community} readOnly
+                    placeholder="—"
+                    className="h-9 text-sm bg-gray-50 text-gartify-gray cursor-default"
                   />
                 </div>
               </div>
@@ -450,6 +500,38 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
             <p className="text-xs text-gartify-gray mt-2">
               Selecciona al menos un tipo. Los clientes podrán filtrar talleres por tipo de vehículo.
             </p>
+          </div>
+
+          {/* — Categorías del taller — */}
+          <div className="pt-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+              <Wrench className="h-3.5 w-3.5" aria-hidden="true" />Categorías del taller
+            </p>
+            <p className="text-xs text-gartify-gray mb-3">
+              Selecciona las categorías que mejor describen tu taller. Los conductores podrán filtrar por ellas.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {GARAGE_CATEGORIES.map((cat) => {
+                const activo = selectedCategories.includes(cat.value);
+                return (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    onClick={() => toggleCategoria(cat.value)}
+                    aria-pressed={activo}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 rounded-none border text-sm font-medium transition-all",
+                      activo
+                        ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero"
+                        : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                    )}
+                  >
+                    {cat.label}
+                    {activo && <CheckCircle className="h-3.5 w-3.5 ml-1 text-gartify-hero" aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* — Servicios adicionales — */}

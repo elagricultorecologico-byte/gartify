@@ -226,3 +226,54 @@ export const SEARCHABLE_SERVICES = ALL_SERVICES.filter((s) =>
 export const SERVICE_LABELS: Record<string, string> = Object.fromEntries(
   ALL_SERVICES.map((s) => [s.type, s.label])
 );
+
+// ─── Categorías de taller ─────────────────────────────────────────────────────
+
+export interface GarageCategory {
+  value: string;
+  label: string;
+}
+
+export const GARAGE_CATEGORIES: GarageCategory[] = [
+  { value: "MECANICA_GENERAL",        label: "Mecánica general" },
+  { value: "ELECTRICIDAD_AUTO",       label: "Taller eléctrico" },
+  { value: "CHAPA_PINTURA",           label: "Chapa y pintura de coches" },
+  { value: "CHAPA_PINTURA_MOTOS",     label: "Chapa y pintura de motos" },
+  { value: "LUNAS_PARABRISAS",        label: "Lunas y parabrisas" },
+  { value: "TINTADO_LUNAS",           label: "Tintado de lunas" },
+  { value: "NEUMATICOS_RUEDAS",       label: "Neumáticos y ruedas" },
+  { value: "REPARACION_NEUMATICOS",   label: "Reparación de neumáticos" },
+  { value: "MOTOS",                   label: "Taller de motos" },
+  { value: "VEHICULOS_ELECTRICOS",    label: "Vehículos eléctricos e híbridos" },
+  { value: "CLIMATIZACION_AC",        label: "Climatización y A/C" },
+  { value: "POTENCIACION",            label: "Potenciación de motores" },
+  { value: "RECAMBIOS",               label: "Recambios y accesorios" },
+  { value: "CAMIONES_FURGONETAS",     label: "Furgonetas y camiones" },
+  { value: "AUTOCARAVANAS",           label: "Autocaravanas y campers" },
+  { value: "SUSPENSION_DIRECCION",    label: "Suspensión y dirección" },
+  { value: "DIAGNOSTICO_ELECTRONICO", label: "Diagnóstico electrónico" },
+  { value: "REVISION_PRECOMPRA",      label: "Revisión pre-compra" },
+  { value: "LAVADO_DETAILING",        label: "Lavado y detailing" },
+  { value: "ITV_STATION",             label: "Estación de ITV" },
+];
+
+export const GARAGE_CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
+  GARAGE_CATEGORIES.map((c) => [c.value, c.label])
+);
+
+// ─── Provincias españolas ─────────────────────────────────────────────────────
+
+export const SPANISH_PROVINCES = [
+  "Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila",
+  "Badajoz", "Illes Balears", "Barcelona", "Burgos", "Cáceres", "Cádiz",
+  "Cantabria", "Castellón", "Ceuta", "Ciudad Real", "Córdoba", "A Coruña",
+  "Cuenca", "Girona", "Granada", "Guadalajara", "Gipuzkoa", "Huelva",
+  "Huesca", "Jaén", "León", "Lleida", "La Rioja", "Lugo", "Madrid",
+  "Málaga", "Melilla", "Murcia", "Navarra", "Ourense", "Palencia",
+  "Las Palmas", "Pontevedra", "Salamanca",
+  "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria", "Tarragona",
+  "Teruel", "Toledo", "Valencia", "Valladolid", "Bizkaia", "Zamora",
+  "Zaragoza",
+] as const;
+
+export type SpanishProvince = (typeof SPANISH_PROVINCES)[number];

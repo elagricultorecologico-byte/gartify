@@ -29,6 +29,7 @@ model Garage {
   description   String?
   address       String
   city          String
+  province      String    @default("")
   postalCode    String
   phone         String
   email         String?
@@ -43,6 +44,7 @@ model Garage {
   stripePriceId        String?                         // Price ID de Stripe activo
   planExpiresAt        DateTime?                       // Fecha de expiración / próxima renovación
   vehicleTypes         String    @default("[\"COCHE\"]") // JSON array: COCHE|MOTO|FURGONETA|AUTOCARAVANA|CAMPER|CAMION
+  categories           String    @default("[]")           // JSON array de categorías del taller
   laborRate            Float?                          // Precio mano de obra €/hora
   anchorPrices         String?                         // JSON: {revisionBasica, preItv, aireAcondicionado}
   excludedBrands       String?                         // JSON array de marcas excluidas
