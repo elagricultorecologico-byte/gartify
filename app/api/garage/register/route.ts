@@ -212,7 +212,9 @@ export async function POST(req: Request) {
             description:  data.description,
             address:      data.address,
             city:         data.city,
-            province:     data.province as never,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore -- province added in schema, Prisma client needs regeneration
+            province:     data.province,
             postalCode:   data.postalCode,
             phone:        data.phone,
             email:        data.email,
