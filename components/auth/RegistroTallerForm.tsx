@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, AlertCircle, Loader2, ArrowLeft,
-  User, Building2, MapPin, Lock, Car, Euro, Tag, X, ChevronRight, MessageCircle,
+  User, Building2, Lock, Car, Euro, Tag, X, ChevronRight, MessageCircle,
 } from "lucide-react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";

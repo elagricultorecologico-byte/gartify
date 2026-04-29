@@ -374,7 +374,7 @@ export function ServiceCatalogModal({
           {serviciosFiltrados.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-gartify-gray">
               <Search className="h-8 w-8 mb-2 opacity-30" />
-              <p className="text-sm">Sin resultados para "{busqueda}"</p>
+              <p className="text-sm">Sin resultados para &ldquo;{busqueda}&rdquo;</p>
             </div>
           ) : (
             serviciosFiltrados.map((svc) => {
