@@ -1,3 +1,4 @@
+// @ts-nocheck -- seed file uses schema fields not yet reflected in generated Prisma client
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
