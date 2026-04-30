@@ -26,9 +26,92 @@ const REDES = [
   },
 ];
 
+const SEO_CATEGORIAS = [
+  { label: "Talleres de mecánica general",       href: "/talleres?categoria=MECANICA_GENERAL" },
+  { label: "Talleres eléctricos y de baterías",  href: "/talleres?categoria=ELECTRICIDAD_AUTO" },
+  { label: "Talleres de chapa y pintura",        href: "/talleres?categoria=CHAPA_PINTURA" },
+  { label: "Talleres de neumáticos y ruedas",    href: "/talleres?categoria=NEUMATICOS_RUEDAS" },
+  { label: "Talleres de climatización y A/C",    href: "/talleres?categoria=CLIMATIZACION_AC" },
+  { label: "Diagnóstico electrónico OBD2",       href: "/talleres?categoria=DIAGNOSTICO_ELECTRONICO" },
+  { label: "Estaciones de ITV homologadas",      href: "/talleres?categoria=ITV_STATION" },
+  { label: "Talleres de motos y motocicletas",   href: "/talleres?categoria=MOTOS" },
+];
+
+const SEO_PROVINCIAS = [
+  { label: "Talleres en Madrid",      href: "/talleres?ciudad=Madrid" },
+  { label: "Talleres en Barcelona",   href: "/talleres?ciudad=Barcelona" },
+  { label: "Talleres en Valencia",    href: "/talleres?ciudad=Valencia" },
+  { label: "Talleres en Sevilla",     href: "/talleres?ciudad=Sevilla" },
+  { label: "Talleres en Zaragoza",    href: "/talleres?ciudad=Zaragoza" },
+  { label: "Talleres en Málaga",      href: "/talleres?ciudad=Málaga" },
+  { label: "Talleres en Bilbao",      href: "/talleres?ciudad=Bilbao" },
+  { label: "Talleres en Alicante",    href: "/talleres?ciudad=Alicante" },
+];
+
+const SEO_SERVICIOS = [
+  { label: "Revisión completa del vehículo",       href: "/talleres?servicio=REVISION" },
+  { label: "Cambio de aceite y filtros",           href: "/talleres?servicio=CAMBIO_ACEITE" },
+  { label: "Reparación de frenos",                 href: "/talleres?servicio=FRENOS" },
+  { label: "Cambio de neumáticos",                 href: "/talleres?servicio=NEUMATICOS" },
+  { label: "Pre-ITV y acompañamiento ITV",         href: "/talleres?servicio=PRE_ITV" },
+  { label: "Carga de aire acondicionado",          href: "/talleres?servicio=CLIMATIZACION" },
+  { label: "Diagnóstico de averías",               href: "/talleres?servicio=DIAGNOSTICO" },
+  { label: "Reparación eléctrica del coche",       href: "/talleres?servicio=ELECTRICIDAD" },
+];
+
+const SEO_CIUDADES = [
+  { label: "Talleres en Murcia",         href: "/talleres?ciudad=Murcia" },
+  { label: "Talleres en Valladolid",     href: "/talleres?ciudad=Valladolid" },
+  { label: "Talleres en Palma",          href: "/talleres?ciudad=Palma" },
+  { label: "Talleres en Las Palmas",     href: "/talleres?ciudad=Las+Palmas" },
+  { label: "Talleres en Córdoba",        href: "/talleres?ciudad=Córdoba" },
+  { label: "Talleres en Gijón",          href: "/talleres?ciudad=Gijón" },
+  { label: "Talleres en Vitoria",        href: "/talleres?ciudad=Vitoria" },
+  { label: "Talleres en Granada",        href: "/talleres?ciudad=Granada" },
+];
+
 export function Footer({ className }: { className?: string }) {
   return (
     <footer className={`bg-gartify-blue ${className ?? ""}`}>
+
+      {/* SEO link grid */}
+      <div className="border-b border-white/10">
+        <div className="container py-10 grid grid-cols-2 sm:grid-cols-4 gap-8">
+          <div>
+            <h3 className="text-xs font-extrabold uppercase tracking-widest text-white mb-3">Tipos de taller</h3>
+            <ul className="space-y-1.5">
+              {SEO_CATEGORIAS.map(({ label, href }) => (
+                <li key={href}><a href={href} className="text-xs text-blue-300 hover:text-white transition-colors leading-snug block">{label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xs font-extrabold uppercase tracking-widest text-white mb-3">Por provincia</h3>
+            <ul className="space-y-1.5">
+              {SEO_PROVINCIAS.map(({ label, href }) => (
+                <li key={href}><a href={href} className="text-xs text-blue-300 hover:text-white transition-colors leading-snug block">{label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xs font-extrabold uppercase tracking-widest text-white mb-3">Servicios</h3>
+            <ul className="space-y-1.5">
+              {SEO_SERVICIOS.map(({ label, href }) => (
+                <li key={href}><a href={href} className="text-xs text-blue-300 hover:text-white transition-colors leading-snug block">{label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xs font-extrabold uppercase tracking-widest text-white mb-3">Más ciudades</h3>
+            <ul className="space-y-1.5">
+              {SEO_CIUDADES.map(({ label, href }) => (
+                <li key={href}><a href={href} className="text-xs text-blue-300 hover:text-white transition-colors leading-snug block">{label}</a></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
       {/* Columns */}
       <div className="container py-12 grid grid-cols-1 sm:grid-cols-3 gap-10">
         {/* Col 1 */}
