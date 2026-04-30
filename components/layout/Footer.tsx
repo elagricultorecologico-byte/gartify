@@ -74,8 +74,8 @@ export function Footer({ className }: { className?: string }) {
   return (
     <footer className={`bg-gartify-blue ${className ?? ""}`}>
 
-      {/* SEO link grid */}
-      <div className="border-b border-white/10">
+      {/* SEO link grid — desactivado hasta implementar URLs limpias */}
+      {false && <div className="border-b border-white/10">
         <div className="container py-10 grid grid-cols-2 sm:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xs font-extrabold uppercase tracking-widest text-white mb-3">Tipos de taller</h3>
@@ -110,7 +110,7 @@ export function Footer({ className }: { className?: string }) {
             </ul>
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* Columns */}
       <div className="container py-12 grid grid-cols-1 sm:grid-cols-3 gap-10">
