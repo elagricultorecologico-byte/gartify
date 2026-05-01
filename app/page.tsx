@@ -278,24 +278,24 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Panel derecho — cards de servicios con iconos */}
+          {/* Panel derecho — cards de servicios */}
           {(() => {
             const HOW_ICONS: Record<string, React.ReactNode> = {
               ITV: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                   <path d="M9 14l2 2 4-4" stroke="#F58B00" strokeWidth="2"/>
                   <path d="M9 10h6"/>
                 </svg>
               ),
               REVISION: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                   <path d="M9 15l-3 3" stroke="#F58B00" strokeWidth="2"/>
                 </svg>
               ),
               CAMBIO_ACEITE: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <path d="M4 19h16"/>
                   <path d="M4 15V9c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v6"/>
                   <path d="M12 9h4l2-4" stroke="#F58B00" strokeWidth="2"/>
@@ -304,7 +304,7 @@ export default function HomePage() {
                 </svg>
               ),
               FRENOS: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <circle cx="12" cy="12" r="9"/>
                   <circle cx="12" cy="12" r="3"/>
                   <path d="M18.36 6.64A9 9 0 0 0 12 3v4a5 5 0 0 1 3.54 1.46l2.82-1.82z" stroke="#F58B00" strokeWidth="2" fill="#F58B00"/>
@@ -315,14 +315,14 @@ export default function HomePage() {
                 </svg>
               ),
               NEUMATICOS: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <rect x="5" y="2" width="14" height="20" rx="4"/>
                   <path d="M5 6h14M5 12h14M5 18h14"/>
                   <path d="M9 2v20M15 2v20" stroke="#F58B00" strokeWidth="2"/>
                 </svg>
               ),
               DIAGNOSTICO: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <path d="M12 6V4m0 2h5a2 2 0 012 2v8a2 2 0 01-2 2h-5v2m0-2H7a2 2 0 01-2-2V8a2 2 0 012-2h5z"/>
                   <path d="M5 10H3v4h2M19 10h2v4h-2"/>
                   <circle cx="11" cy="13" r="3" stroke="#F58B00" strokeWidth="2"/>
@@ -330,14 +330,14 @@ export default function HomePage() {
                 </svg>
               ),
               CLIMATIZACION: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <path d="M12 2v20M2 12h20"/>
                   <path d="M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/>
                   <path d="M12 6a3 3 0 00-3-3M12 18a3 3 0 003 3M6 12a3 3 0 00-3 3M18 12a3 3 0 003-3" stroke="#F58B00" strokeWidth="2"/>
                 </svg>
               ),
               ELECTRICIDAD: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
                   <rect x="3" y="7" width="18" height="13" rx="2"/>
                   <path d="M6 7V5a1 1 0 011-1h2M18 7V5a1 1 0 00-1-1h-2"/>
                   <path d="M13 10l-3 4h4l-3 4" stroke="#F58B00" strokeWidth="2" fill="#F58B00"/>
@@ -346,31 +346,27 @@ export default function HomePage() {
               ),
             };
             return (
-              <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr border-l border-t border-slate-100">
+              <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 auto-rows-fr">
                 {POPULAR_SERVICES.slice(0, 8).map(({ type, label, desc }) => (
                   <Link
                     key={type}
                     href={`/talleres?servicio=${type}`}
-                    className="group relative flex flex-col h-full min-h-[160px] overflow-hidden border-b border-r border-slate-100 bg-gartify-blue"
+                    className="group flex flex-col items-center text-center gap-3 p-6 border-b border-r border-slate-100 bg-white hover:bg-slate-50 transition-colors"
                     aria-label={`Ver talleres de ${label}`}
                   >
-                    {/* Icono centrado */}
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    {/* Icono */}
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 group-hover:bg-orange-50 transition-colors">
                       {HOW_ICONS[type]}
                     </div>
-                    {/* Texto inferior */}
-                    <div className="absolute inset-x-0 bottom-0 p-3">
-                      <div className="mb-1 inline-flex items-center gap-1.5 bg-white/10 border border-white/20 px-2 py-0.5">
-                        <span className="text-[10px] font-bold uppercase tracking-wide text-white">{label}</span>
-                      </div>
-                      <p className="text-white/70 text-xs leading-snug line-clamp-2">{desc}</p>
+                    {/* Texto */}
+                    <div className="flex-1">
+                      <p className="text-base font-bold text-gartify-dark leading-tight mb-1">{label}</p>
+                      <p className="text-sm text-gartify-gray leading-snug line-clamp-2">{desc}</p>
                     </div>
-                    {/* Hover CTA */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-gartify-orange/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="flex items-center gap-1.5 text-sm font-bold text-white">
-                        Ver talleres <ChevronRight className="h-4 w-4" />
-                      </span>
-                    </div>
+                    {/* CTA */}
+                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-gartify-blue group-hover:text-gartify-orange transition-colors">
+                      Ver talleres <ChevronRight className="h-3.5 w-3.5" />
+                    </span>
                   </Link>
                 ))}
               </div>
