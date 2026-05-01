@@ -278,80 +278,101 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Panel derecho — cards de servicios */}
+          {/* Panel derecho — cards de servicios con iconos */}
           {(() => {
-            const HOW_IMAGES: Record<string, string> = {
-              ITV: "/how/itv.jpeg",
-              REVISION: "/how/revision.jpeg",
-              CAMBIO_ACEITE: "/how/aceite.jpeg",
-              FRENOS: "/how/frenos.jpeg",
-              NEUMATICOS: "/how/neumaticos.jpeg",
-              DIAGNOSTICO: "/how/diagnostico.jpeg",
-              CLIMATIZACION: "/how/climatizacion.jpeg",
-              ELECTRICIDAD: "/how/electricidad.jpeg",
+            const HOW_ICONS: Record<string, React.ReactNode> = {
+              ITV: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  <path d="M9 14l2 2 4-4" stroke="#F58B00" strokeWidth="2"/>
+                  <path d="M9 10h6"/>
+                </svg>
+              ),
+              REVISION: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                  <path d="M9 15l-3 3" stroke="#F58B00" strokeWidth="2"/>
+                </svg>
+              ),
+              CAMBIO_ACEITE: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <path d="M4 19h16"/>
+                  <path d="M4 15V9c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v6"/>
+                  <path d="M12 9h4l2-4" stroke="#F58B00" strokeWidth="2"/>
+                  <path d="M18 14c0 1.1-.9 2-2 2s-2-.9-2-2 2-4 2-4 2 2.9 2 4z" stroke="#F58B00" fill="#F58B00"/>
+                  <path d="M5 11h6"/>
+                </svg>
+              ),
+              FRENOS: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <circle cx="12" cy="12" r="9"/>
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M18.36 6.64A9 9 0 0 0 12 3v4a5 5 0 0 1 3.54 1.46l2.82-1.82z" stroke="#F58B00" strokeWidth="2" fill="#F58B00"/>
+                  <circle cx="12" cy="6" r="0.5" fill="currentColor"/>
+                  <circle cx="12" cy="18" r="0.5" fill="currentColor"/>
+                  <circle cx="6" cy="12" r="0.5" fill="currentColor"/>
+                  <circle cx="18" cy="12" r="0.5" fill="currentColor"/>
+                </svg>
+              ),
+              NEUMATICOS: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <rect x="5" y="2" width="14" height="20" rx="4"/>
+                  <path d="M5 6h14M5 12h14M5 18h14"/>
+                  <path d="M9 2v20M15 2v20" stroke="#F58B00" strokeWidth="2"/>
+                </svg>
+              ),
+              DIAGNOSTICO: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <path d="M12 6V4m0 2h5a2 2 0 012 2v8a2 2 0 01-2 2h-5v2m0-2H7a2 2 0 01-2-2V8a2 2 0 012-2h5z"/>
+                  <path d="M5 10H3v4h2M19 10h2v4h-2"/>
+                  <circle cx="11" cy="13" r="3" stroke="#F58B00" strokeWidth="2"/>
+                  <path d="M13.5 15.5L16 18" stroke="#F58B00" strokeWidth="2"/>
+                </svg>
+              ),
+              CLIMATIZACION: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <path d="M12 2v20M2 12h20"/>
+                  <path d="M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/>
+                  <path d="M12 6a3 3 0 00-3-3M12 18a3 3 0 003 3M6 12a3 3 0 00-3 3M18 12a3 3 0 003-3" stroke="#F58B00" strokeWidth="2"/>
+                </svg>
+              ),
+              ELECTRICIDAD: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-white/80">
+                  <rect x="3" y="7" width="18" height="13" rx="2"/>
+                  <path d="M6 7V5a1 1 0 011-1h2M18 7V5a1 1 0 00-1-1h-2"/>
+                  <path d="M13 10l-3 4h4l-3 4" stroke="#F58B00" strokeWidth="2" fill="#F58B00"/>
+                  <path d="M6 4h4M14 4h4"/>
+                </svg>
+              ),
             };
             return (
               <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr border-l border-t border-slate-100">
-                {POPULAR_SERVICES.slice(0, 8).map(({ type, label, icon: Icon, color, desc }) => {
-                  const img = HOW_IMAGES[type];
-                  return (
-                    <Link
-                      key={type}
-                      href={`/talleres?servicio=${type}`}
-                      className="group relative flex flex-col h-full min-h-[160px] overflow-hidden border-b border-r border-slate-100"
-                      aria-label={`Ver talleres de ${label}`}
-                    >
-                      {img ? (
-                        /* ── Card con fotografía ── */
-                        <>
-                          <Image
-                            src={img}
-                            alt=""
-                            fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          />
-                          {/* Overlay permanente */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                          {/* Texto sobre imagen */}
-                          <div className="absolute inset-x-0 bottom-0 p-3">
-                            <div className="mb-1.5 inline-flex items-center gap-1.5 bg-white/90 border border-white/60 px-2 py-0.5">
-                              <Icon className="h-3 w-3 text-gartify-blue" aria-hidden="true" />
-                              <span className="text-[10px] font-bold uppercase tracking-wide text-gartify-blue">{label}</span>
-                            </div>
-                            <p className="text-white text-xs leading-snug line-clamp-2 drop-shadow">{desc}</p>
-                          </div>
-                          {/* Hover CTA */}
-                          <div className="absolute inset-0 flex items-center justify-center bg-gartify-blue/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="flex items-center gap-1.5 text-sm font-bold text-white">
-                              Ver talleres <ChevronRight className="h-4 w-4" />
-                            </span>
-                          </div>
-                        </>
-                      ) : (
-                        /* ── Card sin imagen: icono + texto ── */
-                        <>
-                          <div className="absolute inset-0 bg-slate-50 flex items-center justify-center">
-                            <Icon className={`h-24 w-24 opacity-[0.06] ${color}`} aria-hidden="true" />
-                          </div>
-                          <div className="absolute inset-x-0 bottom-0 p-3">
-                            <div className="mb-1.5 inline-flex items-center gap-1.5 bg-white border border-slate-200 px-2 py-0.5">
-                              <Icon className={`h-3 w-3 ${color}`} aria-hidden="true" />
-                              <span className={`text-[10px] font-bold uppercase tracking-wide ${color}`}>{label}</span>
-                            </div>
-                            <p className="text-gartify-gray text-xs leading-snug line-clamp-2">{desc}</p>
-                          </div>
-                          {/* Hover CTA */}
-                          <div className="absolute inset-0 flex items-center justify-center bg-gartify-blue/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="flex items-center gap-1.5 text-sm font-bold text-white">
-                              Ver talleres <ChevronRight className="h-4 w-4" />
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </Link>
-                  );
-                })}
+                {POPULAR_SERVICES.slice(0, 8).map(({ type, label, desc }) => (
+                  <Link
+                    key={type}
+                    href={`/talleres?servicio=${type}`}
+                    className="group relative flex flex-col h-full min-h-[160px] overflow-hidden border-b border-r border-slate-100 bg-gartify-blue"
+                    aria-label={`Ver talleres de ${label}`}
+                  >
+                    {/* Icono centrado */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      {HOW_ICONS[type]}
+                    </div>
+                    {/* Texto inferior */}
+                    <div className="absolute inset-x-0 bottom-0 p-3">
+                      <div className="mb-1 inline-flex items-center gap-1.5 bg-white/10 border border-white/20 px-2 py-0.5">
+                        <span className="text-[10px] font-bold uppercase tracking-wide text-white">{label}</span>
+                      </div>
+                      <p className="text-white/70 text-xs leading-snug line-clamp-2">{desc}</p>
+                    </div>
+                    {/* Hover CTA */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-gartify-orange/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="flex items-center gap-1.5 text-sm font-bold text-white">
+                        Ver talleres <ChevronRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </Link>
+                ))}
               </div>
             );
           })()}
