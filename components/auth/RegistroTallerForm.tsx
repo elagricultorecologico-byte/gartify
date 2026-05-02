@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import {
   Wrench, AlertCircle, Loader2, ArrowLeft,
-  User, Building2, Lock, Car, Euro, Tag, X, ChevronRight, MessageCircle,
+  User, Building2, Lock, Car, Euro, ChevronRight, MessageCircle,
 } from "lucide-react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
@@ -20,8 +20,6 @@ export function RegistroTallerForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [vehicleTypes, setVehicleTypes] = useState<string[]>(["COCHE"]);
-  const [excludedBrands, setExcludedBrands] = useState<string[]>([]);
-  const [brandInput, setBrandInput] = useState("");
   const [acceptLegal, setAcceptLegal] = useState(false);
   const [acceptComercial, setAcceptComercial] = useState(false);
   const [phone, setPhone] = useState<string | undefined>(undefined);
@@ -31,12 +29,6 @@ export function RegistroTallerForm() {
   const [community, setCommunity] = useState("");
   const { lookup, loading: cpLoading } = usePostalCodeLookup();
 
-  function addBrand(brand: string) {
-    const b = brand.trim();
-    if (b && !excludedBrands.includes(b.toUpperCase())) setExcludedBrands(prev => [...prev, b.toUpperCase()]);
-    setBrandInput("");
-  }
-  function removeBrand(brand: string) { setExcludedBrands(prev => prev.filter(b => b !== brand)); }
   function toggleVehicle(type: string) {
     setVehicleTypes(prev => prev.includes(type) ? prev.length > 1 ? prev.filter(t => t !== type) : prev : [...prev, type]);
   }
@@ -79,7 +71,6 @@ export function RegistroTallerForm() {
         preItv: parseFloat((fd.get("anchorPreItv") as string) ?? "") || undefined,
         aireAcondicionado: parseFloat((fd.get("anchorAire") as string) ?? "") || undefined,
       },
-      ...(excludedBrands.length > 0 && { excludedBrands }),
     };
 
     const res = await fetch("/api/garage/register", {
@@ -258,32 +249,6 @@ export function RegistroTallerForm() {
                 </div>
               </div>
 
-              {/* Marcas excluidas */}
-              <div className="pt-2">
-                <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
-                  <Tag className="h-3.5 w-3.5" />Marcas con las que NO trabajas <span className="font-normal normal-case tracking-normal">(opcional)</span>
-                </p>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input value={brandInput} onChange={e => setBrandInput(e.target.value)}
-                      onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addBrand(brandInput); } }}
-                      placeholder="Ej: BMW, Lamborghini…" className="flex-1" />
-                    <Button type="button" variant="outline" size="sm" onClick={() => addBrand(brandInput)} className="shrink-0">Añadir</Button>
-                  </div>
-                  {excludedBrands.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {excludedBrands.map(b => (
-                        <span key={b} className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-50 border border-red-200 text-xs font-medium text-red-700">
-                          {b}
-                          <button type="button" onClick={() => removeBrand(b)} className="hover:text-red-900" aria-label={`Eliminar ${b}`}>
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
 
               {/* Acceso */}
               <div className="pt-2">
