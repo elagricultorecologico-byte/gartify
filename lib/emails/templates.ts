@@ -355,7 +355,49 @@ export function verificacionEmailTaller(
   };
 }
 
-// ─── Template 6: Status update → Customer ────────────────────────────────────
+// ─── Template 6: Nuevo taller registrado → Gartify interno ──────────────────
+
+export function nuevoTallerInternoEmail(
+  ownerName: string,
+  garageName: string,
+  email: string,
+  city: string,
+  province: string,
+): { subject: string; html: string } {
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#dbeafe;border-radius:50%;border:2px solid #bfdbfe;margin-bottom:12px;">
+        <span style="font-size:28px;">🔧</span>
+      </div>
+      <h1 style="margin:0;font-size:20px;font-weight:800;color:#1a3664;">Nuevo taller registrado</h1>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#1a5496;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Datos del taller</span>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${detailRow("🏪", "Taller", garageName)}
+        ${detailRow("👤", "Responsable", ownerName)}
+        ${detailRow("✉️", "Email", email)}
+        ${detailRow("📍", "Ubicación", `${city} (${province})`)}
+      </table>
+    </div>
+
+    <div style="text-align:center;margin-bottom:8px;">
+      <a href="${BASE_URL}/admin/talleres"
+         style="display:inline-block;background:#1a3664;color:#ffffff;font-size:14px;font-weight:700;padding:11px 28px;border-radius:8px;text-decoration:none;">
+        Ver en el panel de admin
+      </a>
+    </div>
+  `);
+  return {
+    subject: `🔧 Nuevo taller: ${garageName} (${city})`,
+    html,
+  };
+}
+
+// ─── Template 7: Status update → Customer ────────────────────────────────────
 
 export interface StatusUpdateEmailData {
   customerName: string;

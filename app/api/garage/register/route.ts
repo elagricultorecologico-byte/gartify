@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
-import { verificacionEmailTaller } from "@/lib/emails/templates";
+import { verificacionEmailTaller, nuevoTallerInternoEmail } from "@/lib/emails/templates";
 
 /** Schema de un servicio inicial enviado desde el wizard de registro */
 const schemaServicioInicial = z.object({
@@ -261,6 +261,10 @@ export async function POST(req: Request) {
     const verificationUrl = `${baseUrl}/verificar-email/${verificationToken}`;
     const { subject, html } = verificacionEmailTaller(data.ownerName, data.garageName, verificationUrl);
     void sendMail({ to: data.email, subject, html });
+
+    // Notificación interna a Gartify
+    const interno = nuevoTallerInternoEmail(data.ownerName, data.garageName, data.email, data.city, data.province);
+    void sendMail({ to: "hola@gartify.es", subject: interno.subject, html: interno.html });
 
     return NextResponse.json({ ok: true });
   } catch {
