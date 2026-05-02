@@ -318,7 +318,44 @@ export function welcomeGarageEmail(ownerName: string, garageName: string): { sub
   };
 }
 
-// ─── Template 5: Status update → Customer ────────────────────────────────────
+// ─── Template 5: Email verification → new Garage owner ───────────────────────
+
+export function verificacionEmailTaller(
+  ownerName: string,
+  garageName: string,
+  verificationUrl: string,
+): { subject: string; html: string } {
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#dcfce7;border-radius:50%;border:2px solid #bbf7d0;margin-bottom:12px;">
+        <span style="font-size:28px;">✉️</span>
+      </div>
+      <h1 style="margin:0;font-size:22px;font-weight:800;color:#1a3664;">Confirma tu email</h1>
+      <p style="margin:8px 0 0;font-size:14px;color:#64748b;">Hola <strong>${ownerName}</strong>, gracias por registrar <strong>${garageName}</strong> en Gartify. Solo queda un paso.</p>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin-bottom:24px;font-size:14px;color:#166534;text-align:center;">
+      Haz clic en el botón para verificar tu dirección de email y activar tu cuenta.
+    </div>
+
+    <div style="text-align:center;margin-bottom:20px;">
+      <a href="${verificationUrl}"
+         style="display:inline-block;background:#16a34a;color:#ffffff;font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;">
+        ✅ Verificar mi email
+      </a>
+    </div>
+
+    <p style="font-size:12px;color:#94a3b8;text-align:center;margin:0;">
+      Este enlace caduca en 24 horas. Si no creaste esta cuenta, ignora este mensaje.
+    </p>
+  `);
+  return {
+    subject: `Confirma tu email para activar tu taller en Gartify`,
+    html,
+  };
+}
+
+// ─── Template 6: Status update → Customer ────────────────────────────────────
 
 export interface StatusUpdateEmailData {
   customerName: string;

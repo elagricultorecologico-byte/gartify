@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
-import { welcomeGarageEmail } from "@/lib/emails/templates";
+import { verificacionEmailTaller } from "@/lib/emails/templates";
 
 /** Schema de un servicio inicial enviado desde el wizard de registro */
 const schemaServicioInicial = z.object({
@@ -211,7 +212,7 @@ export async function POST(req: Request) {
         ? data.initialServices
         : buildInitialServices(data.laborRate, undefined);
 
-    await db.user.create({
+    const newUser = await db.user.create({
       data: {
         name:     data.ownerName,
         email:    data.email,
@@ -242,7 +243,23 @@ export async function POST(req: Request) {
       },
     });
 
-    const { subject, html } = welcomeGarageEmail(data.ownerName, data.garageName);
+    // Generar token de verificación de email (válido 24 h)
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore -- EmailVerification added in schema, Prisma client needs regeneration
+    await db.emailVerification.create({
+      data: {
+        token:     verificationToken,
+        userId:    newUser.id,
+        expiresAt,
+      },
+    });
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://gartify.es";
+    const verificationUrl = `${baseUrl}/verificar-email/${verificationToken}`;
+    const { subject, html } = verificacionEmailTaller(data.ownerName, data.garageName, verificationUrl);
     void sendMail({ to: data.email, subject, html });
 
     return NextResponse.json({ ok: true });

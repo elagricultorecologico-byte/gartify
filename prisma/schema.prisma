@@ -8,19 +8,29 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(cuid())
-  name        String?
-  email       String       @unique
-  password    String?
-  phone          String?
-  whatsappOptIn  Boolean      @default(false)
-  role           String       @default("CUSTOMER")
-  bookings    Booking[]
-  reviews     Review[]
-  garage      Garage?
-  distributor Distributor?
-  vehicles    Vehicle[]
-  createdAt   DateTime     @default(now())
+  id            String       @id @default(cuid())
+  name          String?
+  email         String       @unique
+  password      String?
+  phone         String?
+  whatsappOptIn Boolean      @default(false)
+  role          String       @default("CUSTOMER")
+  emailVerified DateTime?
+  bookings      Booking[]
+  reviews       Review[]
+  garage        Garage?
+  distributor   Distributor?
+  vehicles      Vehicle[]
+  createdAt     DateTime     @default(now())
+}
+
+model EmailVerification {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }
 
 model Garage {
