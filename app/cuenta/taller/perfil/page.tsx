@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { Building2 } from "lucide-react";
 import { GarageProfileForm } from "@/components/cuenta/GarageProfileForm";
 import { EliminarCuentaButton } from "@/components/cuenta/EliminarCuentaButton";
+import { TarjetaPaginaPublica } from "@/components/cuenta/TarjetaPaginaPublica";
 
 export const metadata: Metadata = {
   title: "Editar perfil del taller",
@@ -22,7 +23,9 @@ export default async function PerfilTallerPage() {
   if (!garage) redirect("/cuenta/taller");
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
+    <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8 space-y-5">
+      <TarjetaPaginaPublica plan={garage.plan} slug={(garage as unknown as { slug?: string | null }).slug ?? null} />
+
       <div className="bg-white border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">
           <div className="flex items-center gap-3">
