@@ -5,6 +5,15 @@ import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
 import { welcomeGarageEmail } from "@/lib/emails/templates";
 
+/** Schema de un servicio inicial enviado desde el wizard de registro */
+const schemaServicioInicial = z.object({
+  type:        z.string().min(1),
+  name:        z.string().min(1),
+  description: z.string(),
+  price:       z.number().nonnegative(),
+  duration:    z.number().int().positive(),
+});
+
 const schema = z.object({
   ownerName:   z.string().min(2),
   email:       z.string().email(),
@@ -15,15 +24,12 @@ const schema = z.object({
   city:        z.string().min(2),
   province:    z.string().min(2),
   postalCode:  z.string().length(5),
-  description:  z.string().optional(),
-  vehicleTypes: z.array(z.string()).min(1).optional(),
-  laborRate:    z.number().positive().optional(),
-  anchorPrices: z.object({
-    revisionBasica:    z.number().nonnegative().optional(),
-    preItv:            z.number().nonnegative().optional(),
-    aireAcondicionado: z.number().nonnegative().optional(),
-  }).optional(),
-  excludedBrands: z.array(z.string()).optional(),
+  description:     z.string().optional(),
+  vehicleTypes:    z.array(z.string()).min(1).optional(),
+  laborRate:       z.number().positive().optional(),
+  /** Servicios seleccionados en el wizard de registro (máx. 3) */
+  initialServices: z.array(schemaServicioInicial).max(3).optional(),
+  excludedBrands:  z.array(z.string()).optional(),
 });
 
 /** Redondea al múltiplo de 5 más cercano */
@@ -197,7 +203,13 @@ export async function POST(req: Request) {
     // Geocodificación no bloqueante: si falla, el taller se registra sin coordenadas
     const coordenadas = await geocodificarDireccion(data.address, data.city, data.postalCode);
 
-    const initialServices = buildInitialServices(data.laborRate, data.anchorPrices);
+    // Si el wizard envió servicios explícitos los usamos directamente;
+    // en caso contrario, generamos los servicios automáticos como fallback
+    // (compatibilidad con integraciones antiguas o formularios sin wizard).
+    const initialServices =
+      data.initialServices && data.initialServices.length > 0
+        ? data.initialServices
+        : buildInitialServices(data.laborRate, undefined);
 
     await db.user.create({
       data: {
@@ -220,13 +232,10 @@ export async function POST(req: Request) {
             email:        data.email,
             vehicleTypes: JSON.stringify(data.vehicleTypes ?? ["COCHE"]),
             ...(data.laborRate !== undefined && { laborRate: data.laborRate }),
-            ...(data.anchorPrices && { anchorPrices: JSON.stringify(data.anchorPrices) }),
             ...(data.excludedBrands && data.excludedBrands.length > 0 && { excludedBrands: JSON.stringify(data.excludedBrands) }),
             ...(coordenadas && { lat: coordenadas.lat, lng: coordenadas.lng }),
             ...(initialServices.length > 0 && {
-              services: {
-                create: initialServices,
-              },
+              services: { create: initialServices as never },
             }),
           },
         },
