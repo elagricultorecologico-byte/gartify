@@ -6,7 +6,10 @@ import { cloudinary } from "@/lib/cloudinary";
 // Tamaño máximo permitido: 5 MB
 const TAMANO_MAX_BYTES = 5 * 1024 * 1024;
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
+  console.log("[cover-image] POST recibido");
   // Verificar sesión
   const sesion = await auth();
   if (!sesion?.user?.id) {
@@ -26,7 +29,8 @@ export async function POST(req: Request) {
   let form: FormData;
   try {
     form = await req.formData();
-  } catch {
+  } catch (e) {
+    console.error("[cover-image] formData error:", e);
     return NextResponse.json({ error: "No se pudo leer el formulario" }, { status: 400 });
   }
 
