@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { generateUniqueSlug } from "@/lib/slug";
 import { sendMail } from "@/lib/mailer";
 import { verificacionEmailTaller, nuevoTallerInternoEmail } from "@/lib/emails/templates";
 
@@ -241,6 +242,13 @@ export async function POST(req: Request) {
           },
         },
       },
+    });
+
+    // Generar slug único para la landing pública del taller (/t/[slug])
+    const slug = await generateUniqueSlug(data.garageName);
+    await db.garage.update({
+      where: { ownerId: newUser.id },
+      data: { slug },
     });
 
     // Generar token de verificación de email (válido 24 h)

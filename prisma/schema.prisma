@@ -75,6 +75,7 @@ model Garage {
   serviceRecords ServiceRecord[]          // Sellos emitidos por este taller
   blockedSlots   BlockedSlot[]
   createdAt      DateTime        @default(now())
+  slug           String?         @unique  // URL pública: gartify.es/t/[slug] (solo PRO/PREMIUM)
   deletedAt      DateTime?       // Soft delete: fecha de baja del taller
 }
 

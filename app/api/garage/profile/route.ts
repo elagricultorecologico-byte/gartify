@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { z } from "zod";
+import { slugify } from "@/lib/slug";
 
 const TIPOS_VEHICULO_VALIDOS = [
   "COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION",
@@ -25,6 +26,13 @@ const schema = z.object({
     .optional(),
   // Array de categorías del taller (valores libres de GARAGE_CATEGORIES)
   categories: z.array(z.string()).optional(),
+  // Slug personalizado para la landing pública (solo PRO/PREMIUM)
+  slug: z
+    .string()
+    .min(3, "El slug debe tener al menos 3 caracteres")
+    .max(60, "El slug no puede superar 60 caracteres")
+    .regex(/^[a-z0-9-]+$/, "Solo se permiten letras minúsculas, números y guiones")
+    .optional(),
 });
 
 export async function PATCH(req: Request) {
@@ -38,8 +46,32 @@ export async function PATCH(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
 
-  // Extraemos vehicleTypes y categories del resto para serializar como JSON strings en SQLite
-  const { vehicleTypes, categories, ...restoData } = parsed.data;
+  // Extraemos vehicleTypes, categories y slug del resto para manejo especial
+  const { vehicleTypes, categories, slug, ...restoData } = parsed.data;
+
+  // Validar y normalizar el slug si se envía
+  let slugFinal: string | undefined;
+  if (slug !== undefined) {
+    // Solo los planes PRO y PREMIUM pueden tener slug
+    if (!["PRO", "PREMIUM"].includes(garage.plan)) {
+      return NextResponse.json(
+        { error: "La URL personalizada solo está disponible en los planes Pro y Premium" },
+        { status: 403 }
+      );
+    }
+
+    // Normalizar para evitar diferencias de mayúsculas o espacios residuales
+    slugFinal = slugify(slug);
+
+    // Verificar unicidad: excluir el propio taller
+    const existente = await db.garage.findUnique({ where: { slug: slugFinal } });
+    if (existente && existente.id !== garage.id) {
+      return NextResponse.json(
+        { error: "Esta URL ya está en uso. Elige otra diferente." },
+        { status: 409 }
+      );
+    }
+  }
 
   const updated = await db.garage.update({
     where: { id: garage.id },
@@ -54,6 +86,8 @@ export async function PATCH(req: Request) {
       ...(categories !== undefined && {
         categories: JSON.stringify(categories),
       }),
+      // Solo actualizamos el slug si viene en el body y pasó las validaciones
+      ...(slugFinal !== undefined && { slug: slugFinal }),
     },
   });
 

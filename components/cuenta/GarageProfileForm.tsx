@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   CheckCircle, AlertCircle, Loader2, Building2,
-  MapPin, Phone, Mail, ChevronRight, Camera, X, Car, PackageCheck, Wrench,
+  MapPin, Phone, Mail, ChevronRight, Camera, X, Car, PackageCheck, Wrench, Globe, Lock,
 } from "lucide-react";
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
 import { GARAGE_CATEGORIES } from "@/lib/constants";
@@ -42,6 +42,11 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  // — Estado slug (URL personalizada, solo PRO/PREMIUM) —
+  const esPlanPremium = garage.plan === "PRO" || garage.plan === "PREMIUM";
+  const [slug, setSlug] = useState<string>((garage as { slug?: string | null }).slug ?? "");
+  const [slugError, setSlugError] = useState("");
 
   const [phone, setPhone] = useState<string | undefined>(garage.phone ?? undefined);
   const [defaultCountry, setDefaultCountry] = useState<Country>("ES");
@@ -163,11 +168,28 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
+  function validarSlug(valor: string): string {
+    if (valor === "") return ""; // campo opcional: vacío es válido
+    if (valor.length < 3) return "Mínimo 3 caracteres";
+    if (valor.length > 60) return "Máximo 60 caracteres";
+    if (!/^[a-z0-9-]+$/.test(valor)) return "Solo letras minúsculas, números y guiones";
+    return "";
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
     setSuccess(false);
+
+    // Validar slug antes de enviar
+    const errorSlug = validarSlug(slug);
+    if (errorSlug) {
+      setSlugError(errorSlug);
+      setLoading(false);
+      return;
+    }
+
     const fd = new FormData(e.currentTarget);
 
     const res = await fetch("/api/garage/profile", {
@@ -186,15 +208,23 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
         pickupService,
         vehicleTypes: selectedVehicleTypes,
         categories: selectedCategories,
+        // Solo enviar slug si el taller tiene plan PRO/PREMIUM y hay valor
+        ...(esPlanPremium && slug.trim() !== "" && { slug: slug.trim() }),
       }),
     });
 
     setLoading(false);
     if (!res.ok) {
       const d = await res.json() as { error?: string };
-      setError(d.error ?? "Error al guardar");
+      // Si el servidor indica conflicto de slug (409), mostrar el error junto al campo
+      if (res.status === 409) {
+        setSlugError(d.error ?? "Esta URL ya está en uso");
+      } else {
+        setError(d.error ?? "Error al guardar");
+      }
       return;
     }
+    setSlugError("");
     setSuccess(true);
     router.refresh();
   }
@@ -569,6 +599,57 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 {pickupService && <CheckCircle className="h-4 w-4 ml-2 text-gartify-hero" aria-hidden="true" />}
               </button>
             </div>
+          </div>
+
+          {/* — URL personalizada (solo PRO/PREMIUM) — */}
+          <div className="pt-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
+              <Globe className="h-3.5 w-3.5" aria-hidden="true" />URL pública del taller
+            </p>
+            {esPlanPremium ? (
+              <div className="space-y-2">
+                <p className="text-xs text-gartify-gray">
+                  Tu taller tendrá una página pública en{" "}
+                  <span className="font-mono text-gartify-dark">gartify.es/t/<strong>{slug || "tu-taller"}</strong></span>.
+                  Solo letras minúsculas, números y guiones.
+                </p>
+                <div className="flex items-center gap-0 max-w-sm">
+                  <span className="inline-flex items-center px-3 py-2 border border-r-0 border-gray-200 bg-gray-50 text-xs text-gartify-gray font-mono shrink-0">
+                    gartify.es/t/
+                  </span>
+                  <Input
+                    id="slug"
+                    value={slug}
+                    onChange={(e) => {
+                      const valor = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+                      setSlug(valor);
+                      setSlugError(validarSlug(valor));
+                    }}
+                    placeholder="martinez-auto"
+                    maxLength={60}
+                    className={cn(
+                      "font-mono text-sm",
+                      slugError ? "border-red-400 focus-visible:ring-red-400" : ""
+                    )}
+                    aria-describedby={slugError ? "slug-error" : undefined}
+                  />
+                </div>
+                {slugError && (
+                  <p id="slug-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    {slugError}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-200 max-w-sm">
+                <Lock className="h-4 w-4 text-gartify-gray shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-xs text-gartify-gray">
+                  La URL personalizada está disponible a partir del{" "}
+                  <span className="font-semibold text-gartify-dark">plan Pro</span>.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Feedback */}
