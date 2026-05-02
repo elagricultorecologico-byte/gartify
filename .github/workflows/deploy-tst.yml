@@ -1,0 +1,25 @@
+name: Deploy TST
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy a tst.gartify.es
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 178.104.75.220
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /var/www/gartify-tst
+            git checkout package-lock.json
+            git pull origin develop
+            npx prisma db push --skip-generate
+            npm run build
+            pm2 restart gartify-tst

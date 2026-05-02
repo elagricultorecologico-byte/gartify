@@ -1,0 +1,25 @@
+name: Deploy PRO
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy a gartify.es
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 178.104.75.220
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            cd /var/www/gartify-pro
+            git checkout package-lock.json
+            git pull origin master
+            npx prisma db push --skip-generate
+            npm run build
+            pm2 restart gartify-pro
