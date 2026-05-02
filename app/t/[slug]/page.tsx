@@ -440,7 +440,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-letra-fondo-blanco.png" alt="Gartify" className="h-6 w-auto" />
+              <img src="/logo-gartify-default.svg" alt="Gartify" className="h-6 w-auto" />
               <div>
                 <p className="text-xs font-semibold text-gartify-dark">Reserva online segura</p>
                 <p className="text-xs text-gartify-gray">Gestionada por Gartify · Taller verificado</p>
