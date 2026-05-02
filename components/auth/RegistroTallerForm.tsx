@@ -31,7 +31,7 @@ import {
 
 // ── Tipos del estado del wizard ───────────────────────────────────────────────
 
-type PasoWizard = 1 | 2 | 3;
+type PasoWizard = 1 | 2 | 3 | 4;
 
 interface EstadoPaso1 {
   garageName: string;
@@ -41,15 +41,18 @@ interface EstadoPaso1 {
   province: string;
   community: string;
   description: string;
-  vehicleTypes: string[];
 }
 
 interface EstadoPaso2 {
+  vehicleTypes: string[];
+}
+
+interface EstadoPaso3 {
   serviciosSeleccionados: ServicioSeleccionado[];
   laborRate: string;
 }
 
-interface EstadoPaso3 {
+interface EstadoPaso4 {
   ownerName: string;
   phone: string | undefined;
   whatsappOptIn: boolean;
@@ -65,7 +68,7 @@ interface IndicadorProgresoProps {
   pasoActual: PasoWizard;
 }
 
-const PASOS_LABELS = ["Tu taller", "Servicios", "Tu cuenta"] as const;
+const PASOS_LABELS = ["Tu taller", "Vehículos", "Servicios", "Tu cuenta"] as const;
 
 function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
   return (
@@ -136,17 +139,21 @@ export function RegistroTallerForm() {
     province:     "",
     community:    "",
     description:  "",
+  });
+
+  // Estado del Paso 2 — Tipos de vehículo
+  const [paso2, setPaso2] = useState<EstadoPaso2>({
     vehicleTypes: ["COCHE"],
   });
 
-  // Estado del Paso 2 — Servicios
-  const [paso2, setPaso2] = useState<EstadoPaso2>({
+  // Estado del Paso 3 — Servicios
+  const [paso3, setPaso3] = useState<EstadoPaso3>({
     serviciosSeleccionados: [],
     laborRate:              "",
   });
 
-  // Estado del Paso 3 — Cuenta
-  const [paso3, setPaso3] = useState<EstadoPaso3>({
+  // Estado del Paso 4 — Cuenta
+  const [paso4, setPaso4] = useState<EstadoPaso4>({
     ownerName:       "",
     phone:           undefined,
     whatsappOptIn:   false,
@@ -167,16 +174,15 @@ export function RegistroTallerForm() {
     setPaso1((prev) => ({ ...prev, [campo]: valor }));
   }
 
-  function actualizarPaso3<K extends keyof EstadoPaso3>(
+  function actualizarPaso4<K extends keyof EstadoPaso4>(
     campo: K,
-    valor: EstadoPaso3[K],
+    valor: EstadoPaso4[K],
   ) {
-    setPaso3((prev) => ({ ...prev, [campo]: valor }));
+    setPaso4((prev) => ({ ...prev, [campo]: valor }));
   }
 
   function toggleVehiculo(type: string) {
-    setPaso1((prev) => ({
-      ...prev,
+    setPaso2((prev) => ({
       vehicleTypes: prev.vehicleTypes.includes(type)
         ? prev.vehicleTypes.length > 1
           ? prev.vehicleTypes.filter((t) => t !== type)
@@ -208,28 +214,32 @@ export function RegistroTallerForm() {
       return "Introduce un código postal válido (5 dígitos)";
     if (!paso1.city.trim())        return "La población es obligatoria";
     if (!paso1.province.trim())    return "La provincia es obligatoria";
-    if (paso1.vehicleTypes.length === 0)
-      return "Selecciona al menos un tipo de vehículo";
     return null;
   }
 
   function validarPaso2(): string | null {
-    // El paso 2 es completamente opcional (0 servicios y sin laborRate son válidos)
-    const laborRaw = paso2.laborRate.trim();
+    if (paso2.vehicleTypes.length === 0)
+      return "Selecciona al menos un tipo de vehículo";
+    return null;
+  }
+
+  function validarPaso3(): string | null {
+    // El paso 3 es completamente opcional (0 servicios y sin laborRate son válidos)
+    const laborRaw = paso3.laborRate.trim();
     if (laborRaw && (isNaN(parseFloat(laborRaw)) || parseFloat(laborRaw) <= 0)) {
       return "La mano de obra debe ser un número positivo";
     }
     return null;
   }
 
-  function validarPaso3(): string | null {
-    if (!paso3.ownerName.trim())   return "El nombre del responsable es obligatorio";
-    if (!paso3.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(paso3.email))
+  function validarPaso4(): string | null {
+    if (!paso4.ownerName.trim())   return "El nombre del responsable es obligatorio";
+    if (!paso4.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(paso4.email))
       return "Introduce un email válido";
-    if (paso3.password.length < 6) return "La contraseña debe tener al menos 6 caracteres";
-    if (!paso3.phone || !isValidPhoneNumber(paso3.phone))
+    if (paso4.password.length < 6) return "La contraseña debe tener al menos 6 caracteres";
+    if (!paso4.phone || !isValidPhoneNumber(paso4.phone))
       return "Introduce un teléfono móvil válido";
-    if (!paso3.acceptLegal)
+    if (!paso4.acceptLegal)
       return "Debes aceptar los Términos y la Política de privacidad";
     return null;
   }
@@ -242,12 +252,13 @@ export function RegistroTallerForm() {
 
     if (paso === 1) errorValidacion = validarPaso1();
     if (paso === 2) errorValidacion = validarPaso2();
+    if (paso === 3) errorValidacion = validarPaso3();
 
     if (errorValidacion) {
       setErrorPaso(errorValidacion);
       return;
     }
-    setPaso((p) => (p < 3 ? ((p + 1) as PasoWizard) : p));
+    setPaso((p) => (p < 4 ? ((p + 1) as PasoWizard) : p));
   }
 
   function retrocederPaso() {
@@ -255,24 +266,24 @@ export function RegistroTallerForm() {
     setPaso((p) => (p > 1 ? ((p - 1) as PasoWizard) : p));
   }
 
-  // ── Submit final (paso 3) ─────────────────────────────────────────────────
+  // ── Submit final (paso 4) ─────────────────────────────────────────────────
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrorPaso("");
 
-    const errorValidacion = validarPaso3();
+    const errorValidacion = validarPaso4();
     if (errorValidacion) { setErrorPaso(errorValidacion); return; }
 
     setLoading(true);
 
-    const laborRateRaw = paso2.laborRate.trim();
+    const laborRateRaw = paso3.laborRate.trim();
     const body = {
-      ownerName:    paso3.ownerName.trim(),
-      email:        paso3.email.trim(),
-      password:     paso3.password,
-      phone:        paso3.phone,
-      whatsappOptIn: paso3.whatsappOptIn,
+      ownerName:    paso4.ownerName.trim(),
+      email:        paso4.email.trim(),
+      password:     paso4.password,
+      phone:        paso4.phone,
+      whatsappOptIn: paso4.whatsappOptIn,
       garageName:   paso1.garageName.trim(),
       address:      paso1.address.trim(),
       city:         paso1.city.trim(),
@@ -280,10 +291,10 @@ export function RegistroTallerForm() {
       community:    paso1.community.trim(),
       postalCode:   paso1.postalCode.trim(),
       description:  paso1.description.trim() || undefined,
-      vehicleTypes: paso1.vehicleTypes,
+      vehicleTypes: paso2.vehicleTypes,
       ...(laborRateRaw && { laborRate: parseFloat(laborRateRaw) }),
-      ...(paso2.serviciosSeleccionados.length > 0 && {
-        initialServices: paso2.serviciosSeleccionados,
+      ...(paso3.serviciosSeleccionados.length > 0 && {
+        initialServices: paso3.serviciosSeleccionados,
       }),
     };
 
@@ -300,8 +311,8 @@ export function RegistroTallerForm() {
     }
 
     await signIn("credentials", {
-      email:    paso3.email.trim(),
-      password: paso3.password,
+      email:    paso4.email.trim(),
+      password: paso4.password,
       redirect: false,
     });
     router.push("/cuenta/taller");
@@ -413,39 +424,51 @@ export function RegistroTallerForm() {
             onChange={(e) => actualizarPaso1("description", e.target.value)}
           />
         </div>
-
-        {/* Tipos de vehículo */}
-        <div className="pt-1">
-          <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
-            <Car className="h-3.5 w-3.5" />
-            Vehículos que admite <span className="text-red-500 normal-case tracking-normal font-normal">*</span>
-          </p>
-          <div className="grid grid-cols-3 gap-2">
-            {VEHICLE_TYPES.map((type) => {
-              const activo = paso1.vehicleTypes.includes(type);
-              return (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => toggleVehiculo(type)}
-                  className={`flex items-center gap-2 px-3 py-2 border text-xs font-medium transition-all ${
-                    activo
-                      ? "border-gartify-blue bg-blue-50 text-gartify-blue"
-                      : "border-gray-200 bg-white text-gartify-gray hover:border-gartify-blue/40"
-                  }`}
-                >
-                  <span aria-hidden="true">{VEHICLE_ICONS[type]}</span>
-                  {VEHICLE_LABELS[type]}
-                </button>
-              );
-            })}
-          </div>
-        </div>
       </div>
     );
   }
 
   function renderPaso2() {
+    return (
+      <div className="space-y-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-1 flex items-center gap-1.5">
+            <Car className="h-3.5 w-3.5" />
+            Vehículos que admite <span className="text-red-500 normal-case tracking-normal font-normal">*</span>
+          </p>
+          <p className="text-sm font-semibold text-gartify-blue">
+            ¿Con qué tipos de vehículo trabajas?
+          </p>
+          <p className="text-xs text-gartify-gray mt-0.5">
+            Selecciona todos los que apliquen. Podrás cambiarlo después.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          {VEHICLE_TYPES.map((type) => {
+            const activo = paso2.vehicleTypes.includes(type);
+            return (
+              <button
+                key={type}
+                type="button"
+                onClick={() => toggleVehiculo(type)}
+                className={`flex items-center gap-2 px-3 py-2.5 border text-xs font-medium transition-all ${
+                  activo
+                    ? "border-gartify-blue bg-blue-50 text-gartify-blue"
+                    : "border-gray-200 bg-white text-gartify-gray hover:border-gartify-blue/40"
+                }`}
+              >
+                <span aria-hidden="true" className="text-base">{VEHICLE_ICONS[type]}</span>
+                {VEHICLE_LABELS[type]}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  function renderPaso3() {
     return (
       <div className="space-y-4">
         {/* Encabezado descriptivo */}
@@ -464,9 +487,9 @@ export function RegistroTallerForm() {
 
         {/* Selector de servicios del catálogo */}
         <RegistroServicePicker
-          selected={paso2.serviciosSeleccionados}
+          selected={paso3.serviciosSeleccionados}
           onChange={(servicios) =>
-            setPaso2((prev) => ({ ...prev, serviciosSeleccionados: servicios }))
+            setPaso3((prev) => ({ ...prev, serviciosSeleccionados: servicios }))
           }
           maxServices={3}
         />
@@ -484,9 +507,9 @@ export function RegistroTallerForm() {
               min="0"
               step="1"
               placeholder="Ej: 45"
-              value={paso2.laborRate}
+              value={paso3.laborRate}
               onChange={(e) =>
-                setPaso2((prev) => ({ ...prev, laborRate: e.target.value }))
+                setPaso3((prev) => ({ ...prev, laborRate: e.target.value }))
               }
             />
           </div>
@@ -495,7 +518,7 @@ export function RegistroTallerForm() {
     );
   }
 
-  function renderPaso3() {
+  function renderPaso4() {
     return (
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* Nombre del responsable */}
@@ -510,8 +533,8 @@ export function RegistroTallerForm() {
           <Input
             id="ownerName"
             placeholder="Carlos Martínez"
-            value={paso3.ownerName}
-            onChange={(e) => actualizarPaso3("ownerName", e.target.value)}
+            value={paso4.ownerName}
+            onChange={(e) => actualizarPaso4("ownerName", e.target.value)}
             autoComplete="name"
           />
         </div>
@@ -524,10 +547,10 @@ export function RegistroTallerForm() {
           <PhoneInput
             id="tphone"
             defaultCountry="ES"
-            value={paso3.phone}
+            value={paso4.phone}
             onChange={(val) => {
-              actualizarPaso3("phone", val);
-              if (!val) actualizarPaso3("whatsappOptIn", false);
+              actualizarPaso4("phone", val);
+              if (!val) actualizarPaso4("whatsappOptIn", false);
             }}
             placeholder="666 666 666"
             className="phone-input-gartify"
@@ -537,15 +560,15 @@ export function RegistroTallerForm() {
         {/* WhatsApp opt-in */}
         <label
           className={`flex items-center gap-2.5 cursor-pointer border p-3 transition-colors ${
-            paso3.whatsappOptIn && paso3.phone
+            paso4.whatsappOptIn && paso4.phone
               ? "border-green-200 bg-green-50"
               : "border-gray-200 bg-gray-50"
           }`}
         >
           <input
             type="checkbox"
-            checked={paso3.whatsappOptIn}
-            onChange={(e) => actualizarPaso3("whatsappOptIn", e.target.checked)}
+            checked={paso4.whatsappOptIn}
+            onChange={(e) => actualizarPaso4("whatsappOptIn", e.target.checked)}
             className="h-4 w-4 border-gray-300 accent-green-600 shrink-0"
           />
           <MessageCircle className="h-4 w-4 text-green-600 shrink-0" />
@@ -570,8 +593,8 @@ export function RegistroTallerForm() {
                 id="temail"
                 type="email"
                 placeholder="taller@email.es"
-                value={paso3.email}
-                onChange={(e) => actualizarPaso3("email", e.target.value)}
+                value={paso4.email}
+                onChange={(e) => actualizarPaso4("email", e.target.value)}
                 autoComplete="email"
               />
             </div>
@@ -583,8 +606,8 @@ export function RegistroTallerForm() {
                 id="tpassword"
                 type="password"
                 placeholder="Mínimo 6 caracteres"
-                value={paso3.password}
-                onChange={(e) => actualizarPaso3("password", e.target.value)}
+                value={paso4.password}
+                onChange={(e) => actualizarPaso4("password", e.target.value)}
                 autoComplete="new-password"
                 minLength={6}
               />
@@ -597,8 +620,8 @@ export function RegistroTallerForm() {
           <label className="flex items-start gap-2.5 cursor-pointer">
             <input
               type="checkbox"
-              checked={paso3.acceptLegal}
-              onChange={(e) => actualizarPaso3("acceptLegal", e.target.checked)}
+              checked={paso4.acceptLegal}
+              onChange={(e) => actualizarPaso4("acceptLegal", e.target.checked)}
               className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
             />
             <span className="text-xs text-gray-600 leading-relaxed">
@@ -624,8 +647,8 @@ export function RegistroTallerForm() {
           <label className="flex items-start gap-2.5 cursor-pointer">
             <input
               type="checkbox"
-              checked={paso3.acceptComercial}
-              onChange={(e) => actualizarPaso3("acceptComercial", e.target.checked)}
+              checked={paso4.acceptComercial}
+              onChange={(e) => actualizarPaso4("acceptComercial", e.target.checked)}
               className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-gartify-blue shrink-0"
             />
             <span className="text-xs text-gray-600 leading-relaxed">
@@ -645,7 +668,7 @@ export function RegistroTallerForm() {
           </div>
         )}
 
-        {/* Botones de navegación del paso 3 */}
+        {/* Botones de navegación del paso 4 */}
         <div className="flex gap-3 pt-1">
           <Button
             type="button"
@@ -733,9 +756,9 @@ export function RegistroTallerForm() {
               </>
             )}
 
-            {paso === 2 && (
+            {(paso === 2 || paso === 3) && (
               <>
-                {renderPaso2()}
+                {paso === 2 ? renderPaso2() : renderPaso3()}
 
                 {errorPaso && (
                   <div
@@ -769,7 +792,7 @@ export function RegistroTallerForm() {
               </>
             )}
 
-            {paso === 3 && renderPaso3()}
+            {paso === 4 && renderPaso4()}
           </div>
 
           {/* Footer con enlace a login */}

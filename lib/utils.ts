@@ -15,27 +15,39 @@ export const VEHICLE_TYPES = [
   "FURGONETA",
   "AUTOCARAVANA",
   "CAMPER",
-  "CAMION",
+  "CAMION_RIGIDO",
+  "CAMION_ARTICULADO",
+  "MAQUINARIA",
+  "BICICLETA",
+  "PATINETE",
 ] as const
 
 export type VehicleType = (typeof VEHICLE_TYPES)[number]
 
 export const VEHICLE_LABELS: Record<string, string> = {
-  COCHE:        "Coche",
-  MOTO:         "Moto",
-  FURGONETA:    "Furgoneta",
-  AUTOCARAVANA: "Autocaravana",
-  CAMPER:       "Camper",
-  CAMION:       "Camión",
+  COCHE:              "Coche",
+  MOTO:               "Moto",
+  FURGONETA:          "Furgoneta / VAN",
+  AUTOCARAVANA:       "Autocaravana",
+  CAMPER:             "Camper",
+  CAMION_RIGIDO:      "Camión rígido",
+  CAMION_ARTICULADO:  "Camión articulado",
+  MAQUINARIA:         "Maquinaria agrícola",
+  BICICLETA:          "Bicicleta / E-bike",
+  PATINETE:           "Patinete eléctrico",
 }
 
 export const VEHICLE_ICONS: Record<string, string> = {
-  COCHE:        "🚗",
-  MOTO:         "🏍️",
-  FURGONETA:    "🚐",
-  AUTOCARAVANA: "🚌",
-  CAMPER:       "🏕️",
-  CAMION:       "🚚",
+  COCHE:              "🚗",
+  MOTO:               "🏍️",
+  FURGONETA:          "🚐",
+  AUTOCARAVANA:       "🚌",
+  CAMPER:             "🏕️",
+  CAMION_RIGIDO:      "🚚",
+  CAMION_ARTICULADO:  "🚛",
+  MAQUINARIA:         "🚜",
+  BICICLETA:          "🚲",
+  PATINETE:           "🛴",
 }
 
 export const BOOKING_STATUS_LABELS: Record<string, string> = {

@@ -319,11 +319,11 @@ async function main() {
   // Garage 6 — Sant Feliu de Llobregat
   const garage6 = await prisma.garage.upsert({
     where: { ownerId: owner6.id },
-    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]), categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "CAMIONES_FURGONETAS", "MOTOS"]), province: "Barcelona" },
+    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION_RIGIDO"]), categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "CAMIONES_FURGONETAS", "MOTOS"]), province: "Barcelona" },
     create: {
       name: "Soler Automòbils",
       plan: "PREMIUM",
-      vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION"]),
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA", "CAMION_RIGIDO"]),
       categories: JSON.stringify(["MECANICA_GENERAL", "ITV_STATION", "CLIMATIZACION_AC", "DIAGNOSTICO_ELECTRONICO", "CAMIONES_FURGONETAS", "MOTOS"]),
       description: "Taller mecánico oficial en Sant Feliu de Llobregat. Más de 15 años de experiencia. Servicio de sustitución y coche de cortesía disponible.",
       address: "Carrer de la Creu, 34",
