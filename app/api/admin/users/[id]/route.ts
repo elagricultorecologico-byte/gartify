@@ -27,17 +27,33 @@ const patchSchema = z.object({
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   if (!await requireAdmin()) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
+  let body: unknown;
+  try { body = await req.json(); } catch {
+    return NextResponse.json({ error: "Petición inválida" }, { status: 400 });
+  }
+
+  const parsed = patchSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Datos inválidos", details: parsed.error.flatten() }, { status: 400 });
+  }
+
+  const data = parsed.data;
+  if (data.phone) data.phone = toE164(data.phone);
+
+  // Verificar unicidad de email si se cambia
+  if (data.email) {
+    const existing = await db.user.findFirst({ where: { email: data.email, NOT: { id: params.id } } });
+    if (existing) return NextResponse.json({ error: "Este email ya está en uso por otro usuario" }, { status: 409 });
+  }
+
   try {
-    const body = await req.json();
-    const data = patchSchema.parse(body);
-    if (data.phone) data.phone = toE164(data.phone);
     const user = await db.user.update({ where: { id: params.id }, data });
-    // Si se actualiza el teléfono de un GARAGE_OWNER, sincronizarlo en Garage.phone
     if (data.phone !== undefined && user.role === "GARAGE_OWNER") {
       await db.garage.updateMany({ where: { ownerId: params.id }, data: { phone: data.phone ?? "" } });
     }
     return NextResponse.json({ ok: true, user });
-  } catch {
+  } catch (e) {
+    console.error("[admin/users PATCH]", e);
     return NextResponse.json({ error: "Error al actualizar el usuario" }, { status: 500 });
   }
 }

@@ -52,6 +52,7 @@ export function UserTable({ users: initial }: { users: User[] }) {
   const [editId, setEditId] = useState<string | null>(null);
   const [editData, setEditData] = useState<EditState>({ name: "", email: "", phone: "", role: "" });
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
@@ -79,10 +80,11 @@ export function UserTable({ users: initial }: { users: User[] }) {
     setEditData({ name: u.name ?? "", email: u.email, phone, role: u.role });
   }
 
-  function cancelEdit() { setEditId(null); }
+  function cancelEdit() { setEditId(null); setSaveError(null); }
 
   async function saveEdit(id: string) {
     setSaving(true);
+    setSaveError(null);
     const res = await fetch(`/api/admin/users/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -103,6 +105,9 @@ export function UserTable({ users: initial }: { users: User[] }) {
         return updated;
       }));
       setEditId(null);
+    } else {
+      const data = await res.json() as { error?: string };
+      setSaveError(data.error ?? "Error al guardar");
     }
     setSaving(false);
   }
@@ -273,6 +278,9 @@ export function UserTable({ users: initial }: { users: User[] }) {
 
                 {/* Acciones */}
                 <td className="px-3 py-3">
+                  {isEditing && saveError && (
+                    <p className="text-xs text-red-600 mb-1 max-w-[120px]">{saveError}</p>
+                  )}
                   {isEditing ? (
                     <div className="flex items-center gap-1">
                       <Button
