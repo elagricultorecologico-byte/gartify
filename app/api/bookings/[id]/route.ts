@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mailer";
-import { bookingStatusUpdateEmail } from "@/lib/emails/templates";
+import { bookingStatusUpdateEmail, reservaCanceladaClienteEmail } from "@/lib/emails/templates";
 import { sendConfirmacionReservaWhatsApp, sendVehiculoListoWhatsApp } from "@/lib/whatsapp";
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
@@ -19,7 +19,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   const booking = await db.booking.findUnique({
     where: { id: params.id },
     include: {
-      garage: true,
+      garage: { include: { owner: { select: { email: true } } } },
       service: true,
       user: { select: { name: true, email: true, phone: true, whatsappOptIn: true } },
     },
@@ -53,6 +53,21 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       bookingId:    booking.id,
     });
     sendMail({ to: booking.user.email, ...mail }).catch(console.error);
+  }
+
+  // ── Email al taller cuando el cliente cancela ────────────────────────────
+  if (isCustomer && status === "CANCELLED") {
+    const ownerEmail = booking.garage.owner?.email;
+    if (ownerEmail) {
+      const mail = reservaCanceladaClienteEmail({
+        garageName:   booking.garage.name,
+        customerName: booking.user?.name ?? "Cliente",
+        serviceName:  booking.service?.name ?? booking.serviceLabel ?? "Servicio",
+        date:         booking.date,
+        bookingId:    booking.id,
+      });
+      sendMail({ to: ownerEmail, ...mail }).catch(console.error);
+    }
   }
 
   // ── WhatsApp al conductor ────────────────────────────────────────────────

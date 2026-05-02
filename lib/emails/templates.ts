@@ -397,7 +397,59 @@ export function nuevoTallerInternoEmail(
   };
 }
 
-// ─── Template 7: Status update → Customer ────────────────────────────────────
+// ─── Template 7: Reserva cancelada por cliente → Taller ─────────────────────
+
+export function reservaCanceladaClienteEmail(data: {
+  garageName:  string;
+  customerName: string;
+  serviceName:  string;
+  date:         Date;
+  bookingId:    string;
+}): { subject: string; html: string } {
+  const formattedDate = new Intl.DateTimeFormat("es-ES", {
+    weekday: "long", day: "numeric", month: "long",
+    hour: "2-digit", minute: "2-digit",
+  }).format(data.date);
+
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#fee2e2;border-radius:50%;border:2px solid #fecaca;margin-bottom:12px;">
+        <span style="font-size:28px;">❌</span>
+      </div>
+      <h1 style="margin:0;font-size:22px;font-weight:800;color:#1a3664;">Reserva cancelada</h1>
+      <p style="margin:8px 0 0;font-size:14px;color:#64748b;">El cliente ha cancelado su cita en <strong>${data.garageName}</strong>.</p>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#dc2626;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.85);">Detalle de la reserva cancelada</span>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${detailRow("👤", "Cliente", data.customerName)}
+        ${detailRow("🔧", "Servicio", data.serviceName)}
+        ${detailRow("📅", "Fecha prevista", formattedDate)}
+      </table>
+    </div>
+
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#991b1b;">
+      Este hueco ha quedado libre en tu agenda. Puedes gestionarlo desde tu portal.
+    </div>
+
+    <div style="text-align:center;margin-bottom:8px;">
+      <a href="${BASE_URL}/cuenta/taller"
+         style="display:inline-block;background:#1a3664;color:#ffffff;font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;">
+        Ir a mis reservas
+      </a>
+    </div>
+  `);
+
+  return {
+    subject: `❌ Reserva cancelada — ${data.customerName}`,
+    html,
+  };
+}
+
+// ─── Template 8: Status update → Customer ────────────────────────────────────
 
 export interface StatusUpdateEmailData {
   customerName: string;
