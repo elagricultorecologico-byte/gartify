@@ -20,25 +20,28 @@ export function CoverImageUploader({ urlActual }: PropsCoverImageUploader) {
     setCargando(true);
     setError("");
 
-    const form = new FormData();
-    form.append("file", archivo);
+    try {
+      const form = new FormData();
+      form.append("file", archivo);
 
-    const respuesta = await fetch("/api/garage/cover-image", {
-      method: "POST",
-      body:   form,
-    });
+      const respuesta = await fetch("/api/garage/cover-image", {
+        method: "POST",
+        body:   form,
+      });
 
-    const datos = await respuesta.json() as { url?: string; error?: string };
+      const datos = await respuesta.json() as { url?: string; error?: string };
 
-    if (respuesta.ok && datos.url) {
-      setUrl(datos.url);
-    } else {
-      setError(datos.error ?? "Error al subir la imagen");
+      if (respuesta.ok && datos.url) {
+        setUrl(datos.url);
+      } else {
+        setError(datos.error ?? "Error al subir la imagen");
+      }
+    } catch {
+      setError("Error de conexión. Inténtalo de nuevo.");
+    } finally {
+      setCargando(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
-
-    setCargando(false);
-    // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
-    if (inputRef.current) inputRef.current.value = "";
   }
 
   return (
