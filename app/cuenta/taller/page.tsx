@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { CalendarDays, MailWarning } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import type { GarageBookingItem } from "@/components/cuenta/GarageBookingList";
 import { GarageBookingPoller } from "@/components/cuenta/GarageBookingPoller";
 import { BannerExitoSuscripcion } from "@/components/cuenta/BannerExitoSuscripcion";
@@ -28,10 +28,6 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
   const user = session.user as { id: string; role?: string };
   if (user.role !== "GARAGE_OWNER") redirect("/cuenta");
 
-  const userRow = await (db.user.findUnique as unknown as (a: unknown) => Promise<{ emailVerified: Date | null } | null>)(
-    { where: { id: user.id }, select: { emailVerified: true } },
-  );
-  const emailVerified = userRow?.emailVerified ?? null;
 
   // ── Query 1: datos básicos del garage (sin bookings) ──────────────────────
   // Separamos la query de bookings para poder tipar serviceRecord manualmente
@@ -85,14 +81,6 @@ export default async function TallerPortalPage({ searchParams }: PropsTallerPort
     <div className="w-full max-w-6xl mx-auto py-6 px-4 sm:px-8">
       {suscripcionActivada && <BannerExitoSuscripcion plan={garage.plan} />}
 
-      {!emailVerified && (
-        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 px-4 py-3 mb-5 text-sm text-amber-800">
-          <MailWarning className="h-4 w-4 shrink-0 mt-0.5" />
-          <span>
-            <strong>Confirma tu email</strong> — Revisa tu bandeja de entrada y haz clic en el enlace que te hemos enviado para activar tu cuenta.
-          </span>
-        </div>
-      )}
 
       <div className="bg-white border border-gray-200 overflow-hidden mb-5">
         <div className="bg-gray-50 border-b border-gray-200 px-6 py-5">

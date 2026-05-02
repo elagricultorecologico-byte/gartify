@@ -7,8 +7,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Layout compartido para todas las rutas del portal de taller.
- * Verifica autenticación y rol, carga los datos del garage necesarios
- * para el sidebar y envuelve el contenido en el TallerShell.
+ * Verifica autenticación, rol y email verificado antes de dar acceso.
  */
 export default async function TallerLayout({
   children,
@@ -20,6 +19,14 @@ export default async function TallerLayout({
 
   const user = session.user as { id: string; role?: string };
   if (user.role !== "GARAGE_OWNER") redirect("/cuenta");
+
+  // Bloquear acceso si el email no está verificado
+  const dbUser = await db.user.findUnique({
+    where: { id: user.id },
+    select: { emailVerified: true } as never,
+  }) as { emailVerified: Date | null } | null;
+
+  if (!dbUser?.emailVerified) redirect("/verificar-email/pendiente");
 
   // Cargamos solo los campos necesarios para el sidebar
   const garage = await db.garage.findUnique({
