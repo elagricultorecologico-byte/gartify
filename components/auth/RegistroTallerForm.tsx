@@ -72,7 +72,7 @@ const PASOS_LABELS = ["Tu taller", "Vehículos", "Servicios", "Tu cuenta"] as co
 
 function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
   return (
-    <div className="flex items-center justify-center gap-0 px-6 pt-5 pb-4">
+    <div className="flex items-center justify-center gap-0 px-4 pt-5 pb-4">
       {PASOS_LABELS.map((label, i) => {
         const numPaso = (i + 1) as PasoWizard;
         const completado = numPaso < pasoActual;
@@ -81,9 +81,9 @@ function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
         return (
           <div key={numPaso} className="flex items-center">
             {/* Círculo numerado + label */}
-            <div className="flex flex-col items-center w-16">
+            <div className="flex flex-col items-center w-12 sm:w-16">
               <div
-                className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-all shrink-0 ${
+                className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-all shrink-0 ${
                   completado
                     ? "bg-gartify-blue border-gartify-blue text-white"
                     : activo
@@ -91,10 +91,10 @@ function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
                     : "bg-white border-gray-300 text-gartify-gray"
                 }`}
               >
-                {completado ? <Check className="h-4 w-4" /> : numPaso}
+                {completado ? <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : numPaso}
               </div>
               <span
-                className={`mt-1 text-[10px] font-semibold text-center leading-tight ${
+                className={`mt-1 text-[9px] sm:text-[10px] font-semibold text-center leading-tight ${
                   activo
                     ? "text-gartify-orange"
                     : completado
@@ -109,7 +109,7 @@ function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
             {/* Línea conectora (no después del último paso) */}
             {i < PASOS_LABELS.length - 1 && (
               <div
-                className={`h-0.5 w-10 mx-1 mb-5 transition-all ${
+                className={`h-0.5 w-6 sm:w-10 mx-0.5 sm:mx-1 mb-5 transition-all ${
                   completado ? "bg-gartify-blue" : "bg-gray-200"
                 }`}
               />
