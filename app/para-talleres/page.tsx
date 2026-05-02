@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { LeadForm } from "@/components/para-talleres/LeadForm";
-import { Star, Wrench, CalendarCheck, Banknote, ChevronRight } from "lucide-react";
+import { Star, Wrench, CalendarCheck, Banknote, ChevronRight, Check, Crown } from "lucide-react";
 
 // ─── Metadata SEO ─────────────────────────────────────────────────────────────
 
@@ -367,7 +367,133 @@ export default function ParaTalleresPage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          5. CIERRE + FORMULARIO DE LEAD — fondo azul marino oscuro
+          5. PRICING — fondo gris muy claro
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="bg-slate-50 py-20 px-4">
+        <div className="container max-w-5xl mx-auto">
+
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black text-gartify-dark mb-3 leading-tight">
+              Planes para cada{" "}
+              <span className="text-gartify-blue">etapa de tu taller.</span>
+            </h2>
+            <p className="text-gartify-gray text-lg">Sin permanencia. Cancela cuando quieras.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 items-stretch">
+
+            {/* ── Starter ── */}
+            <div className="relative flex flex-col rounded-2xl border border-gray-200 bg-white p-7 shadow-sm">
+              <div className="mb-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <Wrench className="h-4 w-4 text-gartify-gray" />
+                  <span className="font-bold text-gartify-dark">Starter</span>
+                </div>
+                <p className="text-xs text-gartify-gray mb-4">Comienza sin coste, sin compromisos.</p>
+                <p className="text-4xl font-black text-gartify-dark">Gratis</p>
+              </div>
+              <ul className="space-y-2.5 flex-1 mb-7">
+                {[
+                  "Perfil verificado en el directorio",
+                  "Hasta 4 servicios publicados",
+                  "Gestión de reservas online",
+                  "Reseñas y valoraciones de clientes",
+                  "Soporte por email",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-gartify-gray">
+                    <Check className="h-4 w-4 text-gartify-blue shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-center text-sm text-gartify-gray font-medium py-2.5 border border-gray-200 rounded-xl">
+                Plan actual al registrarse
+              </p>
+            </div>
+
+            {/* ── Pro (destacado) ── */}
+            <div className="relative flex flex-col rounded-2xl border-2 border-gartify-blue bg-white p-7 shadow-lg">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                <span className="bg-gartify-blue text-white text-xs font-bold px-4 py-1 rounded-full">
+                  Más popular
+                </span>
+              </div>
+              <div className="mb-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <Star className="h-4 w-4 text-gartify-blue" />
+                  <span className="font-bold text-gartify-dark">Pro</span>
+                </div>
+                <p className="text-xs text-gartify-gray mb-4">Para talleres en crecimiento que quieren más visibilidad.</p>
+                <p className="text-4xl font-black text-gartify-dark">
+                  29 <span className="text-xl font-bold text-gartify-gray">€/mes</span>
+                </p>
+              </div>
+              <ul className="space-y-2.5 flex-1 mb-7">
+                {[
+                  "Todo lo del plan Starter",
+                  "Servicios ilimitados",
+                  "Ofertas especiales de horario",
+                  "Posición destacada en búsqueda",
+                  "Notificaciones automáticas al cliente",
+                  "Panel de estadísticas",
+                  "Modo TV — pantalla de citas en tiempo real",
+                  "Gestión de reservas por WhatsApp",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-gartify-gray">
+                    <Check className="h-4 w-4 text-gartify-blue shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/registro/taller"
+                className="block text-center bg-gartify-blue hover:bg-blue-800 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-colors"
+              >
+                Suscribirse a Pro
+              </Link>
+            </div>
+
+            {/* ── Premium ── */}
+            <div className="relative flex flex-col rounded-2xl border border-amber-300 bg-amber-50 p-7 shadow-sm">
+              <div className="mb-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <Crown className="h-4 w-4 text-amber-500" />
+                  <span className="font-bold text-gartify-dark">Premium</span>
+                </div>
+                <p className="text-xs text-gartify-gray mb-4">La experiencia completa para talleres líderes en su zona.</p>
+                <p className="text-4xl font-black text-gartify-dark">
+                  79 <span className="text-xl font-bold text-gartify-gray">€/mes</span>
+                </p>
+              </div>
+              <ul className="space-y-2.5 flex-1 mb-7">
+                {[
+                  "Todo lo del plan Pro",
+                  "Red de distribuidores de recambios",
+                  'Badge "Taller Premium" visible',
+                  "Soporte prioritario 24 h",
+                  "Cupones y promociones de marketing",
+                  "Estadísticas avanzadas e informes PDF",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-gartify-gray">
+                    <Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/registro/taller"
+                className="block text-center bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-colors"
+              >
+                Suscribirse a Premium
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          6. CIERRE + FORMULARIO DE LEAD — fondo azul marino oscuro
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="bg-gartify-dark py-20 px-4">
         <div className="container max-w-2xl mx-auto">
