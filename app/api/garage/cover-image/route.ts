@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { cloudinary } from "@/lib/cloudinary";
 
 // Tamaño máximo permitido: 5 MB
-const TAMANO_MAX_BYTES = 5 * 1024 * 1024;
+const TAMANO_MAX_BYTES = 3 * 1024 * 1024;
 
 export const runtime = "nodejs";
 
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
   // Validar tamaño (máx. 5 MB)
   if (archivo.size > TAMANO_MAX_BYTES) {
-    return NextResponse.json({ error: "La imagen no puede superar 5 MB" }, { status: 400 });
+    return NextResponse.json({ error: "La imagen no puede superar 3 MB" }, { status: 400 });
   }
 
   // Convertir File a Buffer para subir a Cloudinary

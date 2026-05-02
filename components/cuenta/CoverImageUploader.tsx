@@ -99,7 +99,7 @@ export function CoverImageUploader({ urlActual }: PropsCoverImageUploader) {
       )}
 
       <p className="text-xs text-gartify-gray">
-        JPG, PNG o WebP · Máx. 5 MB · Proporción recomendada 3:1 (ej. 1200×400 px)
+        JPG, PNG o WebP · Máx. 3 MB · Proporción recomendada 3:1 (ej. 1200×400 px)
       </p>
 
       {/* Input oculto */}
