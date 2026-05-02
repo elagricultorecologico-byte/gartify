@@ -180,11 +180,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
         )}
 
         <div className="relative max-w-4xl mx-auto px-4 py-8 sm:py-12">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            {/* Logo */}
-            <div className="shrink-0 h-20 w-20 sm:h-24 sm:w-24 overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center">
-              <LogoTaller src={garage.logo} nombre={garage.name} />
-            </div>
+          <div className="flex flex-col gap-3">
 
             <div className="flex-1 min-w-0">
               {/* Badge Premium */}
@@ -194,7 +190,13 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
                 </span>
               )}
 
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">{garage.name}</h1>
+              {/* Logo + nombre en línea */}
+              <div className="flex items-center gap-3">
+                <div className="shrink-0 h-12 w-12 sm:h-14 sm:w-14 overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center rounded-sm">
+                  <LogoTaller src={garage.logo} nombre={garage.name} />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold leading-tight">{garage.name}</h1>
+              </div>
 
               {/* Ciudad + estado abierto/cerrado */}
               <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -244,7 +246,6 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
                 <p className="mt-3 text-sm text-white/80 leading-relaxed max-w-2xl">{garage.description}</p>
               )}
             </div>
-          </div>
 
           {/* CTAs */}
           <div className="flex flex-wrap gap-3 mt-6">
