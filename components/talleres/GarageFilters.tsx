@@ -235,17 +235,18 @@ export function GarageFilters() {
 
         {/* Tipo de vehículo */}
         <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={isActive("vehicleType")}>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="flex flex-col gap-1">
             {VEHICLE_TYPES.map((tipo) => {
               const activo = sp.get("vehicleType") === tipo;
               return (
                 <button key={tipo} type="button" onClick={() => update("vehicleType", activo ? "ALL" : tipo)} aria-pressed={activo}
                   className={cn(
-                    "flex items-center gap-1.5 h-8 px-2 rounded-none border text-xs font-medium transition-all",
-                    activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-2 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
+                    "w-full flex items-center gap-2 h-8 px-2.5 rounded-none border text-xs font-medium transition-all text-left",
+                    activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-1 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
                   )}>
-                  <span aria-hidden="true">{VEHICLE_ICONS[tipo]}</span>
-                  {VEHICLE_LABELS[tipo]}
+                  <span aria-hidden="true" className="text-sm w-5 text-center shrink-0">{VEHICLE_ICONS[tipo]}</span>
+                  <span className="flex-1">{VEHICLE_LABELS[tipo]}</span>
+                  {activo && <CheckCircle className="h-3 w-3 shrink-0 text-gartify-hero" />}
                 </button>
               );
             })}
