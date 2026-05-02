@@ -1,8 +1,14 @@
 import { db } from "@/lib/db";
+import { CheckCircle2, XCircle, Clock, Info } from "lucide-react";
 
 interface Props {
   params: { token: string };
 }
+
+export const metadata = {
+  title: "Verificación de email — Gartify",
+  robots: { index: false, follow: false },
+};
 
 export default async function VerificarEmailPage({ params }: Props) {
   const { token } = params;
@@ -46,81 +52,101 @@ export default async function VerificarEmailPage({ params }: Props) {
 
 type TipoResultado = "ok" | "invalido" | "expirado" | "yaVerificado";
 
-function ResultadoVerificacion({ tipo }: { tipo: TipoResultado }) {
-  const config: Record<TipoResultado, { emoji: string; titulo: string; texto: string; colorBg: string; colorBorde: string; colorTexto: string }> = {
-    ok: {
-      emoji:       "✅",
-      titulo:      "Email verificado",
-      texto:       "Tu cuenta está activa. Ya puedes recibir reservas y gestionar tu taller.",
-      colorBg:     "#f0fdf4",
-      colorBorde:  "#bbf7d0",
-      colorTexto:  "#166534",
-    },
-    invalido: {
-      emoji:       "❌",
-      titulo:      "Enlace no válido",
-      texto:       "Este enlace de verificación no existe o ya fue eliminado.",
-      colorBg:     "#fef2f2",
-      colorBorde:  "#fecaca",
-      colorTexto:  "#991b1b",
-    },
-    expirado: {
-      emoji:       "⏰",
-      titulo:      "Enlace caducado",
-      texto:       "El enlace de verificación ha expirado (válido 24 h). Inicia sesión en tu portal para solicitar uno nuevo.",
-      colorBg:     "#fffbeb",
-      colorBorde:  "#fde68a",
-      colorTexto:  "#92400e",
-    },
-    yaVerificado: {
-      emoji:       "ℹ️",
-      titulo:      "Ya verificado",
-      texto:       "Este email ya fue verificado anteriormente. Puedes iniciar sesión normalmente.",
-      colorBg:     "#eff6ff",
-      colorBorde:  "#bfdbfe",
-      colorTexto:  "#1e40af",
-    },
-  };
+const CONFIG: Record<TipoResultado, {
+  icon: React.ComponentType<{ className?: string }>;
+  iconBg: string;
+  iconColor: string;
+  titulo: string;
+  texto: string;
+  alertBg: string;
+  alertBorder: string;
+  alertText: string;
+  alertMsg: string;
+  cta: string;
+  ctaHref: string;
+}> = {
+  ok: {
+    icon:        CheckCircle2,
+    iconBg:      "bg-green-100 border-green-200",
+    iconColor:   "text-green-600",
+    titulo:      "Email verificado",
+    texto:       "Tu cuenta está activa. Ya puedes recibir reservas y gestionar tu taller.",
+    alertBg:     "bg-green-50",
+    alertBorder: "border-green-200",
+    alertText:   "text-green-800",
+    alertMsg:    "Verificación completada correctamente.",
+    cta:         "Ir a mi portal",
+    ctaHref:     "/cuenta/taller",
+  },
+  invalido: {
+    icon:        XCircle,
+    iconBg:      "bg-red-100 border-red-200",
+    iconColor:   "text-red-600",
+    titulo:      "Enlace no válido",
+    texto:       "Este enlace de verificación no existe o ya fue eliminado.",
+    alertBg:     "bg-red-50",
+    alertBorder: "border-red-200",
+    alertText:   "text-red-800",
+    alertMsg:    "Si crees que es un error, solicita un nuevo enlace desde tu portal.",
+    cta:         "Ir al inicio",
+    ctaHref:     "/",
+  },
+  expirado: {
+    icon:        Clock,
+    iconBg:      "bg-amber-100 border-amber-200",
+    iconColor:   "text-amber-600",
+    titulo:      "Enlace caducado",
+    texto:       "El enlace de verificación ha expirado (válido 24 h).",
+    alertBg:     "bg-amber-50",
+    alertBorder: "border-amber-200",
+    alertText:   "text-amber-800",
+    alertMsg:    "Inicia sesión en tu portal para solicitar un nuevo enlace.",
+    cta:         "Ir a mi portal",
+    ctaHref:     "/cuenta/taller",
+  },
+  yaVerificado: {
+    icon:        Info,
+    iconBg:      "bg-blue-100 border-blue-200",
+    iconColor:   "text-gartify-blue",
+    titulo:      "Ya verificado",
+    texto:       "Este email ya fue verificado anteriormente.",
+    alertBg:     "bg-blue-50",
+    alertBorder: "border-blue-200",
+    alertText:   "text-blue-800",
+    alertMsg:    "Puedes iniciar sesión normalmente.",
+    cta:         "Ir a mi portal",
+    ctaHref:     "/cuenta/taller",
+  },
+};
 
-  const c = config[tipo];
+function ResultadoVerificacion({ tipo }: { tipo: TipoResultado }) {
+  const c = CONFIG[tipo];
+  const Icon = c.icon;
 
   return (
-    <html lang="es">
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Gartify — Verificación de email</title>
-        <style>{`
-          body { font-family: sans-serif; display: flex; align-items: center;
-                 justify-content: center; min-height: 100vh; margin: 0; background: #f0f4ff; }
-          .card { background: #fff; border-radius: 16px; padding: 2.5rem 2rem;
-                  box-shadow: 0 4px 24px rgba(0,0,0,.08); text-align: center;
-                  max-width: 400px; width: 100%; }
-          .logo { font-weight: 800; font-size: 1.3rem; color: #1E40AF; margin-bottom: 1.5rem; }
-          .badge { display: inline-flex; align-items: center; justify-content: center;
-                   width: 64px; height: 64px; border-radius: 50%; font-size: 2rem;
-                   background: ${c.colorBg}; border: 2px solid ${c.colorBorde};
-                   margin-bottom: 1rem; }
-          .title { font-size: 1.25rem; font-weight: 800; color: #1e3a8a; margin: 0 0 .75rem; }
-          .texto { font-size: .9rem; color: #64748b; margin: 0 0 1.5rem; line-height: 1.5; }
-          .msg { background: ${c.colorBg}; border: 1px solid ${c.colorBorde};
-                 color: ${c.colorTexto}; border-radius: 8px; padding: .75rem 1rem;
-                 font-size: .85rem; margin-bottom: 1.5rem; }
-          .btn { display: block; padding: .75rem 1.5rem; border-radius: 8px;
-                 background: #1e40af; color: #fff; font-weight: 700; font-size: .95rem;
-                 text-decoration: none; }
-          .btn:hover { background: #1d3a9a; }
-        `}</style>
-      </head>
-      <body>
-        <div className="card">
-          <div className="logo">🔧 Gartify</div>
-          <div className="badge">{c.emoji}</div>
-          <h1 className="title">{c.titulo}</h1>
-          <p className="texto">{c.texto}</p>
-          <a className="btn" href="/cuenta/taller">Ir a mi portal</a>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 bg-blue-50">
+      <div className="bg-white border border-gray-200 max-w-md w-full p-8 text-center">
+        <div className="flex justify-center mb-5">
+          <div className={`flex h-16 w-16 items-center justify-center rounded-full border-2 ${c.iconBg}`}>
+            <Icon className={`h-8 w-8 ${c.iconColor}`} />
+          </div>
         </div>
-      </body>
-    </html>
+
+        <p className="text-lg font-extrabold text-gartify-blue mb-1">🔧 Gartify</p>
+        <h1 className="text-xl font-bold text-gartify-blue mb-3">{c.titulo}</h1>
+        <p className="text-sm text-gartify-gray mb-5 leading-relaxed">{c.texto}</p>
+
+        <div className={`border rounded px-4 py-3 text-xs mb-6 text-left ${c.alertBg} ${c.alertBorder} ${c.alertText}`}>
+          {c.alertMsg}
+        </div>
+
+        <a
+          href={c.ctaHref}
+          className="block w-full bg-gartify-blue hover:bg-blue-800 text-white font-bold py-2.5 px-4 text-sm transition-colors text-center"
+        >
+          {c.cta}
+        </a>
+      </div>
+    </div>
   );
 }
