@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { User } from "lucide-react";
 import { CustomerProfileForm } from "@/components/cuenta/CustomerProfileForm";
+import { EliminarCuentaButton } from "@/components/cuenta/EliminarCuentaButton";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,9 @@ export default async function PerfilPage() {
         </div>
         <div className="p-6">
           <CustomerProfileForm user={user} />
+        </div>
+        <div className="px-6 pb-5 border-t border-gray-100 pt-4 flex justify-end">
+          <EliminarCuentaButton rol="cliente" />
         </div>
       </div>
     </div>

@@ -460,7 +460,84 @@ export function nuevoLeadEmail(data: {
   };
 }
 
-// ─── Template 8: Reserva cancelada por cliente → Taller ─────────────────────
+// ─── Template 8: Baja de cuenta → Usuario ────────────────────────────────────
+
+export function cuentaEliminadaEmail(
+  name: string,
+  role: "CUSTOMER" | "GARAGE_OWNER",
+): { subject: string; html: string } {
+  const esGarage = role === "GARAGE_OWNER";
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#f1f5f9;border-radius:50%;border:2px solid #e2e8f0;margin-bottom:12px;">
+        <span style="font-size:28px;">👋</span>
+      </div>
+      <h1 style="margin:0;font-size:22px;font-weight:800;color:#1a3664;">Tu cuenta ha sido eliminada</h1>
+      <p style="margin:8px 0 0;font-size:14px;color:#64748b;">Hola <strong>${name}</strong>, hemos procesado tu solicitud correctamente.</p>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:20px;background:#f8fafc;font-size:14px;color:#334155;line-height:1.6;">
+      ${esGarage
+        ? `Tu taller y todos sus datos han sido eliminados de Gartify. Las reservas completadas anteriores han sido anonimizadas para mantener la integridad de los registros.`
+        : `Tu cuenta y todos tus datos personales han sido eliminados de Gartify. Tus reservas anteriores han sido anonimizadas.`
+      }
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#166534;">
+      Si esto fue un error o cambias de opinión, puedes volver a registrarte en cualquier momento en <a href="${BASE_URL}" style="color:#1d4ed8;">${BASE_URL}</a>.
+    </div>
+
+    <p style="font-size:13px;color:#64748b;text-align:center;">
+      Gracias por haber formado parte de Gartify. ¡Hasta pronto!
+    </p>
+  `);
+  return {
+    subject: `Tu cuenta en Gartify ha sido eliminada`,
+    html,
+  };
+}
+
+export function bajaUsuarioInternoEmail(
+  name: string,
+  email: string,
+  role: "CUSTOMER" | "GARAGE_OWNER",
+): { subject: string; html: string } {
+  const ahora = new Intl.DateTimeFormat("es-ES", {
+    weekday: "long", day: "numeric", month: "long",
+    hour: "2-digit", minute: "2-digit",
+  }).format(new Date());
+
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#fee2e2;border-radius:50%;border:2px solid #fecaca;margin-bottom:12px;">
+        <span style="font-size:28px;">🗑️</span>
+      </div>
+      <h1 style="margin:0;font-size:20px;font-weight:800;color:#1a3664;">Baja de cuenta</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:#64748b;">${ahora}</p>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#dc2626;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.85);">Usuario dado de baja</span>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${detailRow("👤", "Nombre", name)}
+        ${detailRow("✉️", "Email",  email)}
+        ${detailRow("🏷️", "Rol",    role === "GARAGE_OWNER" ? "Taller" : "Cliente")}
+      </table>
+    </div>
+
+    <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;font-size:13px;color:#991b1b;">
+      La cuenta y sus datos han sido eliminados permanentemente.
+    </div>
+  `);
+  return {
+    subject: `🗑️ Baja de ${role === "GARAGE_OWNER" ? "taller" : "cliente"}: ${email}`,
+    html,
+  };
+}
+
+// ─── Template 9: Reserva cancelada por cliente → Taller ─────────────────────
 
 export function reservaCanceladaClienteEmail(data: {
   garageName:  string;

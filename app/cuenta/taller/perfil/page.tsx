@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Building2 } from "lucide-react";
 import { GarageProfileForm } from "@/components/cuenta/GarageProfileForm";
+import { EliminarCuentaButton } from "@/components/cuenta/EliminarCuentaButton";
 
 export const metadata: Metadata = {
   title: "Editar perfil del taller",
@@ -36,6 +37,9 @@ export default async function PerfilTallerPage() {
         </div>
         <div className="p-6">
           <GarageProfileForm garage={garage} />
+        </div>
+        <div className="px-6 pb-5 border-t border-gray-100 pt-4 flex justify-end">
+          <EliminarCuentaButton rol="taller" />
         </div>
       </div>
     </div>
