@@ -47,6 +47,7 @@ model Garage {
   lat           Float?
   lng           Float?
   logo          String?
+  coverImage    String?         // URL de Cloudinary — imagen de portada del taller (banner 1200×400)
   rating        Float           @default(0)
   reviewCount   Int             @default(0)
   plan                 String    @default("STARTER")  // STARTER | PRO | PREMIUM

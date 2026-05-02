@@ -63,6 +63,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
       },
     },
   });
+  // coverImage está disponible en el resultado de include completo
 
   if (!garage) notFound();
 
@@ -136,29 +137,46 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
         </nav>
 
         {/* Header card — full width */}
-        <div className="bg-white border border-gray-200 shadow-sm overflow-hidden flex flex-col sm:flex-row mb-8">
-          {/* Avatar strip */}
-          <div className="sm:w-48 shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[120px] sm:min-h-0">
-            {garage.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element
+        <div className="bg-white border border-gray-200 shadow-sm overflow-hidden mb-8">
+          {/* Imagen de portada (banner superior) — solo si existe */}
+          {garage.coverImage && (
+            <div className="relative w-full h-40 sm:h-52 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={garage.logo}
-                alt={garage.name}
+                src={garage.coverImage}
+                alt={`Portada de ${garage.name}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
-            ) : (
-              <div className="flex flex-col items-center gap-3 p-6 text-center">
-                <div className="h-16 w-16 bg-white/20 border border-white/30 flex items-center justify-center shadow-inner">
-                  <span className="text-2xl font-bold text-white tracking-tight">{initials}</span>
+              {/* Degradado inferior para legibilidad del contenido */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            </div>
+          )}
+
+          {/* Cuerpo: avatar + info */}
+          <div className="flex flex-col sm:flex-row">
+            {/* Avatar strip */}
+            <div className="sm:w-48 shrink-0 bg-gradient-to-br from-gartify-hero to-gartify-mid flex items-center justify-center min-h-[120px] sm:min-h-0">
+              {garage.logo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={garage.logo}
+                  alt={garage.name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-3 p-6 text-center">
+                  <div className="h-16 w-16 bg-white/20 border border-white/30 flex items-center justify-center shadow-inner">
+                    <span className="text-2xl font-bold text-white tracking-tight">{initials}</span>
+                  </div>
+                  <p className="text-xs text-white/70 font-medium uppercase tracking-widest">
+                    {garage.city}
+                  </p>
+                  <Wrench className="h-4 w-4 text-white/40" />
                 </div>
-                <p className="text-xs text-white/70 font-medium uppercase tracking-widest">
-                  {garage.city}
-                </p>
-                <Wrench className="h-4 w-4 text-white/40" />
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
           {/* Info */}
           <div className="flex-1 p-6 flex flex-col gap-3">
@@ -227,6 +245,7 @@ export default async function GarageDetailPage({ params }: { params: { id: strin
               </a>
             </div>
           </div>
+          </div>{/* fin cuerpo: avatar + info */}
         </div>
 
         {/* Two-column layout */}

@@ -14,6 +14,7 @@ import {
 import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
 import { GARAGE_CATEGORIES } from "@/lib/constants";
 import { usePostalCodeLookup } from "@/lib/hooks/usePostalCodeLookup";
+import { CoverImageUploader } from "@/components/cuenta/CoverImageUploader";
 import type { Garage } from "@prisma/client";
 
 const TZ_TO_COUNTRY: Record<string, string> = {
@@ -334,6 +335,11 @@ export function GarageProfileForm({ garage }: { garage: Garage }) {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Separador */}
+          <div className="border-t border-gray-100 mt-4 pt-4">
+            <CoverImageUploader urlActual={(garage as { coverImage?: string | null }).coverImage} />
           </div>
         </div>
       </div>
