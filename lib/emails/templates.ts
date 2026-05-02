@@ -397,7 +397,70 @@ export function nuevoTallerInternoEmail(
   };
 }
 
-// ─── Template 7: Reserva cancelada por cliente → Taller ─────────────────────
+// ─── Template 7: Nuevo lead /para-talleres → Gartify interno ─────────────────
+
+export function nuevoLeadEmail(data: {
+  nombre:       string;
+  nombreTaller: string;
+  telefono:     string;
+  email?:       string;
+  ciudad?:      string;
+  mensaje?:     string;
+}): { subject: string; html: string } {
+  const ahora = new Intl.DateTimeFormat("es-ES", {
+    weekday: "long", day: "numeric", month: "long",
+    hour: "2-digit", minute: "2-digit",
+  }).format(new Date());
+
+  const html = layout(`
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#fef3c7;border-radius:50%;border:2px solid #fde68a;margin-bottom:12px;">
+        <span style="font-size:28px;">📞</span>
+      </div>
+      <h1 style="margin:0;font-size:20px;font-weight:800;color:#1a3664;">Nuevo lead — solicitud de llamada</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:#64748b;">Recibido el ${ahora}</p>
+    </div>
+
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#d97706;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.9);">Datos del prospecto</span>
+      </div>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${detailRow("👤", "Nombre", data.nombre)}
+        ${detailRow("🏪", "Taller", data.nombreTaller)}
+        ${detailRow("📞", "Teléfono", `<a href="tel:${data.telefono}" style="color:#FF5722;text-decoration:none;font-weight:700;">${data.telefono}</a>`)}
+        ${data.email  ? detailRow("✉️", "Email",  `<a href="mailto:${data.email}" style="color:#1d4ed8;text-decoration:none;">${data.email}</a>`) : ""}
+        ${data.ciudad ? detailRow("📍", "Ciudad", data.ciudad) : ""}
+      </table>
+    </div>
+
+    ${data.mensaje ? `
+    <div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:#475569;padding:10px 16px;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Mensaje</span>
+      </div>
+      <div style="padding:14px 16px;font-size:14px;color:#334155;background:#fff;line-height:1.6;">${data.mensaje}</div>
+    </div>` : ""}
+
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#92400e;">
+      💡 Llamar preferiblemente antes de las 19:00. Origen: <strong>gartify.es/para-talleres</strong>
+    </div>
+
+    <div style="text-align:center;margin-bottom:8px;">
+      <a href="tel:${data.telefono}"
+         style="display:inline-block;background:#FF5722;color:#ffffff;font-size:15px;font-weight:700;padding:13px 32px;border-radius:8px;text-decoration:none;">
+        📞 Llamar ahora
+      </a>
+    </div>
+  `);
+
+  return {
+    subject: `📞 Nuevo lead: ${data.nombreTaller} — ${data.telefono}`,
+    html,
+  };
+}
+
+// ─── Template 8: Reserva cancelada por cliente → Taller ─────────────────────
 
 export function reservaCanceladaClienteEmail(data: {
   garageName:  string;

@@ -9,6 +9,8 @@ interface CamposFormulario {
   nombre: string;
   nombreTaller: string;
   telefono: string;
+  email: string;
+  ciudad: string;
 }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
@@ -18,6 +20,8 @@ export function LeadForm() {
     nombre: "",
     nombreTaller: "",
     telefono: "",
+    email: "",
+    ciudad: "",
   });
   const [enviado, setEnviado] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -131,6 +135,46 @@ export function LeadForm() {
           value={campos.telefono}
           onChange={handleChange}
           required
+          className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder:text-blue-300/50 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-orange focus:border-transparent transition"
+        />
+      </div>
+
+      {/* Campo: email */}
+      <div>
+        <label
+          htmlFor="lead-email"
+          className="block text-sm font-semibold text-blue-200 mb-1.5"
+        >
+          Email <span className="font-normal text-blue-400">(opcional)</span>
+        </label>
+        <input
+          id="lead-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="Ej: taller@email.es"
+          value={campos.email}
+          onChange={handleChange}
+          className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder:text-blue-300/50 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-orange focus:border-transparent transition"
+        />
+      </div>
+
+      {/* Campo: ciudad */}
+      <div>
+        <label
+          htmlFor="lead-ciudad"
+          className="block text-sm font-semibold text-blue-200 mb-1.5"
+        >
+          Ciudad <span className="font-normal text-blue-400">(opcional)</span>
+        </label>
+        <input
+          id="lead-ciudad"
+          name="ciudad"
+          type="text"
+          autoComplete="address-level2"
+          placeholder="Ej: Barcelona"
+          value={campos.ciudad}
+          onChange={handleChange}
           className="w-full rounded-xl bg-white/10 border border-white/20 px-4 py-3 text-white placeholder:text-blue-300/50 text-sm focus:outline-none focus:ring-2 focus:ring-gartify-orange focus:border-transparent transition"
         />
       </div>
