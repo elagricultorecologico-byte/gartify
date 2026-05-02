@@ -9,10 +9,12 @@ export const metadata: Metadata = { title: "Admin — Talleres" };
 
 export default async function AdminTalleresPage() {
   const garages = await db.garage.findMany({
+    // Sin filtro deletedAt: admin ve todos los talleres, incluidos los eliminados por soft delete
     orderBy: { name: "asc" },
     select: {
       id: true, name: true, city: true, isActive: true,
       isVerified: true, rating: true, reviewCount: true,
+      deletedAt: true,
       _count: { select: { bookings: true } },
       bookings: {
         where: { status: "COMPLETED" },
@@ -77,13 +79,20 @@ export default async function AdminTalleresPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    g.isActive
-                      ? "bg-green-50 text-green-600 border border-green-100"
-                      : "bg-gray-100 text-gray-500 border border-gray-200"
-                  }`}>
-                    {g.isActive ? "Activo" : "Inactivo"}
-                  </span>
+                  {/* Soft delete tiene prioridad sobre el estado activo/inactivo */}
+                  {g.deletedAt ? (
+                    <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-semibold bg-red-50 text-red-600 border border-red-100">
+                      Eliminado
+                    </span>
+                  ) : (
+                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      g.isActive
+                        ? "bg-green-50 text-green-600 border border-green-100"
+                        : "bg-gray-100 text-gray-500 border border-gray-200"
+                    }`}>
+                      {g.isActive ? "Activo" : "Inactivo"}
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link

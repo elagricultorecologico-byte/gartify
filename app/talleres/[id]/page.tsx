@@ -18,7 +18,8 @@ import { GarageReserveCTA } from "@/components/talleres/GarageReserveCTA";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const garage = await db.garage.findUnique({
-    where: { id: params.id },
+    // Excluir talleres eliminados (soft delete)
+    where: { id: params.id, deletedAt: null },
     select: { name: true, description: true, city: true },
   });
   if (!garage) return { title: "Taller no encontrado" };
@@ -49,7 +50,8 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg
 
 export default async function GarageDetailPage({ params }: { params: { id: string } }) {
   const garage = await db.garage.findUnique({
-    where: { id: params.id, isActive: true },
+    // Excluir talleres eliminados (soft delete) además de los inactivos
+    where: { id: params.id, isActive: true, deletedAt: null },
     include: {
       services: { where: { isActive: true }, orderBy: { price: "asc" } },
       reviews: {

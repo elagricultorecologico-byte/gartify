@@ -18,44 +18,60 @@ export async function DELETE() {
   if (!user) return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
 
   const role = user.role as "CUSTOMER" | "GARAGE_OWNER";
+  const ahora = new Date();
 
   try {
     if (role === "GARAGE_OWNER" && user.garage) {
       const garageId = user.garage.id;
 
       await db.$transaction([
-        // Anonimizar bookings del taller (desvinculamos el userId del cliente)
-        db.booking.updateMany({ where: { garageId }, data: { userId: null } }),
-        // Eliminar reviews del taller
-        db.review.deleteMany({ where: { garageId } }),
-        // Eliminar bookings sin usuario y sin review (las que quedan huérfanas)
-        db.booking.deleteMany({ where: { garageId, userId: null, review: null } }),
-        // Tokens de verificación de email
+        // Soft delete del taller — los datos históricos quedan preservados en BD
+        db.garage.update({
+          where: { id: garageId },
+          data:  { deletedAt: ahora },
+        }),
+        // Soft delete del usuario
+        db.user.update({
+          where: { id: userId },
+          data:  { deletedAt: ahora },
+        }),
+        // Anonimizar bookings PENDIENTES/CONFIRMADAS del taller (privacidad del cliente)
+        // Las completadas se conservan como datos históricos de negocio
+        db.booking.updateMany({
+          where: { garageId, status: { in: ["PENDING", "CONFIRMED"] } },
+          data:  { userId: null },
+        }),
+        // Eliminar tokens de verificación de email (ya no tienen utilidad)
         db.emailVerification.deleteMany({ where: { userId } }),
-        // Eliminar el garage (cascada: servicios, horarios, ofertas, slots, etc.)
-        db.garage.delete({ where: { id: garageId } }),
-        // Eliminar el usuario
-        db.user.delete({ where: { id: userId } }),
+        // Eliminar vehículos del propietario del taller (PII pura, sin valor histórico)
+        db.vehicle.deleteMany({ where: { userId } }),
       ]);
     } else {
       await db.$transaction([
-        // Anonimizar bookings del cliente
-        db.booking.updateMany({ where: { userId }, data: { userId: null } }),
-        // Eliminar reviews del cliente
+        // Soft delete del usuario
+        db.user.update({
+          where: { id: userId },
+          data:  { deletedAt: ahora },
+        }),
+        // Anonimizar todas las bookings del cliente (desvinculamos la PII)
+        db.booking.updateMany({
+          where: { userId },
+          data:  { userId: null },
+        }),
+        // Eliminar reviews del cliente (son PII vinculada al usuario)
         db.review.deleteMany({ where: { userId } }),
-        // Eliminar vehículos
+        // Eliminar vehículos (PII pura)
         db.vehicle.deleteMany({ where: { userId } }),
-        // Tokens de verificación
+        // Eliminar tokens de verificación de email
         db.emailVerification.deleteMany({ where: { userId } }),
-        // Eliminar el usuario
-        db.user.delete({ where: { id: userId } }),
       ]);
     }
   } catch {
     return NextResponse.json({ error: "Error al eliminar la cuenta" }, { status: 500 });
   }
 
-  // Emails post-eliminación (fire-and-forget, la cuenta ya no existe)
+  // Emails post-eliminación (fire-and-forget, fuera de la transacción)
+  // El usuario ya tiene deletedAt pero sus datos de contacto siguen disponibles en esta closure
   const userName  = user.name  ?? "Usuario";
   const userEmail = user.email ?? "";
 

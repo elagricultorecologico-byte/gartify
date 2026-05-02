@@ -22,6 +22,7 @@ model User {
   distributor   Distributor?
   vehicles      Vehicle[]
   createdAt     DateTime     @default(now())
+  deletedAt     DateTime?    // Soft delete: fecha de eliminación de cuenta
 }
 
 model EmailVerification {
@@ -74,6 +75,7 @@ model Garage {
   serviceRecords ServiceRecord[]          // Sellos emitidos por este taller
   blockedSlots   BlockedSlot[]
   createdAt      DateTime        @default(now())
+  deletedAt      DateTime?       // Soft delete: fecha de baja del taller
 }
 
 model GarageOffer {

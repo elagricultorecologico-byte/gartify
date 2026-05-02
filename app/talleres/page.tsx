@@ -80,6 +80,8 @@ export default async function TalleresPage({
   let garages = await db.garage.findMany({
     where: {
       isActive: true,
+      // Excluir talleres eliminados (soft delete)
+      deletedAt: null,
       ...(searchParams.ciudad && {
         OR: [
           { city:       { contains: searchParams.ciudad } },

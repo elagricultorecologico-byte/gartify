@@ -45,6 +45,15 @@ export async function POST(req: Request) {
     const service = await db.garageService.findUnique({ where: { id: data.serviceId } });
     if (!service) return NextResponse.json({ error: "Servicio no encontrado" }, { status: 404 });
 
+    // Verificar que el taller existe y no ha sido eliminado (soft delete)
+    const garage = await db.garage.findUnique({
+      where: { id: data.garageId },
+      select: { id: true, deletedAt: true },
+    });
+    if (!garage || garage.deletedAt !== null) {
+      return NextResponse.json({ error: "El taller no está disponible" }, { status: 404 });
+    }
+
     const booking = await db.booking.create({
       data: {
         code:         generateBookingCode(),

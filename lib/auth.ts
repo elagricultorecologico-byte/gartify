@@ -25,6 +25,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         const user = await db.user.findUnique({ where: { email } });
         if (!user?.password) return null;
 
+        // Cuenta eliminada mediante soft delete — no permite inicio de sesión
+        if (user.deletedAt) return null;
+
         const ok = await bcrypt.compare(password, user.password);
         if (!ok) return null;
 
