@@ -285,6 +285,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
               </a>
             )}
           </div>
+          </div>{/* end flex flex-col gap-3 */}
         </div>
       </header>
 
