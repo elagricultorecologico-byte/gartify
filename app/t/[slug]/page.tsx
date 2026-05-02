@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import { SERVICE_LABELS } from "@/lib/constants";
 import { MapPin, Phone, Star, Clock, CheckCircle, MessageCircle, Calendar, ChevronRight } from "lucide-react";
+import { LogoTaller } from "@/components/t/LogoTaller";
 
 // ─── Tipos locales ──────────────────────────────────────────────────────────
 
@@ -182,12 +183,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             {/* Logo */}
             <div className="shrink-0 h-20 w-20 sm:h-24 sm:w-24 overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={garage.logo ?? "/logo-letra-fondo-azul.png"}
-                alt={garage.logo ? `Logo de ${garage.name}` : "Gartify"}
-                className="w-full h-full object-cover"
-              />
+              <LogoTaller src={garage.logo} nombre={garage.name} />
             </div>
 
             <div className="flex-1 min-w-0">
