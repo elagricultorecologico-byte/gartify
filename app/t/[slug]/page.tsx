@@ -89,6 +89,8 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
       email: true,
       logo: true,
       coverImage: true,
+      lat: true,
+      lng: true,
       rating: true,
       reviewCount: true,
       plan: true,
@@ -389,6 +391,37 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
             </div>
           </section>
         )}
+
+        {/* ── Dónde estamos ── */}
+        {(garage.lat && garage.lng) || garage.address ? (
+          <section aria-labelledby="titulo-ubicacion">
+            <h2 id="titulo-ubicacion" className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-4 flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
+              Dónde estamos
+            </h2>
+            {garage.address && (
+              <p className="text-sm text-gartify-gray mb-3">
+                {garage.address}{garage.city ? `, ${garage.city}` : ""}{garage.province ? ` (${garage.province})` : ""}
+              </p>
+            )}
+            <div className="w-full h-64 sm:h-80 border border-gray-200 overflow-hidden">
+              <iframe
+                title={`Ubicación de ${garage.name}`}
+                src={
+                  garage.lat && garage.lng
+                    ? `https://maps.google.com/maps?q=${garage.lat},${garage.lng}&hl=es&z=15&output=embed`
+                    : `https://maps.google.com/maps?q=${encodeURIComponent(`${garage.address ?? ""} ${garage.city ?? ""} ${garage.province ?? ""}`.trim())}&hl=es&z=15&output=embed`
+                }
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </section>
+        ) : null}
 
         {/* ── Reseñas con resumen ── */}
         {garage.reviews.length > 0 && (
