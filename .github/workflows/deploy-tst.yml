@@ -20,6 +20,7 @@ jobs:
             cd /var/www/gartify-tst
             git checkout package-lock.json
             git pull origin develop
+            npm install --omit=dev
             npx prisma db push --skip-generate
             npm run build
-            pm2 restart gartify-tst
+            pm2 restart gartify-tst --update-env
