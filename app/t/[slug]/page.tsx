@@ -248,41 +248,41 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
             </div>
 
           {/* CTAs */}
-          <div className="flex flex-wrap gap-3 mt-6">
-            <div>
+          <div className="mt-6">
+            <div className="flex flex-wrap gap-3">
               <Link
                 href={urlReserva}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gartify-orange hover:bg-gartify-orange/90 text-white font-bold text-sm transition-colors"
+                className="inline-flex items-center justify-center gap-2 w-44 py-3 bg-gartify-orange hover:bg-gartify-orange/90 text-white font-bold text-sm transition-colors"
               >
-                <Calendar className="h-4 w-4" aria-hidden="true" />
+                <Calendar className="h-4 w-4 shrink-0" aria-hidden="true" />
                 Reservar cita
               </Link>
-              {/* Próxima cita disponible */}
-              {proximaCita && (
-                <p className="text-xs text-white/50 mt-1.5 pl-1">
-                  Próxima cita disponible: <span className="text-white/80 font-medium">{proximaCita}</span>
-                </p>
+              {urlWhatsApp && (
+                <a
+                  href={urlWhatsApp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-44 py-3 bg-[#25D366] hover:bg-[#22c35e] text-white font-bold text-sm transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  WhatsApp
+                </a>
+              )}
+              {garage.phone && (
+                <a
+                  href={`tel:${garage.phone}`}
+                  className="inline-flex items-center justify-center gap-2 w-44 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition-colors border border-white/20"
+                >
+                  <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  {garage.phone}
+                </a>
               )}
             </div>
-            {urlWhatsApp && (
-              <a
-                href={urlWhatsApp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#22c35e] text-white font-bold text-sm transition-colors"
-              >
-                <MessageCircle className="h-4 w-4" aria-hidden="true" />
-                WhatsApp
-              </a>
-            )}
-            {garage.phone && (
-              <a
-                href={`tel:${garage.phone}`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition-colors border border-white/20"
-              >
-                <Phone className="h-4 w-4" aria-hidden="true" />
-                {garage.phone}
-              </a>
+            {/* Próxima cita disponible */}
+            {proximaCita && (
+              <p className="text-xs text-white/50 mt-1.5 pl-1">
+                Próxima cita disponible: <span className="text-white/80 font-medium">{proximaCita}</span>
+              </p>
             )}
           </div>
           </div>{/* end flex flex-col gap-3 */}
