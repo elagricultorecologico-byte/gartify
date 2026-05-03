@@ -6,6 +6,7 @@ import { formatPrice } from "@/lib/utils";
 import { SERVICE_LABELS } from "@/lib/constants";
 import { MapPin, Phone, Star, Clock, CheckCircle, MessageCircle, Calendar } from "lucide-react";
 import { LogoTaller } from "@/components/t/LogoTaller";
+import { FormularioContacto } from "@/components/t/FormularioContacto";
 
 // ─── Tipos locales ──────────────────────────────────────────────────────────
 
@@ -463,6 +464,16 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
                 </div>
               ))}
             </div>
+          </section>
+        )}
+
+        {/* ── Formulario de contacto ── */}
+        {garage.email && (
+          <section aria-labelledby="titulo-contacto">
+            <h2 id="titulo-contacto" className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-4">
+              Contacta con nosotros
+            </h2>
+            <FormularioContacto garageId={garage.id} />
           </section>
         )}
 
