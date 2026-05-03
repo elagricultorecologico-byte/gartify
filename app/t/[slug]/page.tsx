@@ -439,23 +439,48 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
       </main>
 
-      {/* ── Footer: mapa + contacto + powered by ── */}
-      <footer className="bg-gray-50 border-t border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-8 pb-28 sm:pb-10">
+      {/* ── Footer ── */}
+      <footer className="bg-gartify-dark text-white">
 
-          {/* Columna izquierda: Dónde estamos */}
-          {((garage.lat && garage.lng) || garage.address) && (
+        {/* Datos de contacto del taller */}
+        <div className="border-b border-white/10">
+          <div className="max-w-4xl mx-auto px-4 py-6 flex flex-wrap gap-4 items-center justify-between">
             <div>
-              <h2 className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-3 flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
-                Dónde estamos
-              </h2>
+              <p className="font-bold text-base">{garage.name}</p>
               {garage.address && (
-                <p className="text-sm text-gartify-gray mb-3">
-                  {garage.address}{garage.city ? `, ${garage.city}` : ""}{garage.province ? ` (${garage.province})` : ""}
+                <p className="text-sm text-white/60 mt-0.5">
+                  {garage.address}{garage.city ? `, ${garage.city}` : ""}
                 </p>
               )}
-              <div className="w-full h-56 border border-gray-200 overflow-hidden">
+            </div>
+            <div className="flex flex-wrap gap-4">
+              {garage.phone && (
+                <a href={`tel:${garage.phone}`} className="flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors">
+                  <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+                  {garage.phone}
+                </a>
+              )}
+              {urlWhatsApp && (
+                <a href={urlWhatsApp} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors">
+                  <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                  WhatsApp
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Mapa + formulario */}
+        <div className="max-w-4xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8 pb-28 sm:pb-10">
+
+          {/* Columna izquierda: Mapa */}
+          {((garage.lat && garage.lng) || garage.address) && (
+            <div>
+              <h2 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-3 flex items-center gap-2">
+                <MapPin className="h-3.5 w-3.5 text-gartify-orange" aria-hidden="true" />
+                Dónde estamos
+              </h2>
+              <div className="w-full h-56 overflow-hidden">
                 <iframe
                   title={`Ubicación de ${garage.name}`}
                   src={
@@ -474,10 +499,10 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
             </div>
           )}
 
-          {/* Columna derecha: Formulario de contacto */}
+          {/* Columna derecha: Formulario */}
           {garage.email && (
             <div>
-              <h2 className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-3">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-3">
                 Contacta con nosotros
               </h2>
               <FormularioContacto garageId={garage.id} />
@@ -486,19 +511,22 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
         </div>
 
-        {/* Powered by */}
-        <div className="border-t border-gray-200 py-4 flex justify-center">
-          <a
-            href={baseUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-xs text-gartify-gray hover:text-gartify-dark transition-colors"
-          >
-            <span>Powered by</span>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-gartify-default.svg" alt="Gartify" className="h-4 w-auto opacity-70" />
-          </a>
+        {/* Banda inferior: powered by */}
+        <div className="border-t border-white/10 py-4">
+          <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
+            <p className="text-xs text-white/30">© {new Date().getFullYear()} {garage.name}</p>
+            <a
+              href={baseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/70 transition-colors"
+            >
+              Powered by
+              <span className="font-bold text-white/50">Gartify</span>
+            </a>
+          </div>
         </div>
+
       </footer>
 
       {/* ── CTA fijo en mobile con teléfono ─────────────────────────────────── */}

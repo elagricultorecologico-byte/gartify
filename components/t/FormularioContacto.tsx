@@ -53,18 +53,18 @@ export function FormularioContacto({ garageId }: Props) {
 
   if (enviado) {
     return (
-      <div className="flex flex-col items-center gap-3 py-10 border border-gray-200 bg-white">
-        <CheckCircle className="h-10 w-10 text-green-500" aria-hidden="true" />
-        <p className="text-sm font-semibold text-gartify-dark">Mensaje enviado correctamente</p>
-        <p className="text-xs text-gartify-gray">El taller recibirá tu mensaje y se pondrá en contacto contigo.</p>
+      <div className="flex flex-col items-center gap-3 py-10 border border-white/10 bg-white/5">
+        <CheckCircle className="h-10 w-10 text-green-400" aria-hidden="true" />
+        <p className="text-sm font-semibold text-white">Mensaje enviado correctamente</p>
+        <p className="text-xs text-white/50">El taller recibirá tu mensaje y se pondrá en contacto contigo.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="space-y-3">
       <div>
-        <label htmlFor="contacto-nombre" className="block text-xs font-bold uppercase tracking-widest text-gartify-gray mb-1">
+        <label htmlFor="contacto-nombre" className="block text-xs font-bold uppercase tracking-widest text-white/50 mb-1">
           Nombre <span aria-hidden="true">*</span>
         </label>
         <input
@@ -76,12 +76,12 @@ export function FormularioContacto({ garageId }: Props) {
           value={campos.nombre}
           onChange={actualizarCampo}
           autoComplete="name"
-          className="border border-gray-200 px-3 py-2 text-sm w-full focus:outline-none focus:border-gartify-blue"
+          className="bg-white/10 border border-white/20 text-white placeholder:text-white/30 px-3 py-2 text-sm w-full focus:outline-none focus:border-white/50"
         />
       </div>
 
       <div>
-        <label htmlFor="contacto-telefono" className="block text-xs font-bold uppercase tracking-widest text-gartify-gray mb-1">
+        <label htmlFor="contacto-telefono" className="block text-xs font-bold uppercase tracking-widest text-white/50 mb-1">
           Teléfono
         </label>
         <input
@@ -92,12 +92,12 @@ export function FormularioContacto({ garageId }: Props) {
           onChange={actualizarCampo}
           autoComplete="tel"
           placeholder="6XX XXX XXX"
-          className="border border-gray-200 px-3 py-2 text-sm w-full focus:outline-none focus:border-gartify-blue"
+          className="bg-white/10 border border-white/20 text-white placeholder:text-white/30 px-3 py-2 text-sm w-full focus:outline-none focus:border-white/50"
         />
       </div>
 
       <div>
-        <label htmlFor="contacto-mensaje" className="block text-xs font-bold uppercase tracking-widest text-gartify-gray mb-1">
+        <label htmlFor="contacto-mensaje" className="block text-xs font-bold uppercase tracking-widest text-white/50 mb-1">
           Mensaje <span aria-hidden="true">*</span>
         </label>
         <textarea
@@ -106,16 +106,16 @@ export function FormularioContacto({ garageId }: Props) {
           required
           minLength={10}
           maxLength={1000}
-          rows={5}
+          rows={4}
           value={campos.mensaje}
           onChange={actualizarCampo}
-          className="border border-gray-200 px-3 py-2 text-sm w-full focus:outline-none focus:border-gartify-blue resize-none"
+          className="bg-white/10 border border-white/20 text-white placeholder:text-white/30 px-3 py-2 text-sm w-full focus:outline-none focus:border-white/50 resize-none"
         />
-        <p className="text-right text-xs text-gartify-gray mt-1">{campos.mensaje.length}/1000</p>
+        <p className="text-right text-xs text-white/30 mt-1">{campos.mensaje.length}/1000</p>
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">
+        <p role="alert" className="text-sm text-red-300 border border-red-400/30 bg-red-500/10 px-3 py-2">
           {error}
         </p>
       )}
@@ -123,7 +123,7 @@ export function FormularioContacto({ garageId }: Props) {
       <button
         type="submit"
         disabled={enviando}
-        className="bg-gartify-blue text-white px-6 py-3 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed hover:bg-gartify-blue/90 transition-colors"
+        className="w-full bg-gartify-orange hover:bg-gartify-orange/90 text-white py-3 text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
       >
         {enviando ? "Enviando..." : "Enviar mensaje"}
       </button>
