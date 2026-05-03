@@ -475,12 +475,11 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
           {/* Columna izquierda: Mapa */}
           {((garage.lat && garage.lng) || garage.address) && (
-            <div>
-              <h2 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-3 flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 text-gartify-orange" aria-hidden="true" />
+            <div className="flex flex-col">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-3">
                 Dónde estamos
               </h2>
-              <div className="w-full h-56 overflow-hidden">
+              <div className="flex-1 min-h-56 overflow-hidden">
                 <iframe
                   title={`Ubicación de ${garage.name}`}
                   src={
@@ -501,7 +500,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
           {/* Columna derecha: Formulario */}
           {garage.email && (
-            <div>
+            <div className="flex flex-col">
               <h2 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-3">
                 Contacta con nosotros
               </h2>
