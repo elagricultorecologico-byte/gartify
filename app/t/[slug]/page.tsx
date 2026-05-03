@@ -105,8 +105,9 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
         take: 12,
       },
       reviews: {
+        where: { comment: { not: null } },
         orderBy: { createdAt: "desc" },
-        take: 3,
+        take: 5,
         select: {
           id: true,
           rating: true,
@@ -395,11 +396,11 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
 
         {/* ── Reseñas con resumen ── */}
-        {garage.reviews.length > 0 && (
+        {garage.reviewCount > 0 && (
           <section aria-labelledby="titulo-resenas">
             {/* Resumen numérico */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="text-center">
+              <div className="text-center shrink-0">
                 <p className="text-5xl font-black text-gartify-dark leading-none">{garage.rating.toFixed(1)}</p>
                 <Estrellas rating={garage.rating} size="lg" />
                 <p className="text-xs text-gartify-gray mt-1">
@@ -407,33 +408,51 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
                 </p>
               </div>
               <div className="flex-1 border-l border-gray-200 pl-4">
-                <h2 id="titulo-resenas" className="text-lg font-bold text-gartify-dark mb-1">
+                <h2 id="titulo-resenas" className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-1">
                   Opiniones de clientes
                 </h2>
                 <p className="text-sm text-gartify-gray">Reseñas verificadas de reservas realizadas en Gartify.</p>
               </div>
             </div>
 
-            <div className="space-y-3">
-              {garage.reviews.map((resena) => (
-                <div key={resena.id} className="p-4 border border-gray-200 bg-white ">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold text-gartify-dark">
-                        {resena.user.name ?? "Cliente verificado"}
-                      </p>
-                      <Estrellas rating={resena.rating} />
-                    </div>
-                    <time dateTime={resena.createdAt.toISOString()} className="text-xs text-gartify-gray shrink-0">
-                      {new Intl.DateTimeFormat("es-ES", { dateStyle: "medium" }).format(resena.createdAt)}
-                    </time>
-                  </div>
-                  {resena.comment && (
-                    <p className="mt-2 text-sm text-gray-600 leading-relaxed">{resena.comment}</p>
-                  )}
+            {garage.reviews.length > 0 ? (
+              <>
+                <div className="space-y-3">
+                  {garage.reviews.map((resena) => {
+                    const nombre = resena.user.name ?? "Cliente verificado";
+                    const iniciales = nombre.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
+                    return (
+                      <div key={resena.id} className="p-4 border border-gray-200 bg-white">
+                        <div className="flex items-start gap-3">
+                          <div className="shrink-0 h-9 w-9 bg-gartify-blue/10 flex items-center justify-center text-xs font-bold text-gartify-blue">
+                            {iniciales}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-sm font-semibold text-gartify-dark truncate">{nombre}</p>
+                              <time dateTime={resena.createdAt.toISOString()} className="text-xs text-gartify-gray shrink-0">
+                                {new Intl.DateTimeFormat("es-ES", { dateStyle: "medium" }).format(resena.createdAt)}
+                              </time>
+                            </div>
+                            <Estrellas rating={resena.rating} />
+                            {resena.comment && (
+                              <p className="mt-1.5 text-sm text-gray-600 leading-relaxed">{resena.comment}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+                {garage.reviewCount > garage.reviews.length && (
+                  <p className="mt-4 text-xs text-gartify-gray text-center">
+                    Mostrando {garage.reviews.length} de {garage.reviewCount} reseñas
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-gartify-gray">Las reseñas de este taller no incluyen comentarios escritos.</p>
+            )}
           </section>
         )}
 
