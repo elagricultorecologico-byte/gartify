@@ -192,7 +192,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
               {/* Logo + nombre en línea */}
               <div className="flex items-center gap-3">
-                <div className="shrink-0 h-12 w-12 sm:h-14 sm:w-14 overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center rounded-sm">
+                <div className="shrink-0 h-12 w-12 sm:h-14 sm:w-14 overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center ">
                   <LogoTaller src={garage.logo} nombre={garage.name} />
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold leading-tight">{garage.name}</h1>
@@ -207,12 +207,12 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
                 {/* Badge abierto/cerrado */}
                 {horarioHoy && (
-                  <span className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  <span className={`flex items-center gap-1.5 px-2.5 py-0.5  text-xs font-bold border ${
                     abiertoAhora
                       ? "bg-green-500/20 text-green-300 border-green-500/30"
                       : "bg-red-500/20 text-red-300 border-red-500/30"
                   }`}>
-                    <span className={`h-1.5 w-1.5 rounded-full ${abiertoAhora ? "bg-green-400 animate-pulse" : "bg-red-400"}`} />
+                    <span className={`h-1.5 w-1.5  ${abiertoAhora ? "bg-green-400 animate-pulse" : "bg-red-400"}`} />
                     {abiertoAhora
                       ? `Abierto · Cierra a las ${horarioHoy.afternoonEnd ?? horarioHoy.closeTime}`
                       : "Cerrado ahora"}
@@ -222,7 +222,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
               {/* ── Bloque de rating prominente ── */}
               {garage.reviewCount > 0 && (
-                <div className="mt-4 inline-flex items-center gap-3 bg-white/10 border border-white/15 rounded-xl px-4 py-3">
+                <div className="mt-4 inline-flex items-center gap-3 bg-white/10 border border-white/15  px-4 py-3">
                   <span className="text-3xl font-black text-white leading-none">
                     {garage.rating.toFixed(1)}
                   </span>
@@ -322,7 +322,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
               {garage.services.map((servicio) => (
                 <div
                   key={servicio.id}
-                  className="flex items-start justify-between gap-4 p-4 border border-gray-200 bg-white hover:border-gartify-orange/40 transition-colors rounded-lg"
+                  className="flex items-start justify-between gap-4 p-4 border border-gray-200 bg-white hover:border-gartify-orange/40 transition-colors "
                 >
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gartify-dark text-sm">{servicio.name}</p>
@@ -352,15 +352,15 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
             <div className="flex items-center justify-between mb-4">
               <h2 id="titulo-horario" className="text-lg font-bold text-gartify-dark">Horario</h2>
               {horarioHoy && (
-                <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                <span className={`flex items-center gap-1.5 px-2.5 py-1  text-xs font-bold ${
                   abiertoAhora ? "bg-green-100 text-green-700" : "bg-red-50 text-red-600"
                 }`}>
-                  <span className={`h-1.5 w-1.5 rounded-full ${abiertoAhora ? "bg-green-500 animate-pulse" : "bg-red-400"}`} />
+                  <span className={`h-1.5 w-1.5  ${abiertoAhora ? "bg-green-500 animate-pulse" : "bg-red-400"}`} />
                   {abiertoAhora ? "Abierto ahora" : "Cerrado ahora"}
                 </span>
               )}
             </div>
-            <div className="border border-gray-200 divide-y divide-gray-100 max-w-sm rounded-lg overflow-hidden">
+            <div className="border border-gray-200 divide-y divide-gray-100 max-w-sm  overflow-hidden">
               {garage.schedules.map((horario) => {
                 const esHoy = horario.dayOfWeek === todayDow;
                 return (
@@ -412,7 +412,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
 
             <div className="space-y-3">
               {garage.reviews.map((resena) => (
-                <div key={resena.id} className="p-4 border border-gray-200 bg-white rounded-lg">
+                <div key={resena.id} className="p-4 border border-gray-200 bg-white ">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-gartify-dark">
@@ -459,7 +459,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
       <div className="fixed bottom-0 left-0 right-0 sm:hidden z-50 bg-white border-t border-gray-200 p-3 flex gap-2 shadow-lg">
         <Link
           href={urlReserva}
-          className="flex-1 flex items-center justify-center gap-2 py-3 bg-gartify-orange hover:bg-gartify-orange/90 text-white font-bold text-sm transition-colors rounded-lg"
+          className="flex-1 flex items-center justify-center gap-2 py-3 bg-gartify-orange hover:bg-gartify-orange/90 text-white font-bold text-sm transition-colors "
         >
           <Calendar className="h-4 w-4" aria-hidden="true" />
           Reservar ahora
@@ -470,7 +470,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contactar por WhatsApp"
-            className="flex items-center justify-center px-4 py-3 bg-[#25D366] text-white font-bold text-sm rounded-lg"
+            className="flex items-center justify-center px-4 py-3 bg-[#25D366] text-white font-bold text-sm "
           >
             <MessageCircle className="h-4 w-4" aria-hidden="true" />
           </a>
@@ -479,7 +479,7 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
           <a
             href={`tel:${garage.phone}`}
             aria-label={`Llamar a ${garage.name}`}
-            className="flex items-center justify-center px-4 py-3 bg-gartify-blue text-white font-bold text-sm rounded-lg"
+            className="flex items-center justify-center px-4 py-3 bg-gartify-blue text-white font-bold text-sm "
           >
             <Phone className="h-4 w-4" aria-hidden="true" />
           </a>
