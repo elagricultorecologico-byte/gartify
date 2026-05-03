@@ -4,7 +4,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/utils";
 import { SERVICE_LABELS } from "@/lib/constants";
-import { MapPin, Phone, Star, Clock, CheckCircle, MessageCircle, Calendar, ChevronRight } from "lucide-react";
+import { MapPin, Phone, Star, Clock, CheckCircle, MessageCircle, Calendar } from "lucide-react";
 import { LogoTaller } from "@/components/t/LogoTaller";
 
 // ─── Tipos locales ──────────────────────────────────────────────────────────
@@ -433,25 +433,18 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
           </section>
         )}
 
-        {/* ── Footer como sello de confianza ── */}
-        <footer className="pt-6 border-t border-gray-100">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-gartify-default.svg" alt="Gartify" className="h-6 w-auto" />
-              <div>
-                <p className="text-xs font-semibold text-gartify-dark">Reserva online segura</p>
-                <p className="text-xs text-gartify-gray">Gestionada por Gartify · Taller verificado</p>
-              </div>
-            </div>
-            <a
-              href={`${baseUrl}/talleres/${garage.id}`}
-              className="flex items-center gap-1 text-xs text-gartify-blue hover:underline font-medium"
-            >
-              Ver perfil completo en Gartify
-              <ChevronRight className="h-3 w-3" />
-            </a>
-          </div>
+        {/* ── Footer powered by ── */}
+        <footer className="pt-8 pb-4 border-t border-gray-100 flex justify-center">
+          <a
+            href={baseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs text-gartify-gray hover:text-gartify-dark transition-colors"
+          >
+            <span>Powered by</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-gartify-default.svg" alt="Gartify" className="h-4 w-auto opacity-70" />
+          </a>
         </footer>
       </main>
 
