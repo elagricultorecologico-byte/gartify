@@ -393,36 +393,6 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
           </section>
         )}
 
-        {/* ── Dónde estamos ── */}
-        {(garage.lat && garage.lng) || garage.address ? (
-          <section aria-labelledby="titulo-ubicacion">
-            <h2 id="titulo-ubicacion" className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-4 flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
-              Dónde estamos
-            </h2>
-            {garage.address && (
-              <p className="text-sm text-gartify-gray mb-3">
-                {garage.address}{garage.city ? `, ${garage.city}` : ""}{garage.province ? ` (${garage.province})` : ""}
-              </p>
-            )}
-            <div className="w-full h-64 sm:h-80 border border-gray-200 overflow-hidden">
-              <iframe
-                title={`Ubicación de ${garage.name}`}
-                src={
-                  garage.lat && garage.lng
-                    ? `https://maps.google.com/maps?q=${garage.lat},${garage.lng}&hl=es&z=15&output=embed`
-                    : `https://maps.google.com/maps?q=${encodeURIComponent(`${garage.address ?? ""} ${garage.city ?? ""} ${garage.province ?? ""}`.trim())}&hl=es&z=15&output=embed`
-                }
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          </section>
-        ) : null}
 
         {/* ── Reseñas con resumen ── */}
         {garage.reviews.length > 0 && (
@@ -467,18 +437,57 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
           </section>
         )}
 
-        {/* ── Formulario de contacto ── */}
-        {garage.email && (
-          <section aria-labelledby="titulo-contacto">
-            <h2 id="titulo-contacto" className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-4">
-              Contacta con nosotros
-            </h2>
-            <FormularioContacto garageId={garage.id} />
-          </section>
-        )}
+      </main>
 
-        {/* ── Footer powered by ── */}
-        <footer className="pt-8 pb-4 border-t border-gray-100 flex justify-center">
+      {/* ── Footer: mapa + contacto + powered by ── */}
+      <footer className="bg-gray-50 border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-8 pb-28 sm:pb-10">
+
+          {/* Columna izquierda: Dónde estamos */}
+          {((garage.lat && garage.lng) || garage.address) && (
+            <div>
+              <h2 className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-3 flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-gartify-orange" aria-hidden="true" />
+                Dónde estamos
+              </h2>
+              {garage.address && (
+                <p className="text-sm text-gartify-gray mb-3">
+                  {garage.address}{garage.city ? `, ${garage.city}` : ""}{garage.province ? ` (${garage.province})` : ""}
+                </p>
+              )}
+              <div className="w-full h-56 border border-gray-200 overflow-hidden">
+                <iframe
+                  title={`Ubicación de ${garage.name}`}
+                  src={
+                    garage.lat && garage.lng
+                      ? `https://maps.google.com/maps?q=${garage.lat},${garage.lng}&hl=es&z=15&output=embed`
+                      : `https://maps.google.com/maps?q=${encodeURIComponent(`${garage.address ?? ""} ${garage.city ?? ""} ${garage.province ?? ""}`.trim())}&hl=es&z=15&output=embed`
+                  }
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Columna derecha: Formulario de contacto */}
+          {garage.email && (
+            <div>
+              <h2 className="text-base font-bold text-gartify-dark uppercase tracking-widest mb-3">
+                Contacta con nosotros
+              </h2>
+              <FormularioContacto garageId={garage.id} />
+            </div>
+          )}
+
+        </div>
+
+        {/* Powered by */}
+        <div className="border-t border-gray-200 py-4 flex justify-center">
           <a
             href={baseUrl}
             target="_blank"
@@ -489,8 +498,8 @@ export default async function LandingTallerPage({ params }: PropsLandingTaller) 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-gartify-default.svg" alt="Gartify" className="h-4 w-auto opacity-70" />
           </a>
-        </footer>
-      </main>
+        </div>
+      </footer>
 
       {/* ── CTA fijo en mobile con teléfono ─────────────────────────────────── */}
       <div className="fixed bottom-0 left-0 right-0 sm:hidden z-50 bg-white border-t border-gray-200 p-3 flex gap-2 shadow-lg">
