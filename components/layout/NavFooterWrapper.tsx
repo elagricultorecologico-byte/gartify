@@ -13,7 +13,8 @@ export function NavFooterWrapper({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/confirmar/") ||
     pathname.startsWith("/reagendar/") ||
     pathname.startsWith("/rechazar/") ||
-    pathname.endsWith("/pdf");
+    pathname.endsWith("/pdf") ||
+    pathname.startsWith("/t/");
 
   // El portal de taller tiene su propio layout con sidebar;
   // ocultamos el footer para evitar que aparezca debajo del contenido.
