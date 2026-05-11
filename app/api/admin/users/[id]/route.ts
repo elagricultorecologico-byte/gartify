@@ -79,8 +79,12 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
       await db.garage.delete({ where: { id: garage.id } });
     }
 
-    // Borrar reservas del usuario como cliente
+    // Borrar reservas del usuario como cliente (y sus reseñas)
+    await db.review.deleteMany({ where: { userId: id } });
     await db.booking.deleteMany({ where: { userId: id } });
+
+    // Borrar tokens de verificación de email
+    await db.emailVerification.deleteMany({ where: { userId: id } });
 
     // Borrar distribuidor vinculado si existe
     await db.distributor.deleteMany({ where: { userId: id } });
