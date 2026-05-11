@@ -17,7 +17,6 @@ import {
   MessageCircle,
   Check,
   Star,
-  Crown,
 } from "lucide-react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
