@@ -758,7 +758,7 @@ export function RegistroTallerForm() {
             🎉 Promoción de lanzamiento · Plan Pro gratuito hasta el 31/12/2026
           </p>
           <p className="text-xs text-amber-700 leading-snug">
-            Si eliges Pro, entras gratis durante toda la promoción. A partir del 1/1/2027 se activa la suscripción mensual.
+            Tu plan Pro gratuito termina el 31 de diciembre de 2026. A partir del 1 de enero pasarás al plan Starter automáticamente si no lo has contratado. Te iremos avisando a medida que nos acerquemos al final de esta promoción.
           </p>
         </div>
 
