@@ -155,7 +155,7 @@ export function RegistroTallerForm() {
   });
 
   // Estado del plan seleccionado (paso 5)
-  const [planSeleccionado, setPlanSeleccionado] = useState<"STARTER" | "PRO" | "PREMIUM">("PREMIUM");
+  const [planSeleccionado, setPlanSeleccionado] = useState<"STARTER" | "PRO">("PRO");
 
   // Estado del Paso 4 — Cuenta
   const [paso4, setPaso4] = useState<EstadoPaso4>({
@@ -725,6 +725,7 @@ export function RegistroTallerForm() {
         precio: "Gratis",
         precioDetalle: "para siempre",
         icono: <Star className="h-5 w-5 text-gartify-gray" />,
+        promo: false,
         caracteristicas: [
           "Hasta 5 servicios",
           "Gestión de reservas",
@@ -737,29 +738,15 @@ export function RegistroTallerForm() {
         nombre: "Pro",
         precio: "29€",
         precioDetalle: "/ mes",
-        icono: <ChevronRight className="h-5 w-5 text-gartify-blue" />,
+        icono: <Star className="h-5 w-5 text-gartify-blue" />,
+        promo: true,
         caracteristicas: [
-          "Todo Starter",
           "Servicios ilimitados",
-          "Posición destacada",
+          "Posición destacada en búsqueda",
           "Estadísticas de negocio",
           "Modo TV para el taller",
           "Notificaciones WhatsApp",
-        ],
-      },
-      {
-        id: "PREMIUM" as const,
-        nombre: "Premium",
-        precio: "79€",
-        precioDetalle: "/ mes",
-        icono: <Crown className="h-5 w-5 text-gartify-orange" />,
-        caracteristicas: [
-          "Todo Pro",
-          "Badge Taller Premium",
-          "Red de recambios",
-          "Cupones y promociones",
-          "Informes PDF",
-          "Soporte prioritario 24h",
+          "Soporte prioritario",
         ],
       },
     ] as const;
@@ -769,11 +756,10 @@ export function RegistroTallerForm() {
         {/* Banner de promoción de lanzamiento */}
         <div className="bg-amber-50 border border-amber-200 px-4 py-3 space-y-1">
           <p className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
-            Promocion de lanzamiento · Plan Premium gratuito hasta el 31/12/2026
+            🎉 Promoción de lanzamiento · Plan Pro gratuito hasta el 31/12/2026
           </p>
           <p className="text-xs text-amber-700 leading-snug">
-            Tu taller entra con acceso completo Premium sin coste. El plan que elijas
-            aqui se activara cuando finalice la promocion.
+            Si eliges Pro, entras gratis durante toda la promoción. A partir del 1/1/2027 se activa la suscripción mensual.
           </p>
         </div>
 
@@ -798,6 +784,11 @@ export function RegistroTallerForm() {
                   <div className="flex items-center gap-1.5">
                     {plan.icono}
                     <span className="text-sm font-bold text-gartify-dark">{plan.nombre}</span>
+                    {plan.promo && (
+                      <span className="text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-300 px-1.5 py-0.5 leading-none">
+                        Gratis hasta 31/12/26
+                      </span>
+                    )}
                   </div>
                   {seleccionado && (
                     <Check className="h-4 w-4 text-gartify-orange shrink-0" />
