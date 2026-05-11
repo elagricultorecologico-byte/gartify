@@ -150,8 +150,14 @@ export default function ParaTalleresPage() {
                   Únete a la red de talleres
                   <ChevronRight className="h-5 w-5" aria-hidden="true" />
                 </Link>
-                <p className="text-sm text-blue-300">Alta gratuita · Sin permanencia</p>
+                <Link
+                  href="/login/taller"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3.5 text-white font-semibold text-base hover:bg-white/20 transition-colors"
+                >
+                  Ya tengo cuenta
+                </Link>
               </div>
+              <p className="pt-hero-in pt-d3 text-sm text-blue-300 mt-1">Alta gratuita · Sin permanencia</p>
 
               {/* Ticker de reservas en directo */}
               <div className="pt-hero-in pt-d4 mt-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3">
@@ -395,7 +401,7 @@ export default function ParaTalleresPage() {
               <ul className="space-y-2.5 flex-1 mb-7">
                 {[
                   "Perfil verificado en el directorio",
-                  "Hasta 4 servicios publicados",
+                  "Hasta 5 servicios publicados",
                   "Gestión de reservas online",
                   "Reseñas y valoraciones de clientes",
                   "Soporte por email",
@@ -523,6 +529,15 @@ export default function ParaTalleresPage() {
               className="text-white font-semibold underline underline-offset-2 hover:text-gartify-orange transition-colors"
             >
               Crea tu perfil ahora
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-sm text-blue-300">
+            ¿Ya tienes cuenta?{" "}
+            <Link
+              href="/login/taller"
+              className="text-white font-semibold underline underline-offset-2 hover:text-gartify-orange transition-colors"
+            >
+              Inicia sesión
             </Link>
           </p>
         </div>
