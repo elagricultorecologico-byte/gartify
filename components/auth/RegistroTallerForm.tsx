@@ -762,7 +762,7 @@ export function RegistroTallerForm() {
             🎉 Promoción de lanzamiento · Plan Pro gratuito hasta el 31/12/2026
           </p>
           <p className="text-xs text-amber-700 leading-snug">
-            Tu plan Pro gratuito termina el 31 de diciembre de 2026. A partir del 1 de enero pasarás al plan Starter automáticamente si no lo has contratado. Te iremos avisando a medida que nos acerquemos al final de esta promoción.
+            Tu plan Pro gratuito termina el 31 de diciembre de 2026. A partir del 1 de enero de 2027 pasarás al plan Starter automáticamente si no lo has contratado. Te iremos avisando a medida que nos acerquemos al final de esta promoción.
           </p>
         </div>
 
@@ -788,7 +788,7 @@ export function RegistroTallerForm() {
                     {plan.icono}
                     <span className="text-sm font-bold text-gartify-dark">{plan.nombre}</span>
                     {plan.promo && (
-                      <span className="text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-300 px-1.5 py-0.5 leading-none">
+                      <span className="text-[10px] font-bold bg-green-100 text-green-700 border border-green-300 px-1.5 py-0.5 leading-none">
                         Gratis hasta 31/12/26
                       </span>
                     )}
