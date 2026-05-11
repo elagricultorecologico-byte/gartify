@@ -169,7 +169,7 @@ export function RegistroConductorForm() {
             </form>
 
             <div className="flex items-center justify-between text-sm pt-1">
-              <Link href="/registro" className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs">
+              <Link href="/login/conductor" className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs">
                 <ArrowLeft className="h-3.5 w-3.5" />Volver
               </Link>
               <p className="text-muted-foreground">

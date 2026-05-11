@@ -798,7 +798,7 @@ export function RegistroTallerForm() {
           {/* Footer con enlace a login */}
           <div className="px-6 pb-5 flex items-center justify-between text-sm border-t border-gray-100 pt-4">
             <Link
-              href="/registro"
+              href="/para-talleres"
               className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs"
             >
               <ArrowLeft className="h-3.5 w-3.5" />

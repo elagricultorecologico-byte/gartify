@@ -69,7 +69,7 @@ export function LoginTallerForm() {
             </form>
 
             <div className="flex items-center justify-between text-sm pt-1">
-              <Link href="/login" className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs">
+              <Link href="/para-talleres" className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs">
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Volver
               </Link>

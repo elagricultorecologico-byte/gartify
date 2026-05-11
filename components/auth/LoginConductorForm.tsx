@@ -99,13 +99,13 @@ export function LoginConductorForm() {
             </form>
 
             <div className="flex items-center justify-between text-sm pt-1">
-              <Link href="/login" className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs">
+              <Link href="/" className="flex items-center gap-1 text-gartify-gray hover:text-gartify-dark transition-colors text-xs">
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Volver
               </Link>
               <p className="text-muted-foreground">
                 ¿Sin cuenta?{" "}
-                <Link href="/registro" className="text-gartify-orange font-semibold hover:underline">Regístrate</Link>
+                <Link href="/registro/conductor" className="text-gartify-orange font-semibold hover:underline">Regístrate</Link>
               </p>
             </div>
           </div>
