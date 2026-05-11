@@ -70,7 +70,7 @@ interface IndicadorProgresoProps {
   pasoActual: PasoWizard;
 }
 
-const PASOS_LABELS = ["Tu taller", "Vehículos", "Servicios", "Tu cuenta", "Tu plan"] as const;
+const PASOS_LABELS = ["Tu plan", "Tu taller", "Vehículos", "Servicios", "Tu cuenta"] as const;
 
 function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
   return (
@@ -255,10 +255,11 @@ export function RegistroTallerForm() {
     setErrorPaso("");
     let errorValidacion: string | null = null;
 
-    if (paso === 1) errorValidacion = validarPaso1();
-    if (paso === 2) errorValidacion = validarPaso2();
-    if (paso === 3) errorValidacion = validarPaso3();
-    if (paso === 4) errorValidacion = validarPaso4();
+    // paso 1 (plan): sin validación, siempre tiene valor por defecto
+    if (paso === 2) errorValidacion = validarPaso1();
+    if (paso === 3) errorValidacion = validarPaso2();
+    if (paso === 4) errorValidacion = validarPaso3();
+    // paso 5: no llega aquí, el submit lo gestiona handleSubmit
 
     if (errorValidacion) {
       setErrorPaso(errorValidacion);
@@ -491,6 +492,13 @@ export function RegistroTallerForm() {
           </p>
         </div>
 
+        {/* Aviso de límite para plan Starter */}
+        {planSeleccionado === "STARTER" && (
+          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
+            Plan Starter: puedes añadir hasta 5 servicios. Actualiza a Pro para tener servicios ilimitados.
+          </p>
+        )}
+
         {/* Selector de servicios del catálogo */}
         <RegistroServicePicker
           selected={paso3.serviciosSeleccionados}
@@ -526,7 +534,7 @@ export function RegistroTallerForm() {
 
   function renderPaso4() {
     return (
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {/* Nombre del responsable */}
         <div className="space-y-1.5">
           <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
@@ -662,7 +670,49 @@ export function RegistroTallerForm() {
             </span>
           </label>
         </div>
-      </div>
+
+        {/* Error de validación */}
+        {errorPaso && (
+          <div
+            role="alert"
+            className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
+          >
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {errorPaso}
+          </div>
+        )}
+
+        {/* Botones de navegación: Anterior + submit */}
+        <div className="flex gap-3 pt-1">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={retrocederPaso}
+            className="flex-none border-gray-200 text-gartify-gray hover:text-gartify-dark gap-1.5"
+            disabled={loading}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Anterior
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 h-11 bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Registrando taller...
+              </>
+            ) : (
+              <>
+                <Wrench className="h-4 w-4" />
+                Crear mi taller
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
     );
   }
 
@@ -715,7 +765,7 @@ export function RegistroTallerForm() {
     ] as const;
 
     return (
-      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+      <div className="space-y-5">
         {/* Banner de promoción de lanzamiento */}
         <div className="bg-amber-50 border border-amber-200 px-4 py-3 space-y-1">
           <p className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
@@ -774,48 +824,18 @@ export function RegistroTallerForm() {
           })}
         </div>
 
-        {/* Error de validación */}
-        {errorPaso && (
-          <div
-            role="alert"
-            className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600"
-          >
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            {errorPaso}
-          </div>
-        )}
-
-        {/* Botones de navegación */}
-        <div className="flex gap-3 pt-1">
+        {/* Botón de avance (sin validación en este paso) */}
+        <div className="flex justify-end mt-5">
           <Button
             type="button"
-            variant="outline"
-            onClick={retrocederPaso}
-            className="flex-none border-gray-200 text-gartify-gray hover:text-gartify-dark gap-1.5"
-            disabled={loading}
+            onClick={avanzarPaso}
+            className="flex-1 bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Anterior
-          </Button>
-          <Button
-            type="submit"
-            className="flex-1 h-11 bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Registrando taller...
-              </>
-            ) : (
-              <>
-                <Wrench className="h-4 w-4" />
-                Crear mi taller
-              </>
-            )}
+            Siguiente
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-      </form>
+      </div>
     );
   }
 
@@ -846,36 +866,17 @@ export function RegistroTallerForm() {
 
           {/* Contenido del paso activo */}
           <div className="p-6">
+            {/* Paso 1: selección de plan — el botón Siguiente va dentro de renderPaso5 */}
             {paso === 1 && (
               <>
-                {renderPaso1()}
-
-                {errorPaso && (
-                  <div
-                    role="alert"
-                    className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600 mt-4"
-                  >
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    {errorPaso}
-                  </div>
-                )}
-
-                <div className="flex justify-end mt-5">
-                  <Button
-                    type="button"
-                    onClick={avanzarPaso}
-                    className="bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2"
-                  >
-                    Siguiente
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
+                {renderPaso5()}
               </>
             )}
 
-            {(paso === 2 || paso === 3) && (
+            {/* Pasos 2, 3 y 4: datos del taller, vehículos y servicios */}
+            {(paso === 2 || paso === 3 || paso === 4) && (
               <>
-                {paso === 2 ? renderPaso2() : renderPaso3()}
+                {paso === 2 ? renderPaso1() : paso === 3 ? renderPaso2() : renderPaso3()}
 
                 {errorPaso && (
                   <div
@@ -909,43 +910,8 @@ export function RegistroTallerForm() {
               </>
             )}
 
-            {paso === 4 && (
-              <>
-                {renderPaso4()}
-
-                {errorPaso && (
-                  <div
-                    role="alert"
-                    className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600 mt-4"
-                  >
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    {errorPaso}
-                  </div>
-                )}
-
-                <div className="flex gap-3 mt-5">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={retrocederPaso}
-                    className="flex-none border-gray-200 text-gartify-gray hover:text-gartify-dark gap-1.5"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    Anterior
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={avanzarPaso}
-                    className="flex-1 bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2"
-                  >
-                    Siguiente
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {paso === 5 && renderPaso5()}
+            {/* Paso 5: cuenta + submit — renderPaso4 gestiona su propio form con Anterior y submit */}
+            {paso === 5 && renderPaso4()}
           </div>
 
           {/* Footer con enlace a login */}
