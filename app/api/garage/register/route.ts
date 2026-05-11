@@ -29,8 +29,8 @@ const schema = z.object({
   description:     z.string().optional(),
   vehicleTypes:    z.array(z.string()).min(1).optional(),
   laborRate:       z.number().positive().optional(),
-  /** Servicios seleccionados en el wizard de registro (máx. 3) */
-  initialServices: z.array(schemaServicioInicial).max(3).optional(),
+  /** Servicios seleccionados en el wizard de registro (máx. 5) */
+  initialServices: z.array(schemaServicioInicial).max(5).optional(),
   excludedBrands:  z.array(z.string()).optional(),
 });
 
@@ -235,6 +235,8 @@ export async function POST(req: Request) {
             vehicleTypes: JSON.stringify(data.vehicleTypes ?? ["COCHE"]),
             ...(data.laborRate !== undefined && { laborRate: data.laborRate }),
             ...(data.excludedBrands && data.excludedBrands.length > 0 && { excludedBrands: JSON.stringify(data.excludedBrands) }),
+            plan: "PREMIUM",
+            planExpiresAt: new Date("2026-12-31T23:59:59Z"),
             ...(coordenadas && { lat: coordenadas.lat, lng: coordenadas.lng }),
             ...(initialServices.length > 0 && {
               services: { create: initialServices as never },

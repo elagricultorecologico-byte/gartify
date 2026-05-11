@@ -34,9 +34,24 @@ export async function POST(req: Request) {
   const { garageId, type, name, description, price, duration, vehicleTypes } = parsed.data;
 
   // Verificar que el taller pertenece al usuario autenticado
-  const garage = await db.garage.findUnique({ where: { id: garageId } });
+  const garage = await db.garage.findUnique({
+    where: { id: garageId },
+    include: { _count: { select: { services: true } } },
+  });
   if (!garage || garage.ownerId !== session.user.id) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+  }
+
+  // Límite de servicios según plan
+  const planActivo = garage.planExpiresAt && garage.planExpiresAt > new Date()
+    ? garage.plan
+    : "STARTER";
+  const limite = planActivo === "STARTER" ? 5 : null; // PRO y PREMIUM sin límite
+  if (limite !== null && garage._count.services >= limite) {
+    return NextResponse.json(
+      { error: `El plan ${planActivo} permite un máximo de ${limite} servicios. Actualiza tu plan para añadir más.` },
+      { status: 403 },
+    );
   }
 
   const service = await db.garageService.create({
