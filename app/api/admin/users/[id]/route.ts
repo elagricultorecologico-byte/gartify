@@ -62,10 +62,33 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
   if (!await requireAdmin()) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
 
   try {
-    // Borrar en cascada: reservas, reseñas, garage si es propietario
-    await db.user.delete({ where: { id: params.id } });
+    const { id } = params;
+
+    // Si es GARAGE_OWNER, borrar el garage y sus dependencias primero
+    const garage = await db.garage.findUnique({ where: { ownerId: id } });
+    if (garage) {
+      await db.serviceRecord.deleteMany({ where: { garageId: garage.id } });
+      await db.blockedSlot.deleteMany({ where: { garageId: garage.id } });
+      await db.garageOffer.deleteMany({ where: { garageId: garage.id } });
+      await db.garageSchedule.deleteMany({ where: { garageId: garage.id } });
+      await db.adminInvoice.deleteMany({ where: { garageId: garage.id } });
+      await db.review.deleteMany({ where: { garageId: garage.id } });
+      await db.booking.deleteMany({ where: { garageId: garage.id } });
+      await db.garageService.deleteMany({ where: { garageId: garage.id } });
+      await db.partOrder.deleteMany({ where: { garageId: garage.id } });
+      await db.garage.delete({ where: { id: garage.id } });
+    }
+
+    // Borrar reservas del usuario como cliente
+    await db.booking.deleteMany({ where: { userId: id } });
+
+    // Borrar distribuidor vinculado si existe
+    await db.distributor.deleteMany({ where: { userId: id } });
+
+    await db.user.delete({ where: { id } });
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch (e) {
+    console.error("[admin/users DELETE]", e);
     return NextResponse.json({ error: "Error al eliminar el usuario" }, { status: 500 });
   }
 }
