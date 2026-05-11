@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X, LogOut, Settings, Truck, Zap, Crown, Wrench, Package } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 const TZ_TO_COUNTRY: Record<string, string> = {
@@ -35,6 +36,8 @@ function useCountryCode() {
 export function Navbar() {
   const { data: session } = useSession();
   const countryCode = useCountryCode();
+  const pathname = usePathname();
+  const loginHref = pathname?.startsWith("/para-talleres") ? "/login/taller" : "/login/conductor";
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -221,7 +224,7 @@ export function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login">
+              <Link href={loginHref}>
                 <Button variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/10">
                   Entrar
                 </Button>
@@ -284,7 +287,7 @@ export function Navbar() {
               <Link href="/talleres" onClick={() => setOpen(false)}>
                 <Button size="sm" className="w-full bg-gartify-orange hover:bg-orange-600 text-white font-bold">Buscar taller</Button>
               </Link>
-              <Link href="/login" onClick={() => setOpen(false)}>
+              <Link href={loginHref} onClick={() => setOpen(false)}>
                 <Button variant="ghost" size="sm" className="w-full text-white hover:bg-white/10">Entrar</Button>
               </Link>
             </div>
