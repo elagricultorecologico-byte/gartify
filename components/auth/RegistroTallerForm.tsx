@@ -16,6 +16,8 @@ import {
   ChevronRight,
   MessageCircle,
   Check,
+  Star,
+  Crown,
 } from "lucide-react";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
@@ -31,7 +33,7 @@ import {
 
 // ── Tipos del estado del wizard ───────────────────────────────────────────────
 
-type PasoWizard = 1 | 2 | 3 | 4;
+type PasoWizard = 1 | 2 | 3 | 4 | 5;
 
 interface EstadoPaso1 {
   garageName: string;
@@ -68,7 +70,7 @@ interface IndicadorProgresoProps {
   pasoActual: PasoWizard;
 }
 
-const PASOS_LABELS = ["Tu taller", "Vehículos", "Servicios", "Tu cuenta"] as const;
+const PASOS_LABELS = ["Tu taller", "Vehículos", "Servicios", "Tu cuenta", "Tu plan"] as const;
 
 function IndicadorProgreso({ pasoActual }: IndicadorProgresoProps) {
   return (
@@ -151,6 +153,9 @@ export function RegistroTallerForm() {
     serviciosSeleccionados: [],
     laborRate:              "",
   });
+
+  // Estado del plan seleccionado (paso 5)
+  const [planSeleccionado, setPlanSeleccionado] = useState<"STARTER" | "PRO" | "PREMIUM">("PREMIUM");
 
   // Estado del Paso 4 — Cuenta
   const [paso4, setPaso4] = useState<EstadoPaso4>({
@@ -253,12 +258,13 @@ export function RegistroTallerForm() {
     if (paso === 1) errorValidacion = validarPaso1();
     if (paso === 2) errorValidacion = validarPaso2();
     if (paso === 3) errorValidacion = validarPaso3();
+    if (paso === 4) errorValidacion = validarPaso4();
 
     if (errorValidacion) {
       setErrorPaso(errorValidacion);
       return;
     }
-    setPaso((p) => (p < 4 ? ((p + 1) as PasoWizard) : p));
+    setPaso((p) => (p < 5 ? ((p + 1) as PasoWizard) : p));
   }
 
   function retrocederPaso() {
@@ -266,7 +272,7 @@ export function RegistroTallerForm() {
     setPaso((p) => (p > 1 ? ((p - 1) as PasoWizard) : p));
   }
 
-  // ── Submit final (paso 4) ─────────────────────────────────────────────────
+  // ── Submit final (paso 5) ─────────────────────────────────────────────────
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -520,7 +526,7 @@ export function RegistroTallerForm() {
 
   function renderPaso4() {
     return (
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <div className="space-y-4">
         {/* Nombre del responsable */}
         <div className="space-y-1.5">
           <p className="text-xs font-bold uppercase tracking-widest text-gartify-gray mb-3 flex items-center gap-1.5">
@@ -656,6 +662,117 @@ export function RegistroTallerForm() {
             </span>
           </label>
         </div>
+      </div>
+    );
+  }
+
+  function renderPaso5() {
+    // Definición estática de los tres planes para renderizado
+    const planes = [
+      {
+        id: "STARTER" as const,
+        nombre: "Starter",
+        precio: "Gratis",
+        precioDetalle: "para siempre",
+        icono: <Star className="h-5 w-5 text-gartify-gray" />,
+        caracteristicas: [
+          "Hasta 5 servicios",
+          "Gestión de reservas",
+          "Reseñas de clientes",
+          "Soporte por email",
+        ],
+      },
+      {
+        id: "PRO" as const,
+        nombre: "Pro",
+        precio: "29€",
+        precioDetalle: "/ mes",
+        icono: <ChevronRight className="h-5 w-5 text-gartify-blue" />,
+        caracteristicas: [
+          "Todo Starter",
+          "Servicios ilimitados",
+          "Posición destacada",
+          "Estadísticas de negocio",
+          "Modo TV para el taller",
+          "Notificaciones WhatsApp",
+        ],
+      },
+      {
+        id: "PREMIUM" as const,
+        nombre: "Premium",
+        precio: "79€",
+        precioDetalle: "/ mes",
+        icono: <Crown className="h-5 w-5 text-gartify-orange" />,
+        caracteristicas: [
+          "Todo Pro",
+          "Badge Taller Premium",
+          "Red de recambios",
+          "Cupones y promociones",
+          "Informes PDF",
+          "Soporte prioritario 24h",
+        ],
+      },
+    ] as const;
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        {/* Banner de promoción de lanzamiento */}
+        <div className="bg-amber-50 border border-amber-200 px-4 py-3 space-y-1">
+          <p className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
+            Promocion de lanzamiento · Plan Premium gratuito hasta el 31/12/2026
+          </p>
+          <p className="text-xs text-amber-700 leading-snug">
+            Tu taller entra con acceso completo Premium sin coste. El plan que elijas
+            aqui se activara cuando finalice la promocion.
+          </p>
+        </div>
+
+        {/* Tarjetas de plan */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          {planes.map((plan) => {
+            const seleccionado = planSeleccionado === plan.id;
+            return (
+              <button
+                key={plan.id}
+                type="button"
+                onClick={() => setPlanSeleccionado(plan.id)}
+                className={`flex-1 text-left border-2 p-3 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-gartify-orange ${
+                  seleccionado
+                    ? "border-gartify-orange bg-orange-50"
+                    : "border-gray-200 bg-white hover:border-gray-300"
+                }`}
+                aria-pressed={seleccionado}
+              >
+                {/* Cabecera de la tarjeta */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    {plan.icono}
+                    <span className="text-sm font-bold text-gartify-dark">{plan.nombre}</span>
+                  </div>
+                  {seleccionado && (
+                    <Check className="h-4 w-4 text-gartify-orange shrink-0" />
+                  )}
+                </div>
+
+                {/* Precio */}
+                <div className="mb-3">
+                  <span className="text-lg font-extrabold text-gartify-dark">{plan.precio}</span>
+                  <span className="text-xs text-gartify-gray ml-1">{plan.precioDetalle}</span>
+                </div>
+
+                {/* Lista de características */}
+                <ul className="space-y-1">
+                  {plan.caracteristicas.map((caracteristica) => (
+                    <li key={caracteristica} className="flex items-start gap-1.5 text-xs text-gartify-gray">
+                      <Check className="h-3 w-3 text-green-500 mt-0.5 shrink-0" />
+                      {caracteristica}
+                    </li>
+                  ))}
+                </ul>
+              </button>
+            );
+          })}
+        </div>
 
         {/* Error de validación */}
         {errorPaso && (
@@ -668,7 +785,7 @@ export function RegistroTallerForm() {
           </div>
         )}
 
-        {/* Botones de navegación del paso 4 */}
+        {/* Botones de navegación */}
         <div className="flex gap-3 pt-1">
           <Button
             type="button"
@@ -692,8 +809,8 @@ export function RegistroTallerForm() {
               </>
             ) : (
               <>
-                <ChevronRight className="h-4 w-4" />
-                Registrar mi taller gratis
+                <Wrench className="h-4 w-4" />
+                Crear mi taller
               </>
             )}
           </Button>
@@ -792,7 +909,43 @@ export function RegistroTallerForm() {
               </>
             )}
 
-            {paso === 4 && renderPaso4()}
+            {paso === 4 && (
+              <>
+                {renderPaso4()}
+
+                {errorPaso && (
+                  <div
+                    role="alert"
+                    className="flex items-center gap-2 bg-red-50 border border-red-100 px-3 py-2 text-sm text-red-600 mt-4"
+                  >
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    {errorPaso}
+                  </div>
+                )}
+
+                <div className="flex gap-3 mt-5">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={retrocederPaso}
+                    className="flex-none border-gray-200 text-gartify-gray hover:text-gartify-dark gap-1.5"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Anterior
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={avanzarPaso}
+                    className="flex-1 bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2"
+                  >
+                    Siguiente
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {paso === 5 && renderPaso5()}
           </div>
 
           {/* Footer con enlace a login */}
