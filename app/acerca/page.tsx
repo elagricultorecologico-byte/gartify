@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ObfuscatedEmail } from '@/components/ui/ObfuscatedEmail';
 
 export const metadata: Metadata = {
   title: 'Acerca de Gartify',
@@ -81,7 +82,7 @@ export default function AcercaPage() {
         <h2 className="text-xl font-semibold text-gartify-blue mb-3">Contacto</h2>
         <p className="text-sm text-gray-700 leading-relaxed">
           Para cualquier consulta puedes escribirnos a:{' '}
-          <a href="mailto:info@gartify.es" className="text-gartify-blue underline hover:opacity-80">info@gartify.es</a>
+          <ObfuscatedEmail user="info" domain="gartify.es" className="text-gartify-blue underline hover:opacity-80" />
         </p>
       </section>
     </main>

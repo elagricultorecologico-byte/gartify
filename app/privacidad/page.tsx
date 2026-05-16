@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ObfuscatedEmail } from '@/components/ui/ObfuscatedEmail';
 
 export const metadata: Metadata = {
   title: 'Política de Privacidad',
@@ -14,7 +15,8 @@ export default function PrivacidadPage() {
       <p className="text-sm text-gray-700 leading-relaxed mb-4">
         <strong>Responsable del tratamiento:</strong> BarnaCampers, SL | NIF/CIF: B66285735 |
         Domicilio: Calle Riera de la Salut, 56, 08980 Sant Feliu de Llobregat (Barcelona) |
-        Contacto: info@gartify.es | Email de privacidad: legal@gartify.es
+        Contacto: <ObfuscatedEmail user="info" domain="gartify.es" /> | Email de privacidad:{' '}
+        <ObfuscatedEmail user="legal" domain="gartify.es" />
       </p>
 
       <hr className="my-8 border-gray-200" />
@@ -181,7 +183,7 @@ export default function PrivacidadPage() {
         </h2>
         <p className="text-sm text-gray-700 leading-relaxed">
           Envía tu solicitud al correo electrónico{' '}
-          legal@gartify.es, indicando en el asunto
+          <ObfuscatedEmail user="legal" domain="gartify.es" />, indicando en el asunto
           &quot;Protección de Datos&quot; y adjuntando documento que acredite tu identidad.
         </p>
       </section>
