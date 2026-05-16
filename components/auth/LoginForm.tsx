@@ -170,7 +170,7 @@ export function LoginForm() {
                 <EmailPasswordForm onSubmit={handleSubmit} loading={loading} error={error} submitLabel="Entrar" />
                 <p className="text-center text-sm text-muted-foreground">
                   ¿No tienes cuenta?{" "}
-                  <Link href="/registro" className="text-gartify-orange font-semibold hover:underline">
+                  <Link href={`/registro?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-gartify-orange font-semibold hover:underline">
                     Regístrate gratis
                   </Link>
                 </p>

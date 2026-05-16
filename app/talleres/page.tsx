@@ -244,6 +244,8 @@ export default async function TalleresPage({
                   courtesyCar={g.courtesyCar}
                   pickupService={g.pickupService}
                   offers={g.offers}
+                  activeServicio={searchParams.servicio}
+                  activeVehiculo={searchParams.vehicleType}
                 />
               ))}
               <Suspense>

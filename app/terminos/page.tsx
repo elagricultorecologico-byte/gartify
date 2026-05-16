@@ -19,11 +19,10 @@ export default function TerminosPage() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold text-gartify-blue mb-3">1. Objeto y alcance</h2>
         <p className="text-sm text-gray-700 leading-relaxed mb-3">
-          Titular: GARTIFY, S.L. | NIF/CIF:{' '}
-          <span className="text-gray-400 italic">[PENDIENTE]</span> | Domicilio social:{' '}
+          Titular: BarnaCampers, SL | NIF/CIF: B66285735 | Domicilio social: Calle Riera de la
+          Salut, 56, 08980 Sant Feliu de Llobregat (Barcelona) | Correo electrónico de contacto:{' '}
           <span className="text-gray-400 italic">[PENDIENTE]</span> | Correo electrónico de
-          contacto: <span className="text-gray-400 italic">[PENDIENTE]</span> | Correo electrónico
-          de privacidad: <span className="text-gray-400 italic">[PENDIENTE]</span>
+          privacidad: <span className="text-gray-400 italic">[PENDIENTE]</span>
         </p>
         <p className="text-sm text-gray-700 leading-relaxed mb-3">
           Gartify ofrece soluciones tecnológicas orientadas al sector de los talleres mecánicos,

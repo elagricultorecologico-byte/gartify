@@ -33,6 +33,8 @@ type GarageCardProps = {
   courtesyCar?: boolean;
   pickupService?: boolean;
   offers?: Oferta[];
+  activeServicio?: string; // service type activo en el filtro de búsqueda
+  activeVehiculo?: string; // vehicleType activo en el filtro de búsqueda
 };
 
 // Mapeo de códigos de día a etiquetas abreviadas en español
@@ -77,8 +79,16 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "md
   );
 }
 
-export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers }: GarageCardProps) {
+export function GarageCard({ id, name, city, address, rating, reviewCount, isVerified, services, lat, lng, vehicleTypes, plan, courtesyCar, pickupService, offers, activeServicio, activeVehiculo }: GarageCardProps) {
   const cheapestOffer = offers && offers.length > 0 ? Math.min(...offers.map((o) => o.price)) : null;
+
+  // URL del CTA: si hay filtros activos, ir directo al wizard con los parámetros pre-rellenados
+  const reservarQs = new URLSearchParams();
+  if (activeServicio) reservarQs.set("servicio", activeServicio);
+  if (activeVehiculo) reservarQs.set("vehiculo", activeVehiculo);
+  const reservarUrl = (activeServicio || activeVehiculo)
+    ? `/talleres/${id}/reservar?${reservarQs.toString()}`
+    : `/talleres/${id}`;
   const cheapestService = services.length > 0 ? Math.min(...services.map((s) => s.price)) : null;
   const cheapest = cheapestOffer !== null
     ? Math.min(cheapestOffer, cheapestService ?? cheapestOffer)
@@ -267,7 +277,7 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
                 Consultar precio
               </div>
             )}
-            <Link href={`/talleres/${id}`} className="w-full">
+            <Link href={reservarUrl} className="w-full">
               <Button
                 size="lg"
                 className="w-full bg-gartify-green hover:bg-gartify-green/90 text-white font-bold text-base tracking-wide shadow-sm"
@@ -291,9 +301,9 @@ export function GarageCard({ id, name, city, address, rating, reviewCount, isVer
                 Consultar precio
               </div>
             )}
-            <Link href={`/talleres/${id}`}>
+            <Link href={reservarUrl}>
               <Button size="sm" className="bg-gartify-green hover:bg-gartify-green/90 text-white font-semibold px-5">
-                Ver taller
+                {activeServicio || activeVehiculo ? "Reservar" : "Ver taller"}
               </Button>
             </Link>
           </div>

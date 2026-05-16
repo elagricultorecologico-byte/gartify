@@ -105,7 +105,7 @@ export function LoginConductorForm() {
               </Link>
               <p className="text-muted-foreground">
                 ¿Sin cuenta?{" "}
-                <Link href="/registro/conductor" className="text-gartify-orange font-semibold hover:underline">Regístrate</Link>
+                <Link href={`/registro/conductor?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-gartify-orange font-semibold hover:underline">Regístrate</Link>
               </p>
             </div>
           </div>

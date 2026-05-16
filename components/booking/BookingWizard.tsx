@@ -36,7 +36,8 @@ type Props = {
   garageId: string;
   garageName: string;
   services: Service[];
-  preselectedServiceId?: string;
+  preselectedServiceId?: string;   // puede ser ID (desde ficha) o TYPE (desde búsqueda)
+  preselectedVehicleType?: string; // vehicleType del filtro de búsqueda
   userVehicles?: VehicleItem[];
 };
 
@@ -60,14 +61,28 @@ function formatSlot(iso: string) {
 
 const STEPS = ["Vehículo", "Servicio", "Fecha y hora", "Confirmación"];
 
-export function BookingWizard({ garageId, garageName, services, preselectedServiceId, userVehicles }: Props) {
+export function BookingWizard({ garageId, garageName, services, preselectedServiceId, preselectedVehicleType, userVehicles }: Props) {
   const router = useRouter();
+
+  // Resolver servicio pre-seleccionado: primero por ID (desde ficha), luego por TYPE (desde búsqueda)
+  const resolvedService = services.find((s) => s.id === preselectedServiceId)
+    ?? services.find((s) => s.type === preselectedServiceId)
+    ?? null;
+
+  // Resolver tipo de vehículo pre-seleccionado
+  const resolvedVehicleType = (VEHICLE_TYPES.includes(preselectedVehicleType as VehicleType)
+    ? preselectedVehicleType as VehicleType
+    : null);
+
+  // Paso inicial: saltar al 3 si ambos vienen del filtro, al 2 si solo el tipo, al 1 si ninguno
+  const initialStep = resolvedService && resolvedVehicleType ? 3
+    : resolvedVehicleType ? 2
+    : 1;
+
   // Step 1: tipo de vehículo, Step 2: servicio, Step 3: fecha/hora, Step 4: confirmación
-  const [step, setStep] = useState(1);
-  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>("COCHE");
-  const [selectedService, setSelectedService] = useState<Service | null>(
-    services.find((s) => s.id === preselectedServiceId) ?? null
-  );
+  const [step, setStep] = useState(initialStep);
+  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>(resolvedVehicleType ?? "COCHE");
+  const [selectedService, setSelectedService] = useState<Service | null>(resolvedService);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const [blockedSlots, setBlockedSlots] = useState<Set<string>>(new Set());
@@ -227,6 +242,23 @@ export function BookingWizard({ garageId, garageName, services, preselectedServi
           </div>
         ))}
       </div>
+
+      {/* ── Banner informativo cuando se llega pre-seleccionado desde búsqueda ── */}
+      {initialStep === 3 && step === 3 && resolvedService && resolvedVehicleType && (
+        <div className="mb-5 flex items-start gap-2 bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-gartify-blue">
+          <CheckCircle className="h-4 w-4 text-gartify-hero mt-0.5 shrink-0" />
+          <span>
+            Pre-seleccionado:{" "}
+            <strong>{VEHICLE_LABELS[resolvedVehicleType]}</strong>
+            {" · "}
+            <strong>{resolvedService.name}</strong>
+            {". "}
+            <button type="button" onClick={() => setStep(1)} className="underline hover:no-underline">
+              Cambiar
+            </button>
+          </span>
+        </div>
+      )}
 
       {/* ── Sticky service summary (steps 3 & 4) ── */}
       {selectedService && step > 2 && (

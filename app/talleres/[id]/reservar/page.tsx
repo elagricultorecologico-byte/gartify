@@ -10,10 +10,16 @@ export default async function ReservarPage({
   searchParams,
 }: {
   params: { id: string };
-  searchParams: { servicio?: string };
+  searchParams: { servicio?: string; vehiculo?: string };
 }) {
   const session = await auth();
-  if (!session?.user) redirect(`/login?callbackUrl=/talleres/${params.id}/reservar`);
+  if (!session?.user) {
+    const qs = new URLSearchParams();
+    if (searchParams.servicio) qs.set("servicio", searchParams.servicio);
+    if (searchParams.vehiculo) qs.set("vehiculo", searchParams.vehiculo);
+    const callbackPath = `/talleres/${params.id}/reservar${qs.toString() ? `?${qs.toString()}` : ""}`;
+    redirect(`/login?callbackUrl=${encodeURIComponent(callbackPath)}`);
+  }
 
   const user = session.user as { id: string; role?: string };
 
@@ -45,6 +51,7 @@ export default async function ReservarPage({
         garageName={garage.name}
         services={garage.services}
         preselectedServiceId={searchParams.servicio}
+        preselectedVehicleType={searchParams.vehiculo}
         userVehicles={userVehicles}
       />
     </div>
