@@ -81,7 +81,7 @@ export default function AcercaPage() {
         <h2 className="text-xl font-semibold text-gartify-blue mb-3">Contacto</h2>
         <p className="text-sm text-gray-700 leading-relaxed">
           Para cualquier consulta puedes escribirnos a:{' '}
-          <a href="mailto:hola@gartify.es" className="text-gartify-blue underline hover:opacity-80">hola@gartify.es</a>
+          <a href="mailto:info@gartify.es" className="text-gartify-blue underline hover:opacity-80">info@gartify.es</a>
         </p>
       </section>
     </main>

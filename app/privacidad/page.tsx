@@ -14,7 +14,7 @@ export default function PrivacidadPage() {
       <p className="text-sm text-gray-700 leading-relaxed mb-4">
         <strong>Responsable del tratamiento:</strong> BarnaCampers, SL | NIF/CIF: B66285735 |
         Domicilio: Calle Riera de la Salut, 56, 08980 Sant Feliu de Llobregat (Barcelona) |
-        Contacto: hola@gartify.es | Email de privacidad: legal@gartify.es
+        Contacto: info@gartify.es | Email de privacidad: legal@gartify.es
       </p>
 
       <hr className="my-8 border-gray-200" />
