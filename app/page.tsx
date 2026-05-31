@@ -344,10 +344,41 @@ export default function HomePage() {
                   <path d="M6 4h4M14 4h4"/>
                 </svg>
               ),
+              CHAPA_PINTURA: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
+                  <rect x="8" y="9" width="7" height="11" rx="2"/>
+                  <rect x="10" y="6" width="3" height="3" rx="1"/>
+                  <circle cx="11.5" cy="5" r="0.8" fill="currentColor"/>
+                  <path d="M3 6l1.5 1M3 9.5l1.5-1M3 7.5h1.5" stroke="#F58B00" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M11 13h3M11 16h3" strokeWidth="1.2"/>
+                </svg>
+              ),
+              LUNAS: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
+                  <path d="M4 18h16l-2-11H6L4 18z"/>
+                  <path d="M6 18l-1 2M18 18l1 2"/>
+                  <path d="M11 10l1 2-1 2" stroke="#F58B00" strokeWidth="2" strokeLinejoin="round"/>
+                  <circle cx="12" cy="10" r="1.2" stroke="#F58B00" strokeWidth="1.5"/>
+                </svg>
+              ),
+              ACCESORIOS: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                  <path d="M5 2l.5 1.5L7 4l-1.5.5L5 6l-.5-1.5L3 4l1.5-.5L5 2z" stroke="#F58B00" strokeWidth="1.5" fill="#F58B00" fillOpacity="0.3"/>
+                </svg>
+              ),
+              LAVADO: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-14 w-14 text-gartify-blue">
+                  <path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13z"/>
+                  <circle cx="9.5" cy="17" r="1" stroke="#F58B00" fill="#F58B00" fillOpacity="0.4"/>
+                  <circle cx="14" cy="14.5" r="1.2" stroke="#F58B00" strokeWidth="1.5"/>
+                  <path d="M12 18v1" stroke="#F58B00" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              ),
             };
             return (
               <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 auto-rows-fr">
-                {POPULAR_SERVICES.slice(0, 8).map(({ type, label, desc }) => (
+                {POPULAR_SERVICES.map(({ type, label, desc }) => (
                   <Link
                     key={type}
                     href={`/talleres?servicio=${type}`}

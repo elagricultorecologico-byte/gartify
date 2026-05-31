@@ -208,7 +208,7 @@ export const ALL_SERVICES: ServiceMeta[] = [
     color: "text-pink-600",
     bg: "bg-pink-50",
     border: "border-pink-100",
-    label: "Chapa / Pintura",
+    label: "Chapa y Pintura",
     desc: "Reparación de abolladuras, golpes y arañazos en la carrocería. Pintura parcial o completa con acabados de calidad.",
     examples: ["Reparación de abolladuras", "Pintura parcial", "Pintura completa"],
   },
@@ -246,7 +246,7 @@ export const ALL_SERVICES: ServiceMeta[] = [
 
 // ─── Subconjuntos derivados ───────────────────────────────────────────────────
 
-const POPULAR_TYPES = ["ITV", "REVISION", "DIAGNOSTICO", "CLIMATIZACION", "CAMBIO_ACEITE", "FRENOS", "NEUMATICOS", "ELECTRICIDAD"];
+const POPULAR_TYPES = ["ITV", "REVISION", "CAMBIO_ACEITE", "FRENOS", "NEUMATICOS", "DIAGNOSTICO", "CLIMATIZACION", "ELECTRICIDAD", "CHAPA_PINTURA", "LUNAS", "ACCESORIOS", "LAVADO"];
 const SEARCHABLE_TYPES = [
   "ITV", "PRE_ITV", "REVISION", "CAMBIO_ACEITE",
   "FRENOS", "NEUMATICOS", "CLIMATIZACION", "DIAGNOSTICO", "ELECTRICIDAD",
