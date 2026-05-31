@@ -491,25 +491,16 @@ export function RegistroTallerForm() {
           </p>
         </div>
 
-        {/* Aviso contextual según plan */}
-        {planSeleccionado === "PRO" ? (
-          <p className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-3">
-            Con el plan Pro tendrás servicios ilimitados. Estos primeros 5 también estarán disponibles si en algún momento bajas al plan Starter.
-          </p>
-        ) : (
-          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
-            Plan Starter: máximo 5 servicios publicados. Estos son los servicios que verán tus clientes.
-          </p>
-        )}
+        {/* Aviso contextual según plan — oculto junto al picker */}
 
-        {/* Selector de servicios del catálogo */}
-        <RegistroServicePicker
+        {/* Selector de servicios del catálogo — temporalmente oculto */}
+        {/* <RegistroServicePicker
           selected={paso3.serviciosSeleccionados}
           onChange={(servicios) =>
             setPaso3((prev) => ({ ...prev, serviciosSeleccionados: servicios }))
           }
           maxServices={5}
-        />
+        /> */}
 
         {/* Mano de obra */}
         <div className="pt-2 border-t border-gray-100">
