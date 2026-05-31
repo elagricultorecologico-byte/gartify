@@ -109,6 +109,45 @@ const FAMILIAS: Familia[] = [
       { name: "Cambio de batería",  description: "Sustitución de batería con codificación si es necesario.", duration: 30, suggestedPrice: 120 },
     ],
   },
+  {
+    id: "CHAPA_PINTURA",
+    label: "Chapa y Pintura",
+    hijos: [
+      { name: "Reparación de abolladuras", description: "Reparación de golpes y abolladuras sin necesidad de pintura.", duration: 60, suggestedPrice: 80 },
+      { name: "Pintura parcial",           description: "Pintado de una o varias piezas del vehículo.", duration: 180, suggestedPrice: 200 },
+      { name: "Pintura completa",          description: "Pintado completo del vehículo en el color deseado.", duration: 480, suggestedPrice: 800 },
+    ],
+  },
+  {
+    id: "LUNAS",
+    label: "Lunas",
+    hijos: [
+      { name: "Reparación de luna",          description: "Reparación de impacto o grieta en el parabrisas.", duration: 30, suggestedPrice: 60 },
+      { name: "Sustitución luna delantera",  description: "Cambio completo del parabrisas delantero.", duration: 90, suggestedPrice: 250 },
+      { name: "Sustitución luna trasera",    description: "Cambio de la luna trasera del vehículo.", duration: 90, suggestedPrice: 200 },
+      { name: "Sustitución luna lateral",    description: "Cambio de ventanilla lateral.", duration: 60, suggestedPrice: 150 },
+    ],
+  },
+  {
+    id: "ACCESORIOS",
+    label: "Accesorios",
+    hijos: [
+      { name: "Instalación multimedia",     description: "Montaje de radio, pantalla o sistema de navegación.", duration: 90, suggestedPrice: 80 },
+      { name: "Montaje de barras / cofre",  description: "Instalación de barras portaequipajes o cofre de techo.", duration: 60, suggestedPrice: 60 },
+      { name: "Instalación de enganche",    description: "Montaje de enganche de remolque homologado.", duration: 120, suggestedPrice: 180 },
+      { name: "Láminas solares",            description: "Aplicación de láminas de protección solar en lunas.", duration: 90, suggestedPrice: 120 },
+    ],
+  },
+  {
+    id: "LAVADO",
+    label: "Lavados",
+    hijos: [
+      { name: "Lavado exterior",            description: "Lavado completo de la carrocería a mano.", duration: 30, suggestedPrice: 15 },
+      { name: "Lavado interior y exterior", description: "Limpieza completa interior y exterior del vehículo.", duration: 60, suggestedPrice: 35 },
+      { name: "Lavado y encerado",          description: "Lavado exterior más aplicación de cera protectora.", duration: 60, suggestedPrice: 45 },
+      { name: "Desinfección y ozono",       description: "Limpieza profunda con tratamiento de ozono para eliminar bacterias y malos olores.", duration: 60, suggestedPrice: 60 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -177,6 +216,41 @@ const ICONOS_FAMILIA: Record<string, React.ReactNode> = {
       <path d="M6 7V5a1 1 0 011-1h2M18 7V5a1 1 0 00-1-1h-2"/>
       <path d="M13 10l-3 4h4l-3 4" stroke="#F58B00" strokeWidth="2" fill="#F58B00"/>
       <path d="M6 4h4M14 4h4"/>
+    </svg>
+  ),
+  CHAPA_PINTURA: (
+    /* Pistola de pintura con spray */
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-gartify-blue">
+      <rect x="8" y="9" width="7" height="11" rx="2"/>
+      <rect x="10" y="6" width="3" height="3" rx="1"/>
+      <circle cx="11.5" cy="5" r="0.8" fill="currentColor"/>
+      <path d="M3 6l1.5 1M3 9.5l1.5-1M3 7.5h1.5" stroke="#F58B00" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M11 13h3M11 16h3" strokeWidth="1.2"/>
+    </svg>
+  ),
+  LUNAS: (
+    /* Parabrisas con grieta reparada */
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-gartify-blue">
+      <path d="M4 18h16l-2-11H6L4 18z"/>
+      <path d="M6 18l-1 2M18 18l1 2"/>
+      <path d="M11 10l1 2-1 2" stroke="#F58B00" strokeWidth="2" strokeLinejoin="round"/>
+      <circle cx="12" cy="10" r="1.2" stroke="#F58B00" strokeWidth="1.5"/>
+    </svg>
+  ),
+  ACCESORIOS: (
+    /* Llave + estrella (montaje de extras) */
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-gartify-blue">
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      <path d="M5 2l.5 1.5L7 4l-1.5.5L5 6l-.5-1.5L3 4l1.5-.5L5 2z" stroke="#F58B00" strokeWidth="1.5" fill="#F58B00" fillOpacity="0.3"/>
+    </svg>
+  ),
+  LAVADO: (
+    /* Gota de agua grande con burbujas */
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-gartify-blue">
+      <path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13z"/>
+      <circle cx="9.5" cy="17" r="1" stroke="#F58B00" fill="#F58B00" fillOpacity="0.4"/>
+      <circle cx="14" cy="14.5" r="1.2" stroke="#F58B00" strokeWidth="1.5"/>
+      <path d="M12 18v1" stroke="#F58B00" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   ),
 };

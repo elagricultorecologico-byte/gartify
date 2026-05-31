@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, Settings, Truck, Zap, Crown, Wrench, Package } from "lucide-react";
+import { Menu, X, LogOut, Settings, Truck, Zap, Crown, Wrench, Package, LogIn, UserPlus } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ export function Navbar() {
   const countryCode = useCountryCode();
   const pathname = usePathname();
   const loginHref = pathname?.startsWith("/para-talleres") ? "/login/taller" : "/login/conductor";
+  const registerHref = pathname?.startsWith("/para-talleres") ? "/registro/taller" : "/registro";
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -120,56 +121,48 @@ export function Navbar() {
 
 
         {/* Auth */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-1">
           {session ? (
-            <div className="relative" ref={dropdownRef}>
-              {/* Avatar — para GARAGE_OWNER: estático. Para otros roles: abre dropdown */}
+            <div className="relative flex items-center gap-1" ref={dropdownRef}>
+              {/* Avatar / nombre según rol */}
               {isGarageOwner ? (
-                <div className="flex items-center gap-1">
-                  <Link href="/cuenta/taller" className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
-                    <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
-                      {initial}
-                    </div>
-                    <div className="flex flex-col items-start">
-                      {counts ? (
-                        <>
-                          <span className="text-white text-sm font-semibold leading-tight max-w-[140px] truncate">{counts.name}</span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-tight inline-flex items-center gap-1 ${
-                            counts.plan === "PRO"     ? "bg-blue-400/20 text-blue-200" :
-                            counts.plan === "PREMIUM" ? "bg-amber-400/20 text-amber-200" :
-                                                        "bg-white/10 text-white/60"
-                          }`}>
-                            {counts.plan === "PRO"     && <Zap   className="h-2.5 w-2.5" />}
-                            {counts.plan === "PREMIUM" && <Crown className="h-2.5 w-2.5" />}
-                            {counts.plan === "STARTER" ? "Starter" : counts.plan === "PRO" ? "Pro" : "Premium"}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
-                      )}
-                    </div>
-                  </Link>
-                </div>
-              ) : !isAdmin && !isDistributor ? (
-                /* Conductor — avatar estático, sin dropdown (usa sidebar) */
-                <div className="relative group">
-                  <Link href="/cuenta" className="flex items-center gap-2 pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
-                    <div className="h-8 w-8 bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
-                      {initial}
-                    </div>
-                    <div className="flex flex-col items-start">
-                      <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
-                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 leading-tight ${rolStyle}`}>{rolLabel}</span>
-                    </div>
-                  </Link>
-                  {/* Tooltip */}
-                  <div className="pointer-events-none absolute right-0 top-full mt-2 w-max bg-gartify-dark border border-white/10 px-3 py-1.5 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50 whitespace-nowrap">
-                    Ir a mi panel
+                <Link href="/cuenta/taller" className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
+                  <div className="h-8 w-8 rounded-full bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    {initial}
                   </div>
-                </div>
+                  <div className="flex flex-col items-start">
+                    {counts ? (
+                      <>
+                        <span className="text-white text-sm font-semibold leading-tight max-w-[140px] truncate">{counts.name}</span>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-tight inline-flex items-center gap-1 ${
+                          counts.plan === "PRO"     ? "bg-blue-400/20 text-blue-200" :
+                          counts.plan === "PREMIUM" ? "bg-amber-400/20 text-amber-200" :
+                                                      "bg-white/10 text-white/60"
+                        }`}>
+                          {counts.plan === "PRO"     && <Zap   className="h-2.5 w-2.5" />}
+                          {counts.plan === "PREMIUM" && <Crown className="h-2.5 w-2.5" />}
+                          {counts.plan === "STARTER" ? "Starter" : counts.plan === "PRO" ? "Pro" : "Premium"}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                    )}
+                  </div>
+                </Link>
+              ) : !isAdmin && !isDistributor ? (
+                /* Conductor */
+                <Link href="/cuenta" className="flex items-center gap-2 pl-1 pr-3 py-1 hover:bg-white/10 transition-colors">
+                  <div className="h-8 w-8 bg-gartify-orange flex items-center justify-center text-white text-sm font-bold shrink-0">
+                    {initial}
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-white text-sm font-semibold leading-tight">{firstName}</span>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 leading-tight ${rolStyle}`}>{rolLabel}</span>
+                  </div>
+                </Link>
               ) : (
-                /* Admin / Distribuidor — con dropdown */
-                <div className="flex items-center gap-1">
+                /* Admin / Distribuidor */
+                <>
                   {(isAdmin || isDistributor) && (
                     <Link
                       href={isAdmin ? "/admin" : "/distribuidor/dashboard"}
@@ -190,8 +183,17 @@ export function Navbar() {
                       <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full leading-tight ${rolStyle}`}>{rolLabel}</span>
                     </div>
                   </button>
-                </div>
+                </>
               )}
+
+              {/* Botón de cerrar sesión — visible para todos los roles */}
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                title="Cerrar sesión"
+                className="flex items-center justify-center h-8 w-8 rounded-full text-white/60 hover:text-red-300 hover:bg-white/10 transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
 
               {/* Dropdown — solo admin y distribuidor */}
               {(isAdmin || isDistributor) && dropdownOpen && (
@@ -200,7 +202,6 @@ export function Navbar() {
                     <p className="text-xs text-muted-foreground">Conectado como</p>
                     <p className="text-sm font-semibold text-gartify-blue truncate">{session.user?.name}</p>
                   </div>
-
                   {isAdmin ? (
                     <Link href="/admin" onClick={() => setDropdownOpen(false)} className="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Settings className="h-4 w-4 text-gartify-blue" />Panel admin
@@ -210,26 +211,24 @@ export function Navbar() {
                       <Truck className="h-4 w-4 text-gartify-blue" />Mi dashboard
                     </Link>
                   )}
-
-                  <div className="border-t border-gray-100 mt-1 pt-1">
-                    <button
-                      onClick={() => signOut({ callbackUrl: "/" })}
-                      className="flex items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-red-50 w-full"
-                    >
-                      <LogOut className="h-4 w-4" />Cerrar sesión
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
           ) : (
-            <>
+            <div className="flex items-center gap-1">
               <Link href={loginHref}>
-                <Button variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/10">
+                <Button variant="ghost" size="sm" className="text-white hover:text-white hover:bg-white/10 gap-1.5">
+                  <LogIn className="h-4 w-4" />
                   Login
                 </Button>
               </Link>
-            </>
+              <Link href={registerHref}>
+                <Button size="sm" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-1.5">
+                  <UserPlus className="h-4 w-4" />
+                  Registro
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
 
@@ -275,12 +274,24 @@ export function Navbar() {
                   <Link href="/cuenta/perfil" className="block text-sm text-blue-200 hover:text-white" onClick={() => setOpen(false)}>Mi perfil</Link>
                 </>
               )}
-              <button className="block text-sm text-red-300 pt-1" onClick={() => signOut({ callbackUrl: "/" })}>Cerrar sesión</button>
+              <button
+                className="flex items-center gap-2 text-sm text-red-300 pt-1"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
+                <LogOut className="h-4 w-4" />Cerrar sesión
+              </button>
             </>
           ) : (
             <div className="flex flex-col gap-2 pt-2">
               <Link href={loginHref} onClick={() => setOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full text-white hover:bg-white/10">Login</Button>
+                <Button variant="ghost" size="sm" className="w-full text-white hover:bg-white/10 gap-2 justify-start">
+                  <LogIn className="h-4 w-4" />Login
+                </Button>
+              </Link>
+              <Link href={registerHref} onClick={() => setOpen(false)}>
+                <Button size="sm" className="w-full bg-gartify-orange hover:bg-orange-600 text-white font-bold gap-2 justify-start">
+                  <UserPlus className="h-4 w-4" />Registro
+                </Button>
               </Link>
             </div>
           )}

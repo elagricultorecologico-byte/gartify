@@ -2,6 +2,7 @@ import {
   FileSearch, CheckCircle, Cog, Droplets, Disc3, RotateCcw,
   Gauge, Wind, Zap, Car, Flame, Settings, Filter, SprayCan,
   Lightbulb, Battery, Thermometer, AlertTriangle,
+  PaintBucket, GlassWater, Puzzle, Droplet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -201,6 +202,46 @@ export const ALL_SERVICES: ServiceMeta[] = [
     desc: "Inspección completa de un vehículo de segunda mano antes de su adquisición. Informe detallado del estado real del coche.",
     examples: ["Informe pre-compra", "Historial de averías", "Valoración del estado"],
   },
+  {
+    type: "CHAPA_PINTURA",
+    icon: PaintBucket,
+    color: "text-pink-600",
+    bg: "bg-pink-50",
+    border: "border-pink-100",
+    label: "Chapa / Pintura",
+    desc: "Reparación de abolladuras, golpes y arañazos en la carrocería. Pintura parcial o completa con acabados de calidad.",
+    examples: ["Reparación de abolladuras", "Pintura parcial", "Pintura completa"],
+  },
+  {
+    type: "LUNAS",
+    icon: GlassWater,
+    color: "text-cyan-600",
+    bg: "bg-cyan-50",
+    border: "border-cyan-100",
+    label: "Lunas",
+    desc: "Reparación y sustitución de lunas y parabrisas. Tratamiento de impactos y cambio de lunetas.",
+    examples: ["Reparación de impacto", "Sustitución parabrisas", "Luna trasera"],
+  },
+  {
+    type: "ACCESORIOS",
+    icon: Puzzle,
+    color: "text-violet-600",
+    bg: "bg-violet-50",
+    border: "border-violet-100",
+    label: "Accesorios",
+    desc: "Instalación y montaje de accesorios para el vehículo: multimedia, enganches, barras portaequipajes y más.",
+    examples: ["Sistema multimedia", "Enganche remolque", "Barras portaequipajes"],
+  },
+  {
+    type: "LAVADO",
+    icon: Droplet,
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    border: "border-blue-100",
+    label: "Lavados",
+    desc: "Lavado y limpieza profesional del vehículo. Exterior, interior, encerado y tratamientos de desinfección.",
+    examples: ["Lavado exterior", "Lavado completo", "Encerado y detailing"],
+  },
 ];
 
 // ─── Subconjuntos derivados ───────────────────────────────────────────────────
@@ -209,6 +250,7 @@ const POPULAR_TYPES = ["ITV", "REVISION", "DIAGNOSTICO", "CLIMATIZACION", "CAMBI
 const SEARCHABLE_TYPES = [
   "ITV", "PRE_ITV", "REVISION", "CAMBIO_ACEITE",
   "FRENOS", "NEUMATICOS", "CLIMATIZACION", "DIAGNOSTICO", "ELECTRICIDAD",
+  "CHAPA_PINTURA", "LUNAS", "ACCESORIOS", "LAVADO",
 ];
 
 /** 4 servicios para las cards de la Home */
