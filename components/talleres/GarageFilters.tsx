@@ -4,17 +4,15 @@ import { useState } from "react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  X, Star, MapPin, Wrench, Euro, SlidersHorizontal, Navigation,
-  Car, PackageCheck, Loader2, CheckCircle, Crown, ChevronDown, Zap, Tag,
+  X, Star, Euro, SlidersHorizontal,
+  Car, PackageCheck, CheckCircle, Crown, ChevronDown, Zap, Tag,
 } from "lucide-react";
-import { SEARCHABLE_SERVICES, GARAGE_CATEGORIES } from "@/lib/constants";
-import { cn, VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS } from "@/lib/utils";
+import { GARAGE_CATEGORIES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 const PRICE_RANGES = [
   { value: "0-30",   label: "Hasta 30 €" },
@@ -29,12 +27,6 @@ const RATING_OPTIONS = [
   { value: "3.5", stars: 3.5 },
 ];
 
-const DISTANCE_OPTIONS = [
-  { value: "5",  label: "Menos de 5 km" },
-  { value: "10", label: "Menos de 10 km" },
-  { value: "25", label: "Menos de 25 km" },
-  { value: "50", label: "Menos de 50 km" },
-];
 
 function RatingStars({ stars }: { stars: number }) {
   return (
@@ -97,8 +89,6 @@ function Section({
 export function GarageFilters() {
   const router = useRouter();
   const sp = useSearchParams();
-  const [geoLoading, setGeoLoading] = useState(false);
-  const [geoError, setGeoError] = useState("");
 
   function update(key: string, value: string) {
     const params = new URLSearchParams(sp.toString());
@@ -116,34 +106,9 @@ export function GarageFilters() {
     return isActive(key) ? "ring-2 ring-gartify-hero/50 border-gartify-hero/60" : "";
   }
 
-  function requestLocation() {
-    if (!navigator.geolocation) { setGeoError("Tu navegador no soporta geolocalización."); return; }
-    setGeoLoading(true);
-    setGeoError("");
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const params = new URLSearchParams(sp.toString());
-        params.set("userLat", pos.coords.latitude.toFixed(6));
-        params.set("userLng", pos.coords.longitude.toFixed(6));
-        if (!params.has("distancia")) params.set("distancia", "10");
-        router.push(`/talleres?${params.toString()}`);
-        setGeoLoading(false);
-      },
-      () => { setGeoError("No se pudo obtener tu ubicación."); setGeoLoading(false); },
-      { timeout: 8000 }
-    );
-  }
-
-  function clearLocation() {
-    const params = new URLSearchParams(sp.toString());
-    params.delete("userLat"); params.delete("userLng"); params.delete("distancia");
-    router.push(`/talleres?${params.toString()}`);
-  }
-
-  const hasLocation = sp.has("userLat") && sp.has("userLng");
-  const activeCount = ["servicio", "ciudad", "precio", "rating", "distancia", "cocheCortesia", "recogida", "vehicleType", "premium", "conOfertas", "categoria"]
+  const activeCount = ["precio", "rating", "cocheCortesia", "recogida", "premium", "conOfertas", "categoria"]
     .filter(isActive).length;
-  const hasFilters = activeCount > 0 || hasLocation;
+  const hasFilters = activeCount > 0;
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -161,7 +126,7 @@ export function GarageFilters() {
           <span className="text-sm font-semibold">Filtros</span>
           {hasFilters && (
             <span className="flex h-4 min-w-4 items-center justify-center bg-gartify-hero px-1 text-[10px] font-bold text-white leading-none">
-              {activeCount + (hasLocation ? 1 : 0)}
+              {activeCount}
             </span>
           )}
         </div>
@@ -183,75 +148,6 @@ export function GarageFilters() {
 
       {/* Secciones — ocultas en móvil hasta que se abra el toggle */}
       <div className={cn("px-4 divide-y divide-gray-100", !mobileOpen && "hidden lg:block")}>
-
-        {/* Ubicación */}
-        <Section label="Ubicación" icon={<MapPin className="h-3 w-3" />} active={isActive("ciudad")}>
-          <div className="relative">
-            <MapPin className={cn("pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2", isActive("ciudad") ? "text-gartify-hero" : "text-gartify-gray/70")} />
-            <Input
-              placeholder="Provincia, ciudad o CP"
-              defaultValue={sp.get("ciudad") ?? ""}
-              className={cn("h-9 pl-8 text-sm transition-all", activeRing("ciudad"))}
-              onKeyDown={(e) => { if (e.key === "Enter") update("ciudad", (e.target as HTMLInputElement).value); }}
-              onBlur={(e) => update("ciudad", e.target.value)}
-            />
-          </div>
-        </Section>
-
-        {/* Distancia */}
-        <Section label="Distancia" icon={<Navigation className="h-3 w-3" />} active={hasLocation} defaultOpen={false}>
-          {!hasLocation ? (
-            <div className="space-y-1.5">
-              <Button type="button" variant="outline" size="sm" onClick={requestLocation} disabled={geoLoading}
-                className="w-full h-9 gap-2 text-sm font-medium text-gartify-hero border-gartify-hero/30 hover:bg-gartify-hero/5">
-                {geoLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Navigation className="h-3.5 w-3.5" />}
-                {geoLoading ? "Detectando..." : "Usar mi ubicación"}
-              </Button>
-              {geoError && <p className="text-[11px] text-red-500">{geoError}</p>}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 px-2.5 py-1.5 bg-gartify-hero/5 border border-gartify-hero/20">
-                <CheckCircle className="h-3.5 w-3.5 text-gartify-hero shrink-0" />
-                <span className="text-xs text-gartify-hero font-medium flex-1">Ubicación detectada</span>
-                <button type="button" onClick={clearLocation} className="text-gartify-gray/60 hover:text-red-500 transition-colors" aria-label="Quitar ubicación">
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-              <div className="relative">
-                <Navigation className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("distancia") ? "text-gartify-hero" : "text-gartify-gray/70")} />
-                <Select value={sp.get("distancia") ?? "10"} onValueChange={(v) => update("distancia", v)}>
-                  <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("distancia"))}>
-                    <SelectValue placeholder="Radio de búsqueda" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {DISTANCE_OPTIONS.map((d) => <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          )}
-        </Section>
-
-        {/* Tipo de vehículo */}
-        <Section label="Tipo de vehículo" icon={<Car className="h-3 w-3" />} active={isActive("vehicleType")} defaultOpen={isActive("vehicleType")}>
-          <div className="flex flex-col gap-1">
-            {VEHICLE_TYPES.map((tipo) => {
-              const activo = sp.get("vehicleType") === tipo;
-              return (
-                <button key={tipo} type="button" onClick={() => update("vehicleType", activo ? "ALL" : tipo)} aria-pressed={activo}
-                  className={cn(
-                    "w-full flex items-center gap-2 h-8 px-2.5 rounded-none border text-xs font-medium transition-all text-left",
-                    activo ? "bg-gartify-hero/10 border-gartify-hero/40 text-gartify-hero ring-1 ring-gartify-hero/30" : "bg-white border-gray-200 text-gartify-gray hover:bg-gray-50"
-                  )}>
-                  <span aria-hidden="true" className="text-sm w-5 text-center shrink-0">{VEHICLE_ICONS[tipo]}</span>
-                  <span className="flex-1">{VEHICLE_LABELS[tipo]}</span>
-                  {activo && <CheckCircle className="h-3 w-3 shrink-0 text-gartify-hero" />}
-                </button>
-              );
-            })}
-          </div>
-        </Section>
 
         {/* Tipo de taller — multiselección */}
         {(() => {
@@ -290,22 +186,6 @@ export function GarageFilters() {
             </Section>
           );
         })()}
-
-        {/* Servicio */}
-        <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={isActive("servicio")}>
-          <div className="relative">
-            <Wrench className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("servicio") ? "text-gartify-hero" : "text-gartify-gray/70")} />
-            <Select value={sp.get("servicio") ?? "ALL"} onValueChange={(v) => update("servicio", v)}>
-              <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("servicio"))}>
-                <SelectValue placeholder="Todos los servicios" />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem value="ALL">Todos los servicios</SelectItem>
-                {SEARCHABLE_SERVICES.map((s) => <SelectItem key={s.type} value={s.type}>{s.label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-        </Section>
 
         {/* Precio */}
         <Section label="Precio" icon={<Euro className="h-3 w-3" />} active={isActive("precio")} defaultOpen={false}>
