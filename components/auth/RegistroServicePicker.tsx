@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Check } from "lucide-react";
 
 /** Servicio seleccionado durante el registro, con precio y duración editables */
@@ -191,88 +190,59 @@ export function RegistroServicePicker({
   onChange,
   maxServices = 5,
 }: RegistroServicePickerProps) {
-  // Familias activas (en el orden en que se seleccionaron)
-  const [familiasActivas, setFamiliasActivas] = useState<string[]>([]);
-
   const limiteAlcanzado = selected.length >= maxServices;
 
-  // -------------------------------------------------------------------
-  // Handlers de familias
-  // -------------------------------------------------------------------
+  // Una familia está activa si alguno de sus hijos está en selected
+  function familiaActiva(familiaId: string) {
+    return selected.some((s) => s.type === familiaId);
+  }
 
   function toggleFamilia(familiaId: string) {
-    if (familiasActivas.includes(familiaId)) {
-      // Desactivar familia: eliminar todos sus hijos de selected
-      const hijos = FAMILIAS.find((f) => f.id === familiaId)?.hijos ?? [];
-      const nombresHijos = new Set(hijos.map((h) => h.name));
-      onChange(selected.filter((s) => !nombresHijos.has(s.name)));
-      setFamiliasActivas((prev) => prev.filter((id) => id !== familiaId));
+    if (familiaActiva(familiaId)) {
+      // Desactivar: eliminar todos los servicios de esta familia
+      onChange(selected.filter((s) => s.type !== familiaId));
     } else {
-      setFamiliasActivas((prev) => [...prev, familiaId]);
-    }
-  }
-
-  // -------------------------------------------------------------------
-  // Handlers de servicios hijo
-  // -------------------------------------------------------------------
-
-  function toggleHijo(familiaId: string, hijo: ServicioHijo) {
-    const yaSeleccionado = selected.some((s) => s.name === hijo.name);
-
-    if (yaSeleccionado) {
-      // Desactivar: eliminar del array
-      onChange(selected.filter((s) => s.name !== hijo.name));
-    } else {
-      // Activar: solo si no se alcanzó el límite
+      // Activar: auto-seleccionar el primer hijo de la familia
       if (limiteAlcanzado) return;
-      const nuevo: ServicioSeleccionado = {
-        type:        familiaId,
-        name:        hijo.name,
-        description: hijo.description,
-        price:       hijo.suggestedPrice,
-        duration:    hijo.duration,
-      };
-      onChange([...selected, nuevo]);
+      const familia = FAMILIAS.find((f) => f.id === familiaId);
+      const hijo = familia?.hijos[0];
+      if (!hijo) return;
+      onChange([
+        ...selected,
+        {
+          type:        familiaId,
+          name:        hijo.name,
+          description: hijo.description,
+          price:       hijo.suggestedPrice,
+          duration:    hijo.duration,
+        },
+      ]);
     }
   }
-
-  function actualizarPrecio(nombreHijo: string, valor: string) {
-    const parsed = parseFloat(valor);
-    // Permitimos cadena vacía temporalmente — solo actualizamos si es número válido
-    if (isNaN(parsed) || parsed < 0) return;
-    onChange(
-      selected.map((s) =>
-        s.name === nombreHijo ? { ...s, price: parsed } : s,
-      ),
-    );
-  }
-
-  // -------------------------------------------------------------------
-  // Render
-  // -------------------------------------------------------------------
 
   return (
-    <div className="space-y-4">
-      {/* ----------------------------------------------------------------
-          FASE 1 — Grid de familias
-      ---------------------------------------------------------------- */}
+    <div className="space-y-3">
+      {/* Grid de familias */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {FAMILIAS.map((familia) => {
-          const activa = familiasActivas.includes(familia.id);
+          const activa = familiaActiva(familia.id);
+          const deshabilitada = limiteAlcanzado && !activa;
           return (
             <button
               key={familia.id}
               type="button"
               onClick={() => toggleFamilia(familia.id)}
+              disabled={deshabilitada}
               className={[
                 "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all text-center",
                 activa
                   ? "border-2 border-gartify-orange bg-orange-50"
+                  : deshabilitada
+                  ? "border border-gray-200 bg-gray-50 opacity-40 cursor-not-allowed"
                   : "border border-gray-200 bg-white hover:border-gray-300",
               ].join(" ")}
               aria-pressed={activa}
             >
-              {/* Círculo icono */}
               <span
                 className={[
                   "flex items-center justify-center w-14 h-14 rounded-full transition-colors",
@@ -284,129 +254,24 @@ export function RegistroServicePicker({
               <span className="text-xs font-semibold text-gartify-dark leading-tight">
                 {familia.label}
               </span>
+              {activa && (
+                <span className="flex items-center justify-center w-4 h-4 rounded-full bg-gartify-orange">
+                  <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+                </span>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* ----------------------------------------------------------------
-          FASE 2 — Accordion de familias seleccionadas
-      ---------------------------------------------------------------- */}
-      {familiasActivas.length > 0 && (
-        <div className="space-y-4">
-          {/* Contador */}
-          <p className="text-xs text-gartify-gray">
-            <span
-              className={[
-                "font-bold",
-                limiteAlcanzado ? "text-gartify-orange" : "text-gartify-blue",
-              ].join(" ")}
-            >
-              {selected.length}/{maxServices}
-            </span>{" "}
-            servicios seleccionados
-          </p>
-
-          {familiasActivas.map((familiaId) => {
-            const familia = FAMILIAS.find((f) => f.id === familiaId);
-            if (!familia) return null;
-
-            return (
-              <div key={familiaId}>
-                {/* Cabecera de sección */}
-                <div className="flex items-center gap-2 border-b border-gray-100 pb-1 mb-2">
-                  <span className="flex items-center justify-center w-5 h-5 shrink-0">
-                    {ICONOS_FAMILIA[familiaId] && (
-                      // Versión pequeña del icono: reemplazamos las clases de tamaño
-                      <span className="[&_svg]:h-4 [&_svg]:w-4">
-                        {ICONOS_FAMILIA[familiaId]}
-                      </span>
-                    )}
-                  </span>
-                  <span className="text-xs font-bold text-gartify-blue uppercase tracking-wide">
-                    {familia.label}
-                  </span>
-                </div>
-
-                {/* Lista de hijos */}
-                <div className="space-y-1.5">
-                  {familia.hijos.map((hijo) => {
-                    const seleccionado = selected.some((s) => s.name === hijo.name);
-                    // Deshabilitar si se alcanzó el límite y este hijo no está seleccionado
-                    const deshabilitado = limiteAlcanzado && !seleccionado;
-
-                    return (
-                      <div
-                        key={hijo.name}
-                        className={[
-                          "flex items-center gap-3 py-1.5 px-2 rounded transition-colors",
-                          deshabilitado
-                            ? "opacity-40 pointer-events-none"
-                            : "hover:bg-gray-50",
-                        ].join(" ")}
-                      >
-                        {/* Checkbox visual */}
-                        <button
-                          type="button"
-                          onClick={() => toggleHijo(familiaId, hijo)}
-                          className={[
-                            "shrink-0 flex items-center justify-center w-5 h-5 border rounded transition-colors",
-                            seleccionado
-                              ? "bg-gartify-orange border-gartify-orange"
-                              : "bg-white border-gray-300 hover:border-gartify-blue",
-                          ].join(" ")}
-                          aria-checked={seleccionado}
-                          role="checkbox"
-                          aria-label={`Seleccionar ${hijo.name}`}
-                        >
-                          {seleccionado && (
-                            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                          )}
-                        </button>
-
-                        {/* Nombre del servicio */}
-                        <span
-                          className={[
-                            "flex-1 text-sm leading-snug",
-                            seleccionado
-                              ? "text-gartify-dark font-medium"
-                              : "text-gartify-gray",
-                          ].join(" ")}
-                        >
-                          {hijo.name}
-                        </span>
-
-                        {/* Campo de precio — solo visible si está seleccionado */}
-                        {seleccionado ? (
-                          <div className="flex items-center gap-1 shrink-0">
-                            <input
-                              type="number"
-                              min="0"
-                              step="1"
-                              defaultValue={
-                                selected.find((s) => s.name === hijo.name)?.price ??
-                                hijo.suggestedPrice
-                              }
-                              onChange={(e) => actualizarPrecio(hijo.name, e.target.value)}
-                              className="w-20 text-xs border border-gray-200 rounded px-2 py-1 text-right focus:outline-none focus:border-gartify-blue"
-                              aria-label={`Precio de ${hijo.name}`}
-                            />
-                            <span className="text-xs text-gartify-gray">€</span>
-                          </div>
-                        ) : (
-                          /* Precio sugerido como referencia visual */
-                          <span className="text-xs text-gartify-gray shrink-0">
-                            {hijo.suggestedPrice === 0 ? "Gratis" : `${hijo.suggestedPrice} €`}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* Contador de seleccionados */}
+      {selected.length > 0 && (
+        <p className="text-xs text-gartify-gray">
+          <span className={`font-bold ${limiteAlcanzado ? "text-gartify-orange" : "text-gartify-blue"}`}>
+            {selected.length}/{maxServices}
+          </span>{" "}
+          servicios seleccionados
+        </p>
       )}
     </div>
   );

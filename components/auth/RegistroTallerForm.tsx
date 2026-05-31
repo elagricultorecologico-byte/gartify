@@ -25,7 +25,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { ServicioSeleccionado } from "@/components/auth/RegistroServicePicker";
+import {
+  RegistroServicePicker,
+  type ServicioSeleccionado,
+} from "@/components/auth/RegistroServicePicker";
 
 // ── Tipos del estado del wizard ───────────────────────────────────────────────
 
@@ -490,14 +493,14 @@ export function RegistroTallerForm() {
 
         {/* Aviso contextual según plan — oculto junto al picker */}
 
-        {/* Selector de servicios del catálogo — temporalmente oculto */}
-        {/* <RegistroServicePicker
+        {/* Selector de servicios del catálogo */}
+        <RegistroServicePicker
           selected={paso3.serviciosSeleccionados}
           onChange={(servicios) =>
             setPaso3((prev) => ({ ...prev, serviciosSeleccionados: servicios }))
           }
           maxServices={5}
-        /> */}
+        />
 
         {/* Mano de obra */}
         <div className="pt-2 border-t border-gray-100">
