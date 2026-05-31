@@ -229,11 +229,13 @@ export function Navbar() {
                   Entrar
                 </Button>
               </Link>
-              <Link href="/talleres">
-                <Button size="sm" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold shadow-sm">
-                  Buscar taller
-                </Button>
-              </Link>
+              {!pathname?.startsWith("/talleres") && (
+                <Link href="/talleres">
+                  <Button size="sm" className="bg-gartify-orange hover:bg-orange-600 text-white font-bold shadow-sm">
+                    Buscar taller
+                  </Button>
+                </Link>
+              )}
             </>
           )}
         </div>
@@ -284,9 +286,11 @@ export function Navbar() {
             </>
           ) : (
             <div className="flex flex-col gap-2 pt-2">
-              <Link href="/talleres" onClick={() => setOpen(false)}>
-                <Button size="sm" className="w-full bg-gartify-orange hover:bg-orange-600 text-white font-bold">Buscar taller</Button>
-              </Link>
+              {!pathname?.startsWith("/talleres") && (
+                <Link href="/talleres" onClick={() => setOpen(false)}>
+                  <Button size="sm" className="w-full bg-gartify-orange hover:bg-orange-600 text-white font-bold">Buscar taller</Button>
+                </Link>
+              )}
               <Link href={loginHref} onClick={() => setOpen(false)}>
                 <Button variant="ghost" size="sm" className="w-full text-white hover:bg-white/10">Entrar</Button>
               </Link>

@@ -153,7 +153,7 @@ export function SearchBar({ className, compact = false }: { className?: string; 
         aria-label="Buscar talleres"
       >
         <Search className="h-4 w-4" />
-        <span>Buscar</span>
+        <span>Buscar taller</span>
       </button>
     </form>
   );
