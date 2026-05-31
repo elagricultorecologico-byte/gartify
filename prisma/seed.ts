@@ -348,6 +348,7 @@ async function main() {
     data: [
       { garageId: garage6.id, type: "ITV", name: "ITV Completa", description: "Inspección técnica con traslado al centro oficial", price: 58, duration: 90 },
       { garageId: garage6.id, type: "REVISION", name: "Revisión Básica", description: "Cambio de aceite, filtro de aire y revisión de 20 puntos", price: 69, duration: 75 },
+      { garageId: garage6.id, type: "NEUMATICOS", name: "Cambio de Neumáticos", description: "Montaje, equilibrado y alineación para turismos, motos y furgonetas", price: 32, duration: 45 },
       { garageId: garage6.id, type: "CLIMATIZACION", name: "Carga A/C", description: "Recarga de gas refrigerante con control de fugas", price: 65, duration: 60 },
       { garageId: garage6.id, type: "DIAGNOSTICO", name: "Diagnóstico OBD2", description: "Escáner completo y borrado de errores", price: 35, duration: 30 },
       { garageId: garage6.id, type: "FRENOS", name: "Cambio de Pastillas", description: "Sustitución de pastillas eje delantero o trasero", price: 48, duration: 60 },
@@ -357,12 +358,12 @@ async function main() {
   // Garage 7 — Sant Feliu de Llobregat
   const garage7 = await prisma.garage.upsert({
     where: { ownerId: owner7.id },
-    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO"]), categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "MOTOS"]), province: "Barcelona" },
+    update: { plan: "PREMIUM", vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]), categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "MOTOS", "CAMIONES_FURGONETAS"]), province: "Barcelona" },
     create: {
       name: "TallerRàpid Sant Feliu",
       plan: "PREMIUM",
-      vehicleTypes: JSON.stringify(["COCHE", "MOTO"]),
-      categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "MOTOS"]),
+      vehicleTypes: JSON.stringify(["COCHE", "MOTO", "FURGONETA"]),
+      categories: JSON.stringify(["MECANICA_GENERAL", "NEUMATICOS_RUEDAS", "ELECTRICIDAD_AUTO", "MOTOS", "CAMIONES_FURGONETAS"]),
       description: "El taller más rápido del Baix Llobregat. Cita el mismo día, diagnóstico gratuito en la primera visita y recogida a domicilio.",
       address: "Avinguda de Can Nadal, 15",
       city: "Sant Feliu de Llobregat",
