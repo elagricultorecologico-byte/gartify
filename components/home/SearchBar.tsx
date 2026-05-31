@@ -73,15 +73,19 @@ export function SearchBar({ className, compact = false }: { className?: string; 
     router.push(`/talleres?${params.toString()}`);
   };
 
+  const sep = compact
+    ? <span className="hidden sm:block self-stretch w-px bg-gartify-blue/30 shrink-0" aria-hidden="true" />
+    : null;
+
   return (
     <form
       onSubmit={handleSearch}
       aria-label="Buscar talleres"
-      className={`flex flex-col sm:flex-row sm:items-center gap-2 ${className}`}
+      className={`flex flex-col sm:flex-row sm:items-stretch ${compact ? "gap-0" : "gap-2"} ${className}`}
     >
       {/* Selector de servicio */}
       <Select value={servicio || undefined} onValueChange={setServicio}>
-        <SelectTrigger className={`bg-white border-0 shadow-sm font-semibold text-gray-500 px-4 [&>span:not([data-placeholder])]:text-gray-800 ${compact ? "flex-1 w-full !h-10 text-sm" : "w-full sm:w-40 !h-12 text-sm shrink-0"}`}>
+        <SelectTrigger className={`bg-white border-0 shadow-none font-semibold text-gray-500 px-4 [&>span:not([data-placeholder])]:text-gray-800 ${compact ? "flex-1 w-full !h-10 text-sm" : "w-full sm:w-40 !h-12 text-sm shrink-0 shadow-sm"}`}>
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
         <SelectContent>
@@ -99,6 +103,8 @@ export function SearchBar({ className, compact = false }: { className?: string; 
         </SelectContent>
       </Select>
 
+      {sep}
+
       {/* Campo de ciudad */}
       <div className={`relative w-full min-w-0 ${compact ? "flex-1" : "flex-1 sm:min-w-[140px]"}`}>
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
@@ -106,7 +112,7 @@ export function SearchBar({ className, compact = false }: { className?: string; 
           placeholder="Localidad o CP"
           value={ciudad}
           onChange={(e) => { setCiudad(e.target.value); setUserCoords(null); setLocateError(""); }}
-          className={`pl-9 pr-10 bg-white border-0 shadow-sm ${compact ? "!h-10" : "!h-12"} text-sm font-semibold text-gray-800 w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm`}
+          className={`pl-9 pr-10 bg-white border-0 shadow-none ${compact ? "!h-10" : "!h-12 shadow-sm"} text-sm font-semibold text-gray-800 w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm`}
         />
         <button
           type="button"
@@ -128,9 +134,11 @@ export function SearchBar({ className, compact = false }: { className?: string; 
         )}
       </div>
 
+      {sep}
+
       {/* Selector de tipo de vehículo */}
       <Select value={vehicleType || undefined} onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
-        <SelectTrigger className={`bg-white border-0 shadow-sm font-semibold text-gray-500 px-4 [&>span:not([data-placeholder])]:text-gray-800 ${compact ? "flex-1 w-full !h-10 text-sm" : "w-full sm:w-40 !h-12 text-sm shrink-0"}`}>
+        <SelectTrigger className={`bg-white border-0 shadow-none font-semibold text-gray-500 px-4 [&>span:not([data-placeholder])]:text-gray-800 ${compact ? "flex-1 w-full !h-10 text-sm" : "w-full sm:w-40 !h-12 text-sm shrink-0 shadow-sm"}`}>
           <SelectValue placeholder="Tipo de vehículo" />
         </SelectTrigger>
         <SelectContent>
@@ -149,11 +157,15 @@ export function SearchBar({ className, compact = false }: { className?: string; 
       {/* Botón buscar */}
       <button
         type="submit"
-        className={`w-full sm:w-auto flex items-center justify-center gap-2 ${compact ? "h-10 px-4" : "h-12 px-6"} shrink-0 bg-gartify-orange hover:bg-gartify-orange/90 transition-colors text-white font-semibold text-sm`}
+        className={`w-full sm:w-auto flex items-center justify-center gap-2 shrink-0 font-semibold text-sm text-white transition-colors ${
+          compact
+            ? "h-10 px-5 bg-gartify-blue hover:bg-blue-800"
+            : "h-12 px-6 bg-gartify-orange hover:bg-gartify-orange/90"
+        }`}
         aria-label="Buscar talleres"
       >
         <Search className="h-4 w-4" />
-        <span>Buscar taller</span>
+        <span>{compact ? "Buscar" : "Buscar taller"}</span>
       </button>
     </form>
   );

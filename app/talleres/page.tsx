@@ -194,11 +194,13 @@ export default async function TalleresPage({
         </p>
       </div>
 
-      {/* Barra de búsqueda compacta */}
-      <div className="mb-6 border-l-4 border-l-gartify-orange border border-gray-200 bg-white shadow-sm p-2">
-        <Suspense>
-          <SearchBar compact />
-        </Suspense>
+      {/* Barra de búsqueda compacta — sticky bajo el navbar */}
+      <div className="sticky top-16 md:top-24 z-40 -mx-4 sm:-mx-8 bg-white shadow-md mb-6 px-4 sm:px-8 py-3">
+        <div className="border-2 border-gartify-blue">
+          <Suspense>
+            <SearchBar compact />
+          </Suspense>
+        </div>
       </div>
 
       {/* Mapa */}
