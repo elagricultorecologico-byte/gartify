@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { generateUniqueSlug } from "@/lib/slug";
 import { sendMail } from "@/lib/mailer";
 import { verificacionEmailTaller, nuevoTallerInternoEmail } from "@/lib/emails/templates";
+import { geocodificarDireccion } from "@/lib/geocoding";
 
 /** Schema de un servicio inicial enviado desde el wizard de registro */
 const schemaServicioInicial = z.object({
@@ -158,39 +159,6 @@ function buildInitialServices(
   return services;
 }
 
-/** Intenta geocodificar una dirección usando la API de Google Maps.
- *  Devuelve { lat, lng } si tiene éxito, o null si falla (para no bloquear el registro). */
-async function geocodificarDireccion(
-  address: string,
-  city: string,
-  postalCode: string,
-): Promise<{ lat: number; lng: number } | null> {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-  if (!apiKey) return null;
-
-  const query = encodeURIComponent(`${address}, ${postalCode} ${city}, España`);
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${apiKey}`;
-
-  try {
-    const respuesta = await fetch(url, { next: { revalidate: 0 } });
-    if (!respuesta.ok) return null;
-
-    const datos = (await respuesta.json()) as {
-      status: string;
-      results: Array<{
-        geometry: { location: { lat: number; lng: number } };
-      }>;
-    };
-
-    if (datos.status !== "OK" || datos.results.length === 0) return null;
-
-    const { lat, lng } = datos.results[0].geometry.location;
-    return { lat, lng };
-  } catch {
-    // La geocodificación es opcional: si falla, el registro continúa sin coordenadas
-    return null;
-  }
-}
 
 export async function POST(req: Request) {
   try {

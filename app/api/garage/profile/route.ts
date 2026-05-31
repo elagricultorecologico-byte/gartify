@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { z } from "zod";
 import { slugify } from "@/lib/slug";
+import { geocodificarDireccion } from "@/lib/geocoding";
 
 const TIPOS_VEHICULO_VALIDOS = [
   "COCHE", "MOTO", "FURGONETA", "AUTOCARAVANA", "CAMPER", "CAMION",
@@ -73,10 +74,18 @@ export async function PATCH(req: Request) {
     }
   }
 
+  // Geocodificar si cambia la dirección, ciudad o código postal
+  const coordenadas = await geocodificarDireccion(
+    parsed.data.address,
+    parsed.data.city,
+    parsed.data.postalCode,
+  );
+
   const updated = await db.garage.update({
     where: { id: garage.id },
     data: {
       ...restoData,
+      ...(coordenadas && { lat: coordenadas.lat, lng: coordenadas.lng }),
       email: parsed.data.email || undefined,
       // Solo actualizamos vehicleTypes si viene en el body; mínimo ["COCHE"]
       ...(vehicleTypes !== undefined && {
