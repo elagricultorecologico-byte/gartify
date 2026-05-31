@@ -220,7 +220,7 @@ export function GarageFilters() {
               </div>
               <div className="relative">
                 <Navigation className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("distancia") ? "text-gartify-hero" : "text-gartify-gray/70")} />
-                <Select defaultValue={sp.get("distancia") ?? "10"} onValueChange={(v) => update("distancia", v)}>
+                <Select value={sp.get("distancia") ?? "10"} onValueChange={(v) => update("distancia", v)}>
                   <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("distancia"))}>
                     <SelectValue placeholder="Radio de búsqueda" />
                   </SelectTrigger>
@@ -295,7 +295,7 @@ export function GarageFilters() {
         <Section label="Servicio" icon={<Wrench className="h-3 w-3" />} active={isActive("servicio")} defaultOpen={isActive("servicio")}>
           <div className="relative">
             <Wrench className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("servicio") ? "text-gartify-hero" : "text-gartify-gray/70")} />
-            <Select defaultValue={sp.get("servicio") ?? "ALL"} onValueChange={(v) => update("servicio", v)}>
+            <Select value={sp.get("servicio") ?? "ALL"} onValueChange={(v) => update("servicio", v)}>
               <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("servicio"))}>
                 <SelectValue placeholder="Todos los servicios" />
               </SelectTrigger>
@@ -311,7 +311,7 @@ export function GarageFilters() {
         <Section label="Precio" icon={<Euro className="h-3 w-3" />} active={isActive("precio")} defaultOpen={false}>
           <div className="relative">
             <Euro className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("precio") ? "text-gartify-hero" : "text-gartify-gray/70")} />
-            <Select defaultValue={sp.get("precio") ?? "ALL"} onValueChange={(v) => update("precio", v)}>
+            <Select value={sp.get("precio") ?? "ALL"} onValueChange={(v) => update("precio", v)}>
               <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("precio"))}>
                 <SelectValue placeholder="Cualquier precio" />
               </SelectTrigger>
@@ -327,7 +327,7 @@ export function GarageFilters() {
         <Section label="Valoración" icon={<Star className="h-3 w-3" />} active={isActive("rating")} defaultOpen={false}>
           <div className="relative">
             <Star className={cn("pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 z-10", isActive("rating") ? "fill-yellow-400 text-yellow-400" : "text-gartify-gray/70")} />
-            <Select defaultValue={sp.get("rating") ?? "ALL"} onValueChange={(v) => update("rating", v)}>
+            <Select value={sp.get("rating") ?? "ALL"} onValueChange={(v) => update("rating", v)}>
               <SelectTrigger className={cn("h-9 w-full pl-8 text-sm transition-all", activeRing("rating"))}>
                 <SelectValue placeholder="Cualquier valoración" />
               </SelectTrigger>
