@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SEARCHABLE_SERVICES } from "@/lib/constants";
 import { VEHICLE_TYPES, VEHICLE_LABELS, VEHICLE_ICONS, type VehicleType } from "@/lib/utils";
 
-export function SearchBar({ className }: { className?: string }) {
+export function SearchBar({ className, compact = false }: { className?: string; compact?: boolean }) {
   const router = useRouter();
   const sp = useSearchParams();
   const [servicio, setServicio] = useState(sp.get("servicio") ?? "");
@@ -81,7 +81,7 @@ export function SearchBar({ className }: { className?: string }) {
     >
       {/* Selector de servicio */}
       <Select value={servicio || undefined} onValueChange={setServicio}>
-        <SelectTrigger className="w-full sm:w-40 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
+        <SelectTrigger className={`bg-white border-0 shadow-sm font-semibold text-gray-500 px-4 [&>span:not([data-placeholder])]:text-gray-800 ${compact ? "flex-1 w-full !h-10 text-sm" : "w-full sm:w-40 !h-12 text-sm shrink-0"}`}>
           <SelectValue placeholder="¿Qué necesitas?" />
         </SelectTrigger>
         <SelectContent>
@@ -100,13 +100,13 @@ export function SearchBar({ className }: { className?: string }) {
       </Select>
 
       {/* Campo de ciudad */}
-      <div className="relative flex-1 min-w-0 sm:min-w-[140px] w-full">
+      <div className={`relative w-full min-w-0 ${compact ? "flex-1" : "flex-1 sm:min-w-[140px]"}`}>
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
         <Input
           placeholder="Localidad o CP"
           value={ciudad}
           onChange={(e) => { setCiudad(e.target.value); setUserCoords(null); setLocateError(""); }}
-          className="pl-9 pr-10 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-800 w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm"
+          className={`pl-9 pr-10 bg-white border-0 shadow-sm ${compact ? "!h-10" : "!h-12"} text-sm font-semibold text-gray-800 w-full min-w-0 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-normal placeholder:text-gray-400 placeholder:text-sm`}
         />
         <button
           type="button"
@@ -130,7 +130,7 @@ export function SearchBar({ className }: { className?: string }) {
 
       {/* Selector de tipo de vehículo */}
       <Select value={vehicleType || undefined} onValueChange={(v) => setVehicleType(v === "ALL" ? "" : v as VehicleType)}>
-        <SelectTrigger className="w-full sm:w-40 bg-white border-0 shadow-sm !h-12 text-sm font-semibold text-gray-500 px-4 shrink-0 [&>span:not([data-placeholder])]:text-gray-800">
+        <SelectTrigger className={`bg-white border-0 shadow-sm font-semibold text-gray-500 px-4 [&>span:not([data-placeholder])]:text-gray-800 ${compact ? "flex-1 w-full !h-10 text-sm" : "w-full sm:w-40 !h-12 text-sm shrink-0"}`}>
           <SelectValue placeholder="Tipo de vehículo" />
         </SelectTrigger>
         <SelectContent>
@@ -149,7 +149,7 @@ export function SearchBar({ className }: { className?: string }) {
       {/* Botón buscar */}
       <button
         type="submit"
-        className="w-full sm:w-auto flex items-center justify-center gap-2 h-12 px-6 shrink-0 bg-gartify-orange hover:bg-gartify-orange/90 transition-colors text-white font-semibold text-sm"
+        className={`w-full sm:w-auto flex items-center justify-center gap-2 ${compact ? "h-10 px-4" : "h-12 px-6"} shrink-0 bg-gartify-orange hover:bg-gartify-orange/90 transition-colors text-white font-semibold text-sm`}
         aria-label="Buscar talleres"
       >
         <Search className="h-4 w-4" />

@@ -6,6 +6,7 @@ import { GarageCard } from "@/components/talleres/GarageCard";
 import { GarageFilters } from "@/components/talleres/GarageFilters";
 import { GaragePagination } from "@/components/talleres/GaragePagination";
 import { GarageSortSelector } from "@/components/talleres/GarageSortSelector";
+import { SearchBar } from "@/components/home/SearchBar";
 import { Search } from "lucide-react";
 import { SERVICE_LABELS } from "@/lib/constants";
 import { VEHICLE_LABELS } from "@/lib/utils";
@@ -191,6 +192,13 @@ export default async function TalleresPage({
             .filter(Boolean)
             .join(" · ") || "Mostrando todos los servicios"}
         </p>
+      </div>
+
+      {/* Barra de búsqueda compacta */}
+      <div className="mb-6 border-l-4 border-l-gartify-orange border border-gray-200 bg-white shadow-sm p-2">
+        <Suspense>
+          <SearchBar compact />
+        </Suspense>
       </div>
 
       {/* Mapa */}
